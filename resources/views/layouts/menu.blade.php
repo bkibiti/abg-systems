@@ -20,12 +20,6 @@
         @can('View Sales History')
         <li class=""><a href="{{route('sales.history')}}" class="">Sales History</a></li>
         @endcan
-        @can('View Daily Report')
-        <li class=""><a href="{{route('sales.daily-index')}}" class="">Daily Sale Report</a></li>
-        @endcan
-        @can('View Staff Loss')
-        <li class=""><a href="{{route('losses.index')}}" class="">Staff Losses</a></li>
-        @endcan
 
 
 </ul>
@@ -48,10 +42,6 @@
         <li class=""><a href="{{ route('stock-adjustment.index') }}" class="">Adjustment History</a></li>
         @endcan
 
-        @can('View Stock Count Sheet')
-        <li class=""><a href="{{ route('daily-stock-count.index') }}" class="">Stock Count Sheet</a></li>
-        @endcan
-        <li class=""><a href="{{ route('monthly-closing-stock.index') }}" class="">Monthly Closing Stock</a></li>
 
 
     </ul>
@@ -91,28 +81,6 @@
     </ul> --}}
     @endcan
 </li>
-@can('View Lodge Module')
-<li class="nav-item pcoded-hasmenu">
-    <a href="#!" class="nav-link"><span class="pcoded-micon"><i class="fas fa-bed"></i></span>
-        <span class="pcoded-mtext">Rooms</span>
-    </a>
-    <ul class="pcoded-submenu">
-        @can('View Lodge Dashboard')
-        <li class=""><a href="{{route('lodge.index')}}" class="">Dashboard</a></li>
-        @endcan
-     
-        @can('Manage Lodge Sales')
-        <li class=""><a href="{{route('lodge-sales.index')}}" class="">Sales</a></li>
-        @endcan
-
-        @can('Manage Lodge Expenses')
-        <li class=""><a href="{{route('lodge-expense.index')}}" class="">Expenses</a></li>
-        @endcan
-   
-
-</ul>
-</li>
-@endcan
 <li class="nav-item">
     @can('View Reports')
     <a href="{{route('reports.index')}}" class="nav-link"><span class="pcoded-micon"><i class="fas fa-file-pdf"></i></span><span
@@ -158,14 +126,8 @@
         <span class="pcoded-mtext">Masters</span>
     </a>
     <ul class="pcoded-submenu">
-        @can('View Products Categories')
-        <li class=""><a href="{{route('categories.index')}}" class="">Product Categories</a></li>
-        @endcan
         @can('View Products')
         <li class=""><a href="{{route('products.index')}}" class="">Products</a></li>
-        @endcan
-        @can('View Price Categories')
-        <li class=""><a href="{{route('price-categories.index')}}" class="">Price Categories</a></li>
         @endcan
         @can('View Expense Categories')
         <li class=""><a href="{{route('expense-categories.index')}}" class="">Expense Categories</a></li>
@@ -173,9 +135,6 @@
 
         @can('View Suppliers')
         <li class=""><a href="{{route('suppliers.index')}}" class="">Suppliers</a></li>
-        @endcan
-        @can('View Stores')
-        <li class=""><a href="{{route('stores.index')}}" class="">Stores</a></li>
         @endcan
         @can('View Reminders')
             <li class=""><a href="{{route('reminders.index')}}" class="">Reminders</a></li>

@@ -34,14 +34,6 @@
                                 <option value="2" {{ (old('status')==2 ? "selected":"") }} >Below Minimum Level</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-control select2"  class="form-control" id="category_id" name="category_id"  data-width="100%">
-                                <option value="1" {{ (old('category_id')==0 ? "selected":"") }} >All Categories</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ ($category->id == old('category_id') ? "selected":"") }} name="category">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
                       
                        
                         <div class="col-md-2">
@@ -63,7 +55,6 @@
                             <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Category</th>
                                 <th>Minimum Qty</th>
                                 <th>QOH</th>
                                 {{-- <th>Purchase Price</th> --}}
@@ -74,7 +65,6 @@
                                     @foreach($Products as $prod)
                                     <tr>
                                             <td>{{$prod->name}}</td>
-                                            <td>{{$prod->category->name}}</td>
                                             <td>{{$prod->min_quantinty}}</td>
                                             <td>{{$prod->quantity}}</td>
                                             {{-- <td>{{number_format($prod->unit_cost,2) }}</td> --}}

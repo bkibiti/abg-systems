@@ -24,7 +24,8 @@ class ProductStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:50'
+            'name' => 'required|string|max:100|unique:stock,name',
+            'min_quantinty' => 'nullable|integer|min:0',
         ];
     }
 }

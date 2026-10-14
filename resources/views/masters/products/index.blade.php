@@ -36,9 +36,6 @@
                             <tr>
                                 {{-- <th>Id #</th> --}}
                                 <th>Name</th>
-                                <th>Category</th>
-                                <th>Purchase Unit</th>
-                                <th>Qty in Unit</th>
                                 <th>Min Qty</th>
                                 <th>Actions</th>
                             </tr>
@@ -48,20 +45,12 @@
                                     <tr>
                                             {{-- <td>{{$prod->id}}</td> --}}
                                             <td>{{$prod->name}}</td>
-                                            <td>{{$prod->category->name}}</td>
-                                            <td>{{$prod->purchase_uom}}</td>
-                                            <td>{{$prod->quantity_per_unit}}</td>
                                             <td>{{$prod->min_quantinty}}</td>
                                             <td>
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-rounded btn-info"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
-                                                            data-category_id="{{$prod->category->id}}"
-                                                            data-for_sale="{{$prod->for_sale}}"
-                                                            data-sold_by="{{$prod->sold_by}}"
-                                                            data-purchase_uom="{{$prod->purchase_uom}}"
-                                                            data-quantity_per_unit="{{$prod->quantity_per_unit}}"
                                                             data-min_quantinty="{{$prod->min_quantinty}}"
                                                             type="button"
                                                             data-toggle="modal" data-target="#edit">Edit
@@ -115,13 +104,7 @@
 
                     modal.find('.modal-body #id').val(button.data('id'));
                     modal.find('.modal-body #name_edit').val(button.data('name'))
-                    modal.find('.modal-body #category_id_edit').val(button.data('category_id'))
-                    modal.find('.modal-body #for_sale_edit').val(button.data('for_sale'))
-                    modal.find('.modal-body #sold_by_edit').val(button.data('sold_by'))
-                    modal.find('.modal-body #purchase_uom_edit').val(button.data('purchase_uom'))
-                    modal.find('.modal-body #quantity_per_unit_edit').val(button.data('quantity_per_unit'))
                     modal.find('.modal-body #min_quantinty_edit').val(button.data('min_quantinty'))
-                    modal.find('.modal-body #reorder_level_edit').val(button.data('reorder_level'))
                 });
 
                 $('#delete').on('show.bs.modal', function (event) {
@@ -130,7 +113,7 @@
                     var modal = $(this);
 
                     modal.find('.modal-body #message').text(message);
-                    modal.find('.modal-body #id').val(button.data('id'));
+                    modal.find('.modal-body #product_id').val(button.data('id'));
                 });
 
 

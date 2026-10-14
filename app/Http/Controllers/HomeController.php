@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Stock;
 use App\Models\Sale;
-use Illuminate\Support\Facades\DB;
+use App\Models\Stock;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -19,12 +19,11 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    //login form
+    // login form
     public function login()
     {
         return view('auth.login');
     }
-
 
     /**
      * Show the application dashboard.
@@ -34,20 +33,14 @@ class HomeController extends Controller
     public function index()
     {
 
-        $Products = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->where('for_sale','Yes')->get();
-        $StockOut = Stock::where('quantity',0)->where('for_sale','Yes')->get();
+        $Products = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->get();
+        $StockOut = Stock::where('quantity', 0)->get();
 
-        $staffLoss = DB::select("SELECT users.name as user,sum(amount) as amount FROM 
-                    staff_advances join users on staff_advances.user_id=users.id
-                    where month(staff_advances.date) = month(now()) and year(staff_advances.date) = year(now()) and type='loss'
-                    group by users.name");
+        $lastExpense = DB::select('select max(created_at) as date from expenses');
+        $lastSale = DB::select('select max(created_at) as date from sales');
+        $lastPurchase = DB::select('select max(created_at) as date from purchases');
 
-        $lastExpense = DB::select("select max(created_at) as date from expenses");
-        $lastSale = DB::select("select max(created_at) as date from sales");
-        $lastPurchase = DB::select("select max(created_at) as date from purchases");
-
-
-        return view('home', compact('Products','staffLoss','StockOut','lastExpense','lastSale','lastPurchase'));
+        return view('home', compact('Products', 'StockOut', 'lastExpense', 'lastSale', 'lastPurchase'));
 
     }
 
@@ -74,13 +67,10 @@ class HomeController extends Controller
 
         $stockValue = Stock::sum(DB::raw('quantity*sale_price_1'));
 
-        $valueByCategory = DB::select("SELECT p.name,sum(s.quantity * s.sale_price_1) amount FROM stock s
-                            JOIN product_categories p on s.category_id=p.id GROUP BY p.name HAVING amount > 0");         
-       
         $totalDailySales = DB::table('sales')
             ->select(DB::raw('date(created_at) date, sum(quantity*selling_price) value'))
             ->groupBy(DB::raw('date(created_at)'))
-            ->orderBy('date','Desc')
+            ->orderBy('date', 'Desc')
             ->limit('30')
             ->get();
 
@@ -93,7 +83,7 @@ class HomeController extends Controller
                     on Q1.month_no = Q2.month_no 
                     order by Q1.month_no
                     ");
-       
+
         $saleByDay = DB::table('sales')
             ->select(DB::raw('WEEKDAY(created_at) DayNumber,DAYNAME(created_at) DayName,sum(selling_price*quantity) Amount'))
             ->groupBy(DB::raw('WEEKDAY(created_at),DAYNAME(created_at)'))
@@ -103,7 +93,7 @@ class HomeController extends Controller
             ->select(DB::raw('MONTHNAME(created_at) Month,sum(selling_price*quantity) Amount'))
             ->groupBy(DB::raw('MONTHNAME(created_at)'))
             ->get();
-        
+
         $salesThisMonth = DB::table('sales')
             ->select(DB::raw('sum(selling_price*quantity) Amount'))
             ->whereRaw('MONTH(created_at) = MONTH(NOW()) and YEAR(created_at) = YEAR(NOW())')
@@ -148,16 +138,15 @@ class HomeController extends Controller
         $lastMonth['sales'] = $salesLastMonth[0]->Amount;
         $lastMonth['expense'] = $expensesLastMonth[0]->Amount;
         $lastMonth['profit'] = $profitLastMonth[0]->Amount;
-       
+
         $dailyAverage = [];
         $dailyAverage['purchase'] = $avgDailyPurchases;
         $dailyAverage['sales'] = $avgDailySales;
         $dailyAverage['expense'] = $avgDailyExpenses;
         $dailyAverage['profit'] = $avgDailyProfit;
 
-
-        return view('dashboard_advanced', compact('dailyAverage','thisMonth','lastMonth','totalDailySales','saleByDay','saleByMonth',
-                    'monthlyTrends','stockValue','valueByCategory'));
+        return view('dashboard_advanced', compact('dailyAverage', 'thisMonth', 'lastMonth', 'totalDailySales', 'saleByDay', 'saleByMonth',
+            'monthlyTrends', 'stockValue'));
 
     }
 }

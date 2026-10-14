@@ -1,6 +1,6 @@
 <script>
     var NeedDateFilter = ["1","4","7"];
-    var NoDateFilter = ["2","3","5","6"];
+    var NoDateFilter = ["2","3","5"];
 
     var reportType = $('#report_type').val();
 

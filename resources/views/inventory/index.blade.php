@@ -34,14 +34,6 @@
                                 <option value="2" {{ (old('status')==2 ? "selected":"") }} >Below Minimum Level</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-control select2"  class="form-control" id="category_id" name="category_id"  data-width="100%">
-                                <option value="1" {{ (old('category_id')==0 ? "selected":"") }} >All Categories</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ ($category->id == old('category_id') ? "selected":"") }} name="category">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
                       
                        
                         <div class="col-md-2">
@@ -63,18 +55,9 @@
                             <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Category</th>
                                 <th>QOH</th>
                                 <th>Purchase Price</th>
-                                @if ($PriceCategory[0]->active =='Yes')
-                                    <th> {{$PriceCategory[0]->description}}</th>
-                                @endif
-                                @if ($PriceCategory[1]->active =='Yes')
-                                    <th> {{$PriceCategory[1]->description}}</th>
-                                @endif
-                                @if ($PriceCategory[2]->active =='Yes')
-                                    <th> {{$PriceCategory[2]->description}}</th>
-                                @endif
+                                <th>Selling Price</th>
                                 <th>Actions</th>
 
                             </tr>
@@ -83,19 +66,10 @@
                                     @foreach($Products as $prod)
                                     <tr>
                                             <td>{{$prod->name}}</td>
-                                            <td>{{$prod->category->name}}</td>
                                             <td>{{$prod->quantity}}</td>
                                             <td>{{number_format($prod->unit_cost,2) }}</td>
                                            
-                                            @if ($PriceCategory[0]->active =='Yes')
-                                                <td>{{$prod->sale_price_1}}</td>
-                                            @endif
-                                            @if ($PriceCategory[1]->active =='Yes')
-                                                <td>{{$prod->sale_price_2}}</td>
-                                            @endif
-                                            @if ($PriceCategory[2]->active =='Yes')
-                                                <td>{{$prod->sale_price_3}}</td>
-                                            @endif
+                                            <td>{{$prod->sale_price_1}}</td>
 
                                             <td>
                                                 <a href="#">
@@ -103,8 +77,6 @@
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
                                                             data-sale_price_1="{{$prod->sale_price_1}}"
-                                                            data-sale_price_2="{{$prod->sale_price_2}}"
-                                                            data-sale_price_3="{{$prod->sale_price_3}}"
                                                             data-unit_cost="{{$prod->unit_cost}}"
                                                             type="button"
                                                             data-toggle="modal" data-target="#edit">Set Price
@@ -159,8 +131,6 @@
                     modal.find('.modal-body #name').val(button.data('name'));
                     modal.find('.modal-body #unit_cost').val(button.data('unit_cost'))
                     modal.find('.modal-body #sale_price_1').val(button.data('sale_price_1'))
-                    modal.find('.modal-body #sale_price_2').val(button.data('sale_price_2'))
-                    modal.find('.modal-body #sale_price_3').val(button.data('sale_price_3'))
                 });
 
 

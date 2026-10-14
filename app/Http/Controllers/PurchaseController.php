@@ -16,7 +16,7 @@ class PurchaseController extends Controller
     public function index()
     {
         $suppliers = Supplier::all();
-        $products = Stock::where('for_sale','Yes')->get();
+        $products = Stock::orderBy('name')->get();
 
         return View('purchases.goods_receiving', (compact( 'suppliers','products')));
     }
@@ -29,14 +29,14 @@ class PurchaseController extends Controller
             $purchase_date = date('Y-m-d', strtotime($request->purchase_date));
         }
 
-        $totalQty = $request->quantity * $request->quantity_per_unit;
-        $UnitBuyingPrice = $request->unit_cost / $request->quantity_per_unit;
+        // Products are bought and stocked in the same unit (no purchase unit conversion).
+        $totalQty = $request->quantity;
+        $UnitBuyingPrice = $request->unit_cost;
 
         $incoming = new purchase;
         $incoming->product_id = $request->id;
         $incoming->quantity = $request->quantity;
-        $incoming->quantity_per_unit = $request->quantity_per_unit;
-        $incoming->purchase_uom = $request->purchaseUOM;
+        $incoming->quantity_per_unit = 1;
         $incoming->supplier_id = $request->supplier;
         $incoming->unit_cost = $request->unit_cost;
         $incoming->created_by = Auth::User()->id;

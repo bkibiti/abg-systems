@@ -306,9 +306,6 @@ document.getElementById("formInput").appendChild(element);
    case 121:
  document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
-  case 122:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata">   @foreach($store as $store)<option value="{{$store->id}}">{{$store->name}}</option>@endforeach</select>';
-    break;
   case 123:
  document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;

@@ -41,7 +41,6 @@ class StockAdjustmentController extends Controller
         //insert into adjustment table
         $adjust = new StockAdjustment;
         $adjust->stock_id = $request->id;
-        $adjust->store_id = $product->store_id;
         $adjust->original_qty = $original_qty;
         $adjust->adjusted_qty = $adjusted_qty;
         $adjust->remain_qty = $remain_qty;

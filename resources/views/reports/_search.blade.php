@@ -11,7 +11,6 @@
                     <option value="3" {{ (old('report')==3 ? "selected":"") }}>Fast Moving Items</option>
                     <option value="4" {{ (old('report')==4 ? "selected":"") }}>Gross Profit</option>
                     <option value="5" {{ (old('report')==5 ? "selected":"") }}>Current Stock Value</option>
-                    <option value="6" {{ (old('report')==6 ? "selected":"") }}>Daily Sale Report Template</option>
                     <option value="7" {{ (old('report')==7 ? "selected":"") }}>Item Movement History</option>
                 </select>
             </div>

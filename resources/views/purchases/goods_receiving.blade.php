@@ -34,10 +34,6 @@
                                                     <button class="btn btn-sm btn-rounded btn-info selectproduct"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
-                                                            data-category_id="{{$prod->category->id}}"
-                                                            data-purchase_uom="{{$prod->purchase_uom}}"
-                                                            data-quantity_per_unit="{{$prod->quantity_per_unit}}"
-                                                            data-sold_by="{{$prod->sold_by}}"
                                                             data-toggle="button">Select
                                                     </button>
                                                 </a>
@@ -58,7 +54,6 @@
                                 <form method="POST" action="{{ route('goods-receiving.store') }}" >
                                     @csrf
                                     <input type="hidden" name="id" id="id">
-                                    <input type="hidden" name="purchaseUOM" id="purchaseUOM">
 
 
                                     <div class="form-group row">
@@ -90,18 +85,9 @@
                                                 placeholder="" required readonly>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                            <label for="category" class="col-md-4 col-form-label text-md-right">Purchase Unit</label>
-                                            <div class="col-md-8">
-                                                    <input type="text" class="form-control" id="purchase_uom" readonly>
-                                            </div>
-                                    </div>
-
-                                    <input type="hidden" class="form-control" id="quantity_per_unit" name="quantity_per_unit" >
-
 
                                     <div class="form-group row">
-                                            <label for="category" class="col-md-4 col-form-label text-md-right" id="numberofunits"># of Units<font color="red">*</font></label>
+                                            <label for="category" class="col-md-4 col-form-label text-md-right" >Quantity<font color="red">*</font></label>
                                             <div class="col-md-8">
                                                     <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
                                             </div>
@@ -202,14 +188,6 @@
         $('.selectproduct').click(function() {
             $('#id').val($(this).data('id'));
             $('#name').val($(this).data('name'))
-            $('#purchaseUOM').val($(this).data('purchase_uom'))
-
-            var purchaseUnit = '';
-            var pu = purchaseUnit.concat($(this).data('purchase_uom'),' (',$(this).data('quantity_per_unit'),' ',$(this).data('sold_by'),')');
-            $('#purchase_uom').val(pu);
-            var units='';
-            $('#numberofunits').text(units.concat('# of ',$(this).data('purchase_uom'),'(s)'));
-            $('#quantity_per_unit').val($(this).data('quantity_per_unit'));
 
 
             $('#purchase_history').find('tbody').detach();
@@ -235,8 +213,6 @@
         });
 
         $('#total_cost').change(function () {
-            // alert($(this).val());
-            // alert( $('#quantity_per_unit').val());
             var unitcost = $(this).val()/$('#quantity').val();
             $('#unit_cost').val(unitcost);
 

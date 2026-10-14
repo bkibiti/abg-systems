@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,10 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Existing rows in model_has_roles / model_has_permissions store the
-        // pre-upgrade class name, so keep reading and writing 'App\User'.
-        Relation::morphMap([
-            'App\User' => User::class,
-        ]);
+        // Role/permission rows in model_has_roles now use 'App\Models\User'
+        // (converted by abg_update.sql), so no morph map is needed.
     }
 }

@@ -2,79 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Requests\ProductStoreRequest;
 use App\Models\Stock;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-
     public function index()
     {
+        $products = Stock::orderBy('name')->get();
 
-        $products = Stock::all();
-        $category = Category::all();
-
-        return view('masters.products.index')->with(['products' => $products,
-            'categories' => $category]);
+        return view('masters.products.index')->with(['products' => $products]);
     }
-
 
     public function store(ProductStoreRequest $request)
     {
-
-        $request->validated();
+        $data = $request->validated();
 
         $product = new Stock;
-        $product->name = $request->name;
-        $product->category_id = $request->category_id;
-        $product->sold_by = $request->sold_by;
-        $product->for_sale = $request->for_sale;
-        $product->store_id = '1';
-        $product->purchase_uom = $request->purchase_uom;
-        $product->quantity_per_unit = $request->quantity_per_unit;
-        $product->min_quantinty = $request->min_quantinty;
+        $product->name = $data['name'];
+        $product->min_quantinty = $data['min_quantinty'] ?? 0;
+        $product->quantity = 0;
+        $product->unit_cost = 0;
         $product->save();
 
-        session()->flash("alert-success", "Product added successfully!");
+        session()->flash('alert-success', 'Product added successfully!');
+
         return back();
     }
-
 
     public function update(Request $request)
     {
-        $product = Stock::find($request->id);
-        $product->name = $request->name;
-        $product->category_id = $request->category_id;
-        $product->sold_by = $request->sold_by;
-        $product->for_sale = $request->for_sale;
-        $product->purchase_uom = $request->purchase_uom;
-        $product->quantity_per_unit = $request->quantity_per_unit;
-        $product->min_quantinty = $request->min_quantinty;
+        $data = $request->validate([
+            'id' => 'required|exists:stock,id',
+            'name' => ['required', 'string', 'max:100', Rule::unique('stock', 'name')->ignore($request->id)],
+            'min_quantinty' => 'nullable|integer|min:0',
+        ]);
+
+        $product = Stock::findOrFail($data['id']);
+        $product->name = $data['name'];
+        $product->min_quantinty = $data['min_quantinty'] ?? 0;
         $product->save();
 
-        session()->flash("alert-success", "Product updated successfully!");
+        session()->flash('alert-success', 'Product updated successfully!');
+
         return back();
     }
-
 
     public function destroy(Request $request)
     {
         try {
             Stock::destroy($request->product_id);
-            session()->flash("alert-danger", "Product deleted successfully!");
-            return back();
+            session()->flash('alert-danger', 'Product deleted successfully!');
         } catch (Exception $exception) {
-            $product = Stock::find($request->product_id);
-            $product->status = 0;
-            $product->save();
-            session()->flash("alert-danger", "Product deleted successfully!");
-            return back();
+            session()->flash('alert-danger', 'This product cannot be deleted because it has purchases, sales or stock adjustments.');
         }
+
+        return back();
     }
-
-
-
 }

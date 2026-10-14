@@ -25,17 +25,17 @@ function getSettings($settingName){
 }
 
 function outofstock(){
-    $outOfStock = Stock::where('quantity', 0)->where('for_sale','Yes')->count();
+    $outOfStock = Stock::where('quantity', 0)->count();
     return  $outOfStock;
 }
 
 function belowMin(){
-    $belowMin = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->where('for_sale','Yes')->count();
+    $belowMin = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->count();
     return $belowMin;
 }
 
 function stockItems(){
-    $num = Stock::where('for_sale','Yes')->count();
+    $num = Stock::count();
     return $num;
 }
 

@@ -266,14 +266,6 @@
                                     <i class="fas fa-wallet f-30 text-c-purple"></i>
                                 </div>
                             </div>
-                            <div class="leads-progress mt-3">
-                                @foreach ($valueByCategory as $v)
-                                <h6 class="text-muted f-w-300 mt-4">{{ $v->name }} <span class="float-right">
-                                        {{number_format($v->amount,2)}}</span> </h6>
-
-                                @endforeach
-
-                            </div>
                         </div>
                     </div>
                 </div>
