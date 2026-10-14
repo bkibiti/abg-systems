@@ -27,10 +27,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Not named 'login': Auth::routes() owns that name (GET/POST /login). In 5.8 the
-// later duplicate silently won; Laravel 13 resolves the first one, which sent
-// the login form to POST / and guests into a redirect loop.
-Route::get('/', [HomeController::class, 'login']);
+// Root URL goes to the dashboard. Guests are sent to /login by the auth
+// middleware, and after login Laravel returns them to /home (not back to the form).
+Route::redirect('/', '/home');
 
 Auth::routes(['register' => false]);
 
