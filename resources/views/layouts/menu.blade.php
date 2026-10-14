@@ -1,11 +1,6 @@
 <li class="nav-item"><a href="{{route('home')}}" class="nav-link"><span class="pcoded-micon">
             <i class="fas fa-tachometer-alt"></i></span><span class="pcoded-mtext">Dashboard</span></a>
 </li>
-@can('View Advanced Dashboard')
-<li class="nav-item"><a href="{{route('dashboard')}}" class="nav-link"><span class="pcoded-micon">
-    <i class="fas fa-chart-area"></i></span><span class="pcoded-mtext">Dashboard II</span></a>
-</li>
-@endcan
 
 @can('View Sales Management')
 <li class="nav-item pcoded-hasmenu">

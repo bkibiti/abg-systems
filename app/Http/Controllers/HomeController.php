@@ -32,20 +32,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-
-        $Products = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->get();
-        $StockOut = Stock::where('quantity', 0)->get();
-
-        $lastExpense = DB::select('select max(created_at) as date from expenses');
-        $lastSale = DB::select('select max(created_at) as date from sales');
-        $lastPurchase = DB::select('select max(created_at) as date from purchases');
-
-        return view('home', compact('Products', 'StockOut', 'lastExpense', 'lastSale', 'lastPurchase'));
-
-    }
-
-    public function dashboard()
-    {
+        if (! auth()->user()->can('View Advanced Dashboard')) {
+            return view('home');
+        }
 
         $totalSales = Sale::sum(DB::raw('quantity*selling_price'));
         $totalExpenses = DB::table('expenses')->select(DB::raw('sum(Amount) Amount'))->get();
@@ -145,7 +134,7 @@ class HomeController extends Controller
         $dailyAverage['expense'] = $avgDailyExpenses;
         $dailyAverage['profit'] = $avgDailyProfit;
 
-        return view('dashboard_advanced', compact('dailyAverage', 'thisMonth', 'lastMonth', 'totalDailySales', 'saleByDay', 'saleByMonth',
+        return view('home', compact('dailyAverage', 'thisMonth', 'lastMonth', 'totalDailySales', 'saleByDay', 'saleByMonth',
             'monthlyTrends', 'stockValue'));
 
     }

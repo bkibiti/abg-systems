@@ -27,7 +27,6 @@ Auth::routes(['register' => false]);
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/advanced-dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
     // Products routes
     Route::resource('masters/products', ProductController::class)->only([

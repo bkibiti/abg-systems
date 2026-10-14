@@ -30,12 +30,13 @@
 
 @section("content")
 
+@can('View Advanced Dashboard')
+
 <div class="col-sm-12">
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Advanced
-                Dashboard</a>
+            <a class="nav-link active" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Dashboard</a>
         </li>
 
     </ul>
@@ -340,11 +341,24 @@
 
 
 
+@else
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <h4>Welcome, {{ Auth::user()->name }}</h4>
+            <p class="text-muted mb-0">Use the menu on the left to get started.</p>
+        </div>
+    </div>
+</div>
+@endcan
+
 @endsection
 
 
 
 @push("page_scripts")
+
+@can('View Advanced Dashboard')
 
 <script src="{{asset("assets/plugins/amcharts4/core.js")}}"></script>
 <script src="{{asset("assets/plugins/amcharts4/charts.js")}}"></script>
@@ -353,7 +367,7 @@
 
 <script>
     var title = document.title;
-    document.title = title.concat(" | Advance Dashboard");
+    document.title = title.concat(" | Dashboard");
 </script>
 
 {{-- daily sales chart  --}}
@@ -526,4 +540,5 @@
     }); // end am4core.ready()
 </script>
 
+@endcan
 @endpush
