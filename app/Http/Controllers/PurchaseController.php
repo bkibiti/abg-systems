@@ -82,7 +82,7 @@ class PurchaseController extends Controller
         }
 
         $suppliers = Supplier::all();
-        $products = Stock::select('id','name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
         return view('purchases.history', compact("purchases","total",'suppliers','products'));
     }
@@ -109,7 +109,7 @@ class PurchaseController extends Controller
         }
 
         $suppliers = Supplier::all();
-        $products = Stock::select('id','name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
         $request->flash();
 
         return view('purchases.history', compact('purchases','total','suppliers','products'));

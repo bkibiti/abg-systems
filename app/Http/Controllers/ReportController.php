@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $products = Stock::select('id', 'name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
         return view('reports.index', compact('products'));
     }
@@ -20,7 +20,7 @@ class ReportController extends Controller
     {
         $from = date('Y-m-d', strtotime($request->from_date));
         $to = date('Y-m-d', strtotime($request->to_date));
-        $products = Stock::select('id', 'name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
         switch ($request->report) {
             case 1:

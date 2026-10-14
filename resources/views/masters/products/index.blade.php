@@ -114,6 +114,7 @@
 
                 $('#fixed-header1').DataTable({
                     bAutoWidth: true,
+                    order: [], // keep server order: services first, then items
                 });
 
                 // Services: no stock and no fixed price (total is entered at the POS)

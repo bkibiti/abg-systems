@@ -13,7 +13,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Stock::with('category')->orderBy('name')->get();
+        $products = Stock::with('category')->servicesFirst()->get();
         $categories = ProductCategory::orderBy('name')->get();
 
         return view('masters.products.index', compact('products', 'categories'));

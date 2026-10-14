@@ -169,7 +169,7 @@ Point of Sales
         paging: false,
         bInfo: false,
         dom: 'lrtip',
-        order: [[ 0, "asc" ]],
+        order: [], // keep server order: services first, then items
 
     });
 

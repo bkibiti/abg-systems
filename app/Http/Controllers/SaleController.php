@@ -18,7 +18,7 @@ class SaleController extends Controller
         // Products with stock, plus all services (services have no stock)
         $current_stock = Stock::where(function ($q) {
             $q->where('quantity', '>', 0)->orWhere('type', Stock::TYPE_SERVICE);
-        })->orderBy('name')->get();
+        })->servicesFirst()->get();
 
         $users = User::permission('POS Users')->get();
         $customers = Customer::orderBy('name', 'ASC')->get();
@@ -158,7 +158,7 @@ class SaleController extends Controller
     public function history()
     {
         $sales = Sale::whereRaw('month(created_at) = month(now()) and year(created_at)=year(now())')->get();
-        $products = Stock::select('id', 'name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
         $total = 0;
         foreach ($sales as $s) {
@@ -182,7 +182,7 @@ class SaleController extends Controller
             $total = $total + ($s->quantity * $s->selling_price);
         }
 
-        $products = Stock::select('id', 'name')->orderBy('name')->get();
+        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
         $request->flash();
 
         return view('sales.history', compact('sales', 'total', 'products'));

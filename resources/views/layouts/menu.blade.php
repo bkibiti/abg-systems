@@ -13,7 +13,7 @@
     </a>
 </li>
 
-@can('View Sales Management')
+@canany(['View Sales Management', 'Point of Sales', 'View Sales History'])
     <li class="nav-item {{ $salesActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $salesActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-cash-coin"></i>
@@ -38,9 +38,9 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcanany
 
-@can('View Inventory Management')
+@canany(['View Inventory Management', 'View Current Stock', 'View Adjustment History', 'Adjust Stock', 'Stock Transfer'])
     <li class="nav-item {{ $inventoryActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $inventoryActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-box-seam"></i>
@@ -65,9 +65,9 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcanany
 
-@can('View Purchase Management')
+@canany(['View Purchase Management', 'Receive Goods', 'Purchase History', 'Edit Purchase'])
     <li class="nav-item {{ $purchasesActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $purchasesActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-cart"></i>
@@ -92,16 +92,16 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcanany
 
-@can('View Expense Management')
+@canany(['View Expense Management', 'View Expenses', 'Add Expenses', 'Edit Expenses'])
     <li class="nav-item">
         <a href="{{ route('expense.index') }}" class="nav-link {{ request()->routeIs('expense.*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-wallet2"></i>
             <p>Expenses</p>
         </a>
     </li>
-@endcan
+@endcanany
 
 @can('View Reports')
     <li class="nav-item">
@@ -112,16 +112,16 @@
     </li>
 @endcan
 
-@can('View Customers')
+@canany(['View Customers', 'Manage Customers'])
     <li class="nav-item">
         <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-people"></i>
             <p>Customers</p>
         </a>
     </li>
-@endcan
+@endcanany
 
-@can('View User Management')
+@canany(['View User Management', 'View Users', 'Manage Users', 'View Roles', 'Manage Roles'])
     <li class="nav-item {{ $usersActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $usersActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-person-gear"></i>
@@ -146,9 +146,9 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcanany
 
-@can('View Masters')
+@canany(['View Masters', 'View Products', 'Manage Products', 'View Products Categories', 'Manage Products Categories', 'View Expense Categories', 'Manage Expense Categories', 'View Suppliers', 'Manage Suppliers', 'View Reminders'])
     <li class="nav-item {{ $mastersActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $mastersActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-list-ul"></i>
@@ -197,7 +197,7 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcanany
 
 @can('View Settings')
     <li class="nav-item">

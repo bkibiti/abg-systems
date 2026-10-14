@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 
@@ -33,17 +34,25 @@ class UserController extends Controller
         ]);
 
 
-        $user = new User;
-        $user->name = $request->name;
-        $user->username = $request->username;
-        $user->position = $request->position;
-        $user->email = $request->email;
-        $user->mobile = $request->mobile;
-        $user->status = '1';
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $roles = $this->selectedRoles($request->role);
+        if ($roles->isEmpty()) {
+            return back()->withErrors(['role' => 'Select a valid role.'])->withInput();
+        }
 
-        $user->syncRoles($request->role);
+        // Save the user and the role together: no user without a role
+        DB::transaction(function () use ($request, $roles) {
+            $user = new User;
+            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->position = $request->position;
+            $user->email = $request->email;
+            $user->mobile = $request->mobile;
+            $user->status = '1';
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            $user->syncRoles($roles);
+        });
 
         session()->flash("alert-success", "User created successfully!");
         return back();
@@ -58,13 +67,18 @@ class UserController extends Controller
         ]);
 
 
+        $roles = $this->selectedRoles($request->role1);
+        if ($roles->isEmpty()) {
+            return back()->withErrors(['role1' => 'Select a valid role.'])->withInput();
+        }
+
         $user = User::findOrFail($request->UserID);
         $user->name = $request->name1;
         $user->position = $request->position1;
         $user->mobile = $request->mobile1;
         $user->save();
 
-        $user->syncRoles($request->role1);
+        $user->syncRoles($roles);
 
         session()->flash("alert-success", "User updated successfully!");
         return back();
@@ -132,6 +146,17 @@ class UserController extends Controller
        
     }
 
+
+    /**
+     * The form sends role IDs (role[] / role1[]). laravel-permission v6 treats plain
+     * values as role NAMES, so turn the IDs into Role models.
+     */
+    private function selectedRoles($input)
+    {
+        $ids = array_map('intval', (array) $input);
+
+        return Role::whereIn('id', $ids)->get();
+    }
 
     public function getRoleID(Request $request)
     {

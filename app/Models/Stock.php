@@ -27,6 +27,12 @@ class Stock extends Model
         return $query->where('type', self::TYPE_SERVICE);
     }
 
+    /** List order used everywhere: services first, then items, each A–Z. */
+    public function scopeServicesFirst($query)
+    {
+        return $query->orderByRaw("CASE WHEN type = 'Service' THEN 0 ELSE 1 END")->orderBy('name');
+    }
+
     public function isService(): bool
     {
         return $this->type === self::TYPE_SERVICE;
