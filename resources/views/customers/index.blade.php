@@ -61,11 +61,9 @@
             <table id="fixed-header" class="display table nowrap table-striped table-hover" style="width:100%">
             <thead>
                 <tr>
-                <th>Customer No</th>
                 <th>Name</th>
-                <th>E-mail</th>
                 <th>Mobile</th>
-                <th>Date of Birth</th>
+                <th>Location</th>
                 <th>Status</th>
                 @can('Manage Customers')
                 <th>Actions</th>
@@ -75,11 +73,9 @@
             <tbody>
                 @foreach($customers as $c)
                     <tr>
-                    <td>{{$c->cno}}</td>
                     <td>{{$c->name}} </td>
-                    <td>{{$c->email}}</td>
                     <td>{{$c->mobile}}</td>
-                    <td>{{$c->dob}}</td>
+                    <td>{{$c->location}}</td>
                     <td>
                         @if ($c->status == 'Active')
                             <h6 class="m-0 text-success">{{$c->status}} </h6>
@@ -95,8 +91,8 @@
                     
                             <a href="#">
                                 <button class="btn btn-info btn-sm" data-name="{{$c->name}}"
-                                    data-email="{{$c->email}}" data-id="{{$c->id}}" data-mobile="{{$c->mobile}}"
-                                    data-status="{{$c->status}}"  data-dob="{{$c->dob}}"
+                                    data-id="{{$c->id}}" data-mobile="{{$c->mobile}}"
+                                    data-location="{{$c->location}}" data-status="{{$c->status}}"
                                     type="button" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
                             </a>
 
@@ -132,47 +128,14 @@
 
 $(document).ready(function(){
 
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#dob').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#dob2').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-
-
       $('#edit').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var modal = $(this)
 
         modal.find('.modal-body #name2').val(button.data('name'));
         modal.find('.modal-body #status2').val(button.data('status'));
-        modal.find('.modal-body #email2').val(button.data('email'));
-        modal.find('.modal-body #dob2').val(button.data('dob'));
         modal.find('.modal-body #mobile2').val(button.data('mobile'));
+        modal.find('.modal-body #location2').val(button.data('location'));
         modal.find('.modal-body #id').val(button.data('id'));
 
       });//end edit

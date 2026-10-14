@@ -25,28 +25,18 @@
                             <label  class="col-md-4 col-form-label text-md-end">Mobile<font color="red">*</font></label>
 
                             <div class="col-md-8">
-                                <input id="mobile" type="text" name="mobile" value="{{ old('mobile') }} " class="form-control" required >
+                                <input id="mobile" type="text" name="mobile" value="{{ old('mobile') }}" class="form-control" placeholder="e.g. 255745777602" inputmode="numeric" maxlength="12" pattern="255[0-9]{9}" title="12 digits starting with 255, e.g. 255745777602" required >
+                                <small class="form-text text-muted">12 digits starting with 255, e.g. 255745777602</small>
                             </div>
                         </div>
 
-               
                         <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('E-Mail') }} </label>
+                            <label for="location" class="col-md-4 col-form-label text-md-end">Location<font color="red">*</font></label>
 
                             <div class="col-md-8">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" >
-
+                                <input id="location" type="text" name="location" value="{{ old('location') }}" class="form-control" maxlength="100" required >
                             </div>
                         </div>
-              
-                        <div class="row mb-3">
-                            <label  class="col-md-4 col-form-label text-md-end">Date of Birth </span></label>
-                            <div class="col-md-8">
-                                <div style="border: 2px solid white; border-radius: 6px;">
-                                    <input type="text" id="dob" name="dob" class="form-control" >
-                                </div>
-                            </div>
-                        </div>     
 
 
                         <div class="modal-footer">
