@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Was App\Http\Middleware\Authenticate and RedirectIfAuthenticated.
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo('/home');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
