@@ -36,7 +36,6 @@ class PurchaseController extends Controller
         $incoming = new purchase;
         $incoming->product_id = $request->id;
         $incoming->quantity = $request->quantity;
-        $incoming->quantity_per_unit = 1;
         $incoming->supplier_id = $request->supplier;
         $incoming->unit_cost = $request->unit_cost;
         $incoming->created_by = Auth::User()->id;

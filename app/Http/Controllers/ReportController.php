@@ -176,7 +176,7 @@ class ReportController extends Controller
         return "SELECT s.id, sales.quantity * -1 AS Qty, 'Sale' AS Action, CAST(sales.created_at AS DATE) AS Date
                     FROM sales JOIN stock s ON s.id = sales.stock_id
                 UNION ALL
-                SELECT s.id, i.quantity * i.quantity_per_unit AS Qty, 'Purchase' AS Action, CAST(i.created_at AS DATE) AS Date
+                SELECT s.id, i.quantity AS Qty, 'Purchase' AS Action, CAST(i.created_at AS DATE) AS Date
                     FROM purchases i JOIN stock s ON s.id = i.product_id
                 UNION ALL
                 SELECT s.id, CASE WHEN a.adjustment_type = 'Negative' THEN a.adjusted_qty * -1 ELSE a.adjusted_qty END AS Qty,

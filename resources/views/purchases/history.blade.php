@@ -85,7 +85,6 @@
                                 <th>Purchase Date</th>
                                 <th>Item</th>
                                 <th>Purchase Qty</th>
-                                <th>Qty per Unit</th>
                                 <th>Unit Cost</th>
                                 <th>Total Cost</th>
                                 <th>Supplier</th>
@@ -99,20 +98,19 @@
                                     @foreach($purchases as $p)
                                     <tr>
                                             <td>{{date_format($p->created_at,'d M Y')}}</td>
-                                            <td>{{$p->product->name}}</td>
+                                            <td>{{ $p->product->name ?? '(deleted product)' }}</td>
                                             <td>{{number_format($p->quantity,0) }}</td>
-                                            <td>{{$p->quantity_per_unit}}</td>
                                             <td>{{number_format($p->unit_cost,2)}}</td>
                                             <td>{{number_format(($p->unit_cost * $p->quantity), 2)}}</td>
-                                            <td>{{$p->supplier->name}}</td>
-                                            <td>{{$p->user->name}}</td>
+                                            <td>{{ $p->supplier->name ?? '—' }}</td>
+                                            <td>{{ $p->user->name ?? '—' }}</td>
 
                                             @can('Edit Purchase')
                                             <td>
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-info"
                                                             data-id="{{$p->id}}"
-                                                            data-name="{{$p->product->name}}"
+                                                            data-name="{{ $p->product->name ?? '(deleted product)' }}"
                                                             data-quantity="{{$p->quantity}}"
                                                             data-created_at="{{$p->created_at}}"
                                                             data-unit_cost="{{$p->unit_cost}}"
