@@ -7,6 +7,7 @@ use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ReportController;
@@ -30,6 +31,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Products routes
     Route::resource('masters/products', ProductController::class)->only([
+        'index', 'store', 'update', 'destroy',
+    ]);
+
+    // Product Categories routes
+    Route::resource('masters/categories', ProductCategoryController::class)->only([
         'index', 'store', 'update', 'destroy',
     ]);
 

@@ -24,6 +24,20 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="category_id_edit" class="col-md-4 col-form-label text-md-end">Category <font color="red">*</font></label>
+                                <div class="col-md-8">
+                                    <select class="form-select" id="category_id_edit" name="category_id" required>
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}" >{{ $cat->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if($categories->isEmpty())
+                                        <small class="text-danger">No categories yet. Add them in Masters &gt; Product Categories.</small>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                     <label for="category" class="col-md-4 col-form-label text-md-end">Minimum Quantity</label>
                                     <div class="col-md-8">
                                             <input type="number" class="form-control" id="min_quantinty_edit" name="min_quantinty" min="0"

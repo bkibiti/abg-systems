@@ -3,7 +3,7 @@
     $inventoryActive = request()->routeIs('current-stock.*', 'current-stock-filter', 'out-of-stock', 'below-min-level', 'stock-adjustment.*', 'adjustment.search');
     $purchasesActive = request()->routeIs('goods-receiving.*');
     $usersActive = request()->routeIs('roles.*', 'users.*');
-    $mastersActive = request()->routeIs('products.*', 'expense-categories.*', 'suppliers.*', 'reminders.*');
+    $mastersActive = request()->routeIs('products.*', 'categories.*', 'expense-categories.*', 'suppliers.*', 'reminders.*');
 @endphp
 
 <li class="nav-item">
@@ -160,6 +160,14 @@
                     <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-circle"></i>
                         <p>Products</p>
+                    </a>
+                </li>
+            @endcan
+            @can('View Products Categories')
+                <li class="nav-item">
+                    <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i>
+                        <p>Product Categories</p>
                     </a>
                 </li>
             @endcan

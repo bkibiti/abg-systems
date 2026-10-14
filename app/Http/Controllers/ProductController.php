@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductStoreRequest;
+use App\Models\ProductCategory;
 use App\Models\Stock;
 use Exception;
 use Illuminate\Http\Request;
@@ -12,9 +13,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Stock::orderBy('name')->get();
+        $products = Stock::with('category')->orderBy('name')->get();
+        $categories = ProductCategory::orderBy('name')->get();
 
-        return view('masters.products.index')->with(['products' => $products]);
+        return view('masters.products.index', compact('products', 'categories'));
     }
 
     public function store(ProductStoreRequest $request)
@@ -23,6 +25,7 @@ class ProductController extends Controller
 
         $product = new Stock;
         $product->name = $data['name'];
+        $product->category_id = $data['category_id'];
         $product->min_quantinty = $data['min_quantinty'] ?? 0;
         $product->quantity = 0;
         $product->unit_cost = 0;
@@ -38,11 +41,13 @@ class ProductController extends Controller
         $data = $request->validate([
             'id' => 'required|exists:stock,id',
             'name' => ['required', 'string', 'max:100', Rule::unique('stock', 'name')->ignore($request->id)],
+            'category_id' => 'required|exists:product_categories,id',
             'min_quantinty' => 'nullable|integer|min:0',
         ]);
 
         $product = Stock::findOrFail($data['id']);
         $product->name = $data['name'];
+        $product->category_id = $data['category_id'];
         $product->min_quantinty = $data['min_quantinty'] ?? 0;
         $product->save();
 

@@ -25,6 +25,7 @@ class ProductStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100|unique:stock,name',
+            'category_id' => 'required|exists:product_categories,id',
             'min_quantinty' => 'nullable|integer|min:0',
         ];
     }

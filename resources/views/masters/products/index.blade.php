@@ -38,6 +38,7 @@
                             <tr>
                                 {{-- <th>Id #</th> --}}
                                 <th>Name</th>
+                                <th>Category</th>
                                 <th>Min Qty</th>
                                 <th>Actions</th>
                             </tr>
@@ -47,12 +48,14 @@
                                     <tr>
                                             {{-- <td>{{$prod->id}}</td> --}}
                                             <td>{{$prod->name}}</td>
+                                            <td>{{ $prod->category->name ?? '—' }}</td>
                                             <td>{{$prod->min_quantinty}}</td>
                                             <td>
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-info"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
+                                                            data-category_id="{{$prod->category_id}}"
                                                             data-min_quantinty="{{$prod->min_quantinty}}"
                                                             type="button"
                                                             data-bs-toggle="modal" data-bs-target="#edit">Edit
@@ -107,6 +110,7 @@
 
                     modal.find('.modal-body #id').val(button.data('id'));
                     modal.find('.modal-body #name_edit').val(button.data('name'))
+                    modal.find('.modal-body #category_id_edit').val(button.data('category_id'))
                     modal.find('.modal-body #min_quantinty_edit').val(button.data('min_quantinty'))
                 });
 
