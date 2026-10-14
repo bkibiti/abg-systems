@@ -81,17 +81,17 @@ Sales History
                             <tr>
                                 <td>{{$s->receipt_number}}</td>
                                 <td>{{date_format($s->created_at,'d M Y')}}</td>
-                                <td>{{$s->product->name}}</td>
+                                <td>{{ $s->product->name ?? '(deleted product #'.$s->stock_id.')' }}</td>
                                 <td>{{number_format($s->quantity,0)}}</td>
                                 <td>{{number_format($s->selling_price,2)}}</td>
                                 <td>{{number_format(($s->selling_price * $s->quantity), 2)}}</td>
-                                <td>{{$s->user->name}}</td>
+                                <td>{{ $s->user->name ?? '—' }}</td>
                                 @can('Edit Sales')
                                 <td>
                                     <a href="#">
                                         <button class="btn btn-sm btn-info"
                                                 data-id="{{$s->id}}"
-                                                data-name="{{$s->product->name}}"
+                                                data-name="{{ $s->product->name ?? '(deleted product)' }}"
                                                 data-created_at="{{$s->created_at}}"
                                                 data-quantity="{{$s->quantity}}"
                                                 data-selling_price="{{$s->selling_price}}"
@@ -102,7 +102,7 @@ Sales History
                                     </a>
                                     @if ($s->remarks <> '')
                                         <button class="btn btn-sm btn-success"
-                                                data-updated_by="{{'Updated by: '. $s->updater->name . '  at: '. $s->updated_at }}"
+                                                data-updated_by="{{ $s->updater ? 'Updated by: '.$s->updater->name.'  at: '.$s->updated_at : '' }}"
                                                 data-updated_at="{{$s->updated_at}}"
                                                 data-remarks="{{$s->remarks}}"
                                                 type="button"

@@ -10,7 +10,7 @@ class CurrentStockController extends Controller
     public function index()
     {
 
-        $Products = Stock::orderBy('name')->get();
+        $Products = Stock::goods()->orderBy('name')->get();
 
         return view('inventory.index', compact('Products'));
     }
@@ -33,13 +33,13 @@ class CurrentStockController extends Controller
     {
 
         if ($request->status == '0') {
-            $Products = Stock::orderBy('name')->get();
+            $Products = Stock::goods()->orderBy('name')->get();
         }
         if ($request->status == '1') {
-            $Products = Stock::where('quantity', 0)->get();
+            $Products = Stock::goods()->where('quantity', 0)->get();
         }
         if ($request->status == '2') {
-            $Products = Stock::whereRaw('quantity <= min_quantinty and quantity > 0')
+            $Products = Stock::goods()->whereRaw('quantity <= min_quantinty and quantity > 0')
                 ->get();
         }
 
@@ -50,14 +50,14 @@ class CurrentStockController extends Controller
 
     public function stockOut()
     {
-        $Products = Stock::where('quantity', 0)->get();
+        $Products = Stock::goods()->where('quantity', 0)->get();
 
         return view('inventory.out_of_stock', compact('Products'));
     }
 
     public function belowMin()
     {
-        $Products = Stock::whereRaw('quantity < min_quantinty and quantity > 0')->get();
+        $Products = Stock::goods()->whereRaw('quantity < min_quantinty and quantity > 0')->get();
 
         return view('inventory.below_min', compact('Products'));
     }

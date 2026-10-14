@@ -12,10 +12,10 @@
 @endsection
 @section("content")
 
-    <div class="col-sm-5">
+    <div class="col-sm-6">
             <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Products</h3>
+                <h3 class="card-title">Items</h3>
             </div>
                     <div class="card-body">
                         <div id="product-table" class="table-responsive">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
           <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Receive Goods</h3>
@@ -125,38 +125,7 @@
           </div>
     </div>
 
-    <div class="col-sm-3">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Product Purchase History</h3>
-            </div>
-            <div class="card-body">
-                    <div>
-
-                        <div  class="table-responsive">
-                            <table id="purchase_history" class="display table nowrap table-striped table-hover" style="width:100%">
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Unit Price</th>
-                                    <th>Supplier</th>
-                                </tr>
-                                </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-            </div>
-
-      </div>
-    </div>
+  
 
 @endsection
 @push("page_scripts")

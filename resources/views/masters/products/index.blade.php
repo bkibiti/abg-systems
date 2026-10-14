@@ -39,6 +39,8 @@
                                 {{-- <th>Id #</th> --}}
                                 <th>Name</th>
                                 <th>Category</th>
+                                <th>Type</th>
+                                <th>Price</th>
                                 <th>Min Qty</th>
                                 <th>Actions</th>
                             </tr>
@@ -49,6 +51,14 @@
                                             {{-- <td>{{$prod->id}}</td> --}}
                                             <td>{{$prod->name}}</td>
                                             <td>{{ $prod->category->name ?? '—' }}</td>
+                                            <td>
+                                                @if($prod->type === 'Service')
+                                                    <span class="badge text-bg-info">Service</span>
+                                                @else
+                                                    <span class="badge text-bg-secondary">Item</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $prod->sale_price_1 !== null ? number_format($prod->sale_price_1, 2) : '—' }}</td>
                                             <td>{{$prod->min_quantinty}}</td>
                                             <td>
                                                 <a href="#">
@@ -56,6 +66,8 @@
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
                                                             data-category_id="{{$prod->category_id}}"
+                                                            data-type="{{$prod->type}}"
+                                                            data-sale_price_1="{{$prod->sale_price_1}}"
                                                             data-min_quantinty="{{$prod->min_quantinty}}"
                                                             type="button"
                                                             data-bs-toggle="modal" data-bs-target="#edit">Edit
@@ -104,6 +116,15 @@
                     bAutoWidth: true,
                 });
 
+                // Services: no stock and no fixed price (total is entered at the POS)
+                $(document).on('change', '.product-type', function () {
+                    var isService = $(this).val() === 'Service';
+                    var form = $(this).closest('form');
+                    form.find('.min-qty-row, .price-row').toggle(!isService);
+                    if (isService) { form.find('[name="sale_price_1"]').val(''); }
+                });
+                $('.product-type').trigger('change');
+
                 $('#edit').on('show.bs.modal', function (event) {
                     var button = $(event.relatedTarget);
                     var modal = $(this);
@@ -111,6 +132,8 @@
                     modal.find('.modal-body #id').val(button.data('id'));
                     modal.find('.modal-body #name_edit').val(button.data('name'))
                     modal.find('.modal-body #category_id_edit').val(button.data('category_id'))
+                    modal.find('.modal-body #type_edit').val(button.data('type') || 'Item').trigger('change')
+                    modal.find('.modal-body #sale_price_1_edit').val(button.data('sale_price_1'))
                     modal.find('.modal-body #min_quantinty_edit').val(button.data('min_quantinty'))
                 });
 

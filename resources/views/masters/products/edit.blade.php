@@ -38,6 +38,22 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="type_edit" class="col-md-4 col-form-label text-md-end">Type <font color="red">*</font></label>
+                                <div class="col-md-8">
+                                    <select class="form-select product-type" id="type_edit" name="type" required>
+                                        <option value="Item" >Item (kept in stock)</option>
+                                        <option value="Service" >Service (no stock)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3 price-row">
+                                <label for="sale_price_1_edit" class="col-md-4 col-form-label text-md-end">Selling Price</label>
+                                <div class="col-md-8">
+                                    <input type="number" step="0.01" min="0" class="form-control" id="sale_price_1_edit" name="sale_price_1" >
+                                    <small class="text-muted">Items: the price used at the POS. Services: leave empty, the total is entered at the POS.</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3 min-qty-row">
                                     <label for="category" class="col-md-4 col-form-label text-md-end">Minimum Quantity</label>
                                     <div class="col-md-8">
                                             <input type="number" class="form-control" id="min_quantinty_edit" name="min_quantinty" min="0"

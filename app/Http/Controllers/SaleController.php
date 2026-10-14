@@ -15,7 +15,10 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $current_stock = Stock::where('quantity', '>', 0)->get();
+        // Products with stock, plus all services (services have no stock)
+        $current_stock = Stock::where(function ($q) {
+            $q->where('quantity', '>', 0)->orWhere('type', Stock::TYPE_SERVICE);
+        })->orderBy('name')->get();
 
         $users = User::permission('POS Users')->get();
         $customers = Customer::orderBy('name', 'ASC')->get();
@@ -25,53 +28,98 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
-            // 'created_by' => 'required',
             'sale_order' => 'required',
         ]);
 
-        $data = json_decode($request->sale_order, true);
-        $receiptNo = $this->generateReceiptNo();
+        // Each order line: [id, qoh, name, qty, price, subtotal, unit_cost, type, total]
+        $lines = json_decode($request->sale_order, true);
 
-        $order_details = [];
-        $sale_date = '';
+        if (! is_array($lines) || count($lines) === 0) {
+            session()->flash('alert-danger', 'Add at least one item or service to the order.');
 
-        if ($request->sale_date == 'NA') {
+            return back();
+        }
+
+        if ($request->sale_date == 'NA' || empty($request->sale_date)) {
             $sale_date = Carbon::now();
         } else {
             $sale_date = date('Y-m-d', strtotime($request->sale_date));
         }
 
-        for ($i = 0; $i < count($data); $i++) {
+        // Validate every line against the database before saving anything
+        $order_details = [];
+        $stockChanges = [];
+
+        foreach ($lines as $line) {
+            $stock = Stock::find($line[0] ?? null);
+            $qty = (int) ($line[3] ?? 0);
+
+            if (! $stock || $qty < 1) {
+                session()->flash('alert-danger', 'Invalid line in the order. Please check and try again.');
+
+                return back();
+            }
+
+            if ($stock->isService()) {
+                // Service: quantity and TOTAL cost are entered at the POS
+                $total = (float) str_replace(',', '', $line[8] ?? $line[5] ?? 0);
+                if ($total <= 0) {
+                    session()->flash('alert-danger', "Enter the total cost for '{$stock->name}'.");
+
+                    return back();
+                }
+                $sellingPrice = round($total / $qty, 4);
+                $buyingPrice = 0;
+            } else {
+                // Item: price always comes from the stock table
+                if (! $stock->sale_price_1 || $stock->sale_price_1 <= 0) {
+                    session()->flash('alert-danger', "'{$stock->name}' has no selling price. Set it in Masters > Products.");
+
+                    return back();
+                }
+                $alreadyInOrder = $stockChanges[$stock->id] ?? 0;
+                if ($qty + $alreadyInOrder > $stock->quantity) {
+                    session()->flash('alert-danger', "Only {$stock->quantity} of '{$stock->name}' in stock.");
+
+                    return back();
+                }
+                $sellingPrice = $stock->sale_price_1;
+                $buyingPrice = $stock->unit_cost ?? 0;
+                $stockChanges[$stock->id] = $alreadyInOrder + $qty;
+            }
+
             $order_details[] = [
                 'customer_id' => $request->customer_id,
-                'receipt_number' => $receiptNo,
-                'stock_id' => $data[$i][0],
-                'quantity' => $data[$i][3],
-                'buying_price' => $data[$i][6],
-                'selling_price' => str_replace(',', '', $data[$i][4]),
-                // 'created_by' => $request->created_by,
+                'stock_id' => $stock->id,
+                'quantity' => $qty,
+                'buying_price' => $buyingPrice,
+                'selling_price' => $sellingPrice,
                 'created_by' => Auth::User()->id,
                 'created_at' => $sale_date,
                 'updated_at' => Carbon::now(),
                 'status' => '1',
             ];
-
-            // deduct stock values from sales
-            $stock = Stock::find($data[$i][0]);
-            $stock->quantity = $stock->quantity - $data[$i][3];
-            $stock->save();
         }
 
-        DB::table('sales')->insert($order_details);
+        DB::transaction(function () use (&$order_details, $stockChanges) {
+            $receiptNo = $this->generateReceiptNo();
+            foreach ($order_details as &$row) {
+                $row['receipt_number'] = $receiptNo;
+            }
+            unset($row);
 
-        $request->flash();
+            DB::table('sales')->insert($order_details);
+
+            // Deduct sold items from stock (services are not stocked)
+            foreach ($stockChanges as $stockId => $soldQty) {
+                Stock::where('id', $stockId)->decrement('quantity', $soldQty);
+            }
+        });
 
         session()->flash('alert-success', 'Sale recorded successfully!');
 
         return back();
-
     }
 
     public function update(Request $request)
@@ -148,7 +196,7 @@ class SaleController extends Controller
         } else {
             $maxID = $maxID + 1;
         }
-        $no = 'RSN'.$maxID;
+        $no = 'ABG'.$maxID;
 
         return $no;
     }

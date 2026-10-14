@@ -11,12 +11,12 @@ Point of Sales
 <div class="col-sm-5">
     <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Products</h3>
+                <h3 class="card-title">Items &amp; Services</h3>
             </div>
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <input type="text" class="form-control" id="search_products" placeholder="Search Item">
+                    <input type="text" class="form-control" id="search_products" placeholder="Search item or service">
                 </div>
                 
             </div>
@@ -24,35 +24,31 @@ Point of Sales
                 <table id="products" class="display table nowrap table-striped table-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>QOH</th>
+                            <th>Item / Service</th>
+                            <!-- <th>Stock</th>
+                            <th>Price</th> -->
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($current_stock as $stock)
+                        @php($isService = $stock->type === 'Service')
                         <tr>
                             <td>{{ $stock->name }}</td>
-                            <td>{{$stock->quantity}}</td>
+                            <!-- <td>{!! $isService ? '<span class="badge text-bg-info">Service</span>' : number_format($stock->quantity) !!}</td>
+                            <td>{{ $isService ? '—' : ($stock->sale_price_1 ? number_format($stock->sale_price_1, 2) : 'Not set') }}</td> -->
                             <td>
-                                <a href="#">
-                                    <button type="button" 
-                                        class="btn btn-sm btn-success selectproduct"
-                                        data-id="{{$stock->id}}" data-name="{{$stock->name}}"
-                                        data-sale_price_1="{{$stock->sale_price_1}}"
-                                        data-unit_cost="{{$stock->unit_cost}}" data-quantity="{{$stock->quantity}}"
-                                        data-bs-toggle="button"><i class="bi bi-chevron-right"></i>
-                                    </button>
-                                    <button type="button"
-                                        class="btn btn-sm btn-secondary selectProducts"
-                                        data-id="{{$stock->id}}" data-name="{{$stock->name}}"
-                                        data-sale_price_1="{{$stock->sale_price_1}}"
-                                        data-unit_cost="{{$stock->unit_cost}}" data-quantity="{{$stock->quantity}}"
-                                        data-bs-toggle="modal" data-bs-target="#addItemsModal"><i class="bi bi-chevron-double-right"></i>
-                                    </button>
-                            
-                                
-                                </a>
+                                <button type="button"
+                                    class="btn btn-sm {{ $isService ? 'btn-info' : 'btn-success' }}"
+                                    data-id="{{ $stock->id }}"
+                                    data-name="{{ $stock->name }}"
+                                    data-type="{{ $isService ? 'Service' : 'Item' }}"
+                                    data-price="{{ $isService ? 0 : ($stock->sale_price_1 ?? 0) }}"
+                                    data-qoh="{{ $isService ? 0 : $stock->quantity }}"
+                                    data-unit_cost="{{ $stock->unit_cost ?? 0 }}"
+                                    data-bs-toggle="modal" data-bs-target="#addItemsModal" title="Add">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
                             </td>
                         </tr>
                         @endforeach
@@ -184,6 +180,7 @@ Point of Sales
             .draw();
     });
 
+    // Order line: [id, qoh, name, qty, price, subtotal, unit_cost, type, total]
     var order_table = $('#order').DataTable({
         searching: false,
         bPaginate: false,
@@ -194,168 +191,130 @@ Point of Sales
         columns: [
             { title: "Id" },
             { title: "QOH" },
-            { title: "Item" },
-            { title: "Quantity" },
-            { title: "Price" },
+            { title: "Item / Service" },
+            { title: "Qty" },
+            { title: "Unit Price" },
             { title: "Sub Total" },
-            { title: "unit_cost"},
-            { title: "Action", defaultContent:  '<button type="button" id="edit_btn" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button><button type="button" id="delete_btn" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>'},
-            
+            { title: "unit_cost" },
+            { title: "type" },
+            { title: "total" },
+            { title: "Action", defaultContent: '<button type="button" class="btn btn-sm btn-danger delete_btn" title="Remove"><i class="bi bi-trash"></i></button>' },
         ]
     });
 
-    order_table.columns([0,1,6]).visible(false); //hide id,qoh,buying price
+    order_table.columns([0, 1, 6, 7, 8]).visible(false);
 
-    var order_list = []; //hold data displayed in datatable
+    var order_list = [];
 
+    function refreshOrder() {
+        order_table.clear();
+        order_table.rows.add(order_list).draw();
+        $('#total').text(formatMoney(totalOrder(order_list)));
+        $('#sale_order').val(order_list.length ? JSON.stringify(order_list) : '');
+    }
 
-        $('.selectproduct').click(function() {
-            var data = [];
+    function showAddError(msg) {
+        $('#add_error').text(msg).toggleClass('d-none', !msg);
+    }
 
-            //if row exist increment quantity of existing record
-            if( rowExist($(this).data('id'),order_list)){
-                for (var i = 0; i < order_list.length; i++) {
-                    if(order_list[i][0] == $(this).data('id')){
-                        order_list[i][3] = parseInt(order_list[i][3]) + 1;
-                        //check if quantity is > QOH
-                        if (parseInt(order_list[i][3]) > parseInt(order_list[i][1])) { //OrderQty > QOH
-                            order_list[i][3] = order_list[i][1]
-                        }
-                        order_list[i][5] = formatMoney(parseFloat(order_list[i][4].replace(/\,/g, '')) * parseInt(order_list[i][3]));
+    function recalcAdd() {
+        var qty = parseInt($('#add_qty').val()) || 0;
+        if ($('#add_type').val() === 'Service') {
+            var total = parseFloat($('#add_total').val()) || 0;
+            $('#add_calc_label').text('Unit Price');
+            $('#add_calc').val(qty > 0 && total > 0 ? formatMoney(total / qty) : '');
+        } else {
+            var price = parseFloat($('#add_price_text').data('price')) || 0;
+            $('#add_calc_label').text('Total');
+            $('#add_calc').val(qty > 0 ? formatMoney(price * qty) : '');
+        }
+    }
 
-                        order_table.clear();
-                        order_table.rows.add(order_list).draw();
-                        $('#total').text(formatMoney(totalOrder(order_list)));
-                        $('#sale_order').val(JSON.stringify(order_list));
-                        break;
-                    }
-                }
-                 
-            } else{ //add item
-                data.push($(this).data('id'));
-                data.push($(this).data('quantity'));
-                data.push($(this).data('name'));
-                data.push(1);
-                data.push(formatMoney($(this).data('sale_price_1')));
-                data.push(formatMoney($(this).data('sale_price_1')));
-                data.push($(this).data('unit_cost'));
+    // Open the add modal for an item or a service
+    $('#addItemsModal').on('show.bs.modal', function (event) {
+        var b = $(event.relatedTarget);
+        var type = b.data('type');
+        var price = parseFloat(b.data('price')) || 0;
 
-                order_list.push(data);
-                
-                order_table.clear();
-                order_table.rows.add(order_list).draw();
-                $('#total').text(formatMoney(totalOrder(order_list)));
-                $('#sale_order').val(JSON.stringify(order_list));
+        $('#add_id').val(b.data('id'));
+        $('#add_type').val(type);
+        $('#add_qoh').val(b.data('qoh'));
+        $('#add_unit_cost').val(b.data('unit_cost'));
+        $('#add_name').text(b.data('name'));
+        $('#add_badge').text(type).attr('class', 'badge ms-1 ' + (type === 'Service' ? 'text-bg-info' : 'text-bg-success'));
+        $('#add_qty').val(1).attr('max', type === 'Item' ? b.data('qoh') : null);
+        $('#add_total').val('');
+        $('#add_qoh_text').val(b.data('qoh'));
+        $('#add_price_text').val(formatMoney(price)).data('price', price);
 
-            }
-          
-            
-        });
-     
-        $('#order tbody').on('click', '#edit_btn', function () {
-            var row_data = order_table.row($(this).parents('tr')).data();
-            var index = order_table.row($(this).parents('tr')).index();
-            quantity = row_data[3];
-            row_data[3] = "<input type='number' min='1' class='form-control' id='edit_quantity' required  onkeypress='return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57'>";
-            order_list[index] = row_data;
-            order_table.clear();
-            order_table.rows.add(order_list);
-            order_table.draw();
-            document.getElementById("edit_quantity").value = quantity;
-        });
+        $('.item-only').toggle(type === 'Item');
+        $('.service-only').toggle(type === 'Service');
+        $('#add_title').text(type === 'Service' ? 'Add Service' : 'Add Item');
 
-        $('#order tbody').on('change', '#edit_quantity', function () {
-            var row_data = order_table.row($(this).parents('tr')).data();
-            var index = order_table.row($(this).parents('tr')).index();
-            row_data[3] = Number((document.getElementById("edit_quantity").value));
+        showAddError('');
+        $('#add_submit').prop('disabled', false);
+        if (type === 'Item' && price <= 0) {
+            showAddError('This item has no selling price. Set it in Masters > Products first.');
+            $('#add_submit').prop('disabled', true);
+        }
+        recalcAdd();
+    });
 
-            if (row_data[3] < 1) { row_data[3] = 1 }
-    
-            if (row_data[3] > row_data[1]) { //OrderQty > QOH
-                row_data[3] = row_data[1];
-                row_data[5] = formatMoney(row_data[3] * parseFloat(row_data[4].replace(/\,/g, '')));
-            }
-            else {
-                row_data[5] = formatMoney(row_data[3] * parseFloat(row_data[4].replace(/\,/g, '')));
-            }
+    $('#addItemsModal').on('shown.bs.modal', function () {
+        $('#add_qty').trigger('focus').select();
+    });
 
-            order_list[index] = row_data;
-            order_table.clear();
-            order_table.rows.add(order_list);
-            order_table.draw();
-            $('#total').text(formatMoney(totalOrder(order_list)));
-            $('#sale_order').val(JSON.stringify(order_list));
-            
-        });
-        
-        $('#order tbody').on('click', '#delete_btn', function () {
-            var index = order_table.row($(this).parents('tr')).index();
-            order_list.splice(index, 1);
-            order_table.clear();
-            order_table.rows.add(order_list);
-            order_table.draw();
-            $('#total').text(formatMoney(totalOrder(order_list)));
-            $('#sale_order').val(JSON.stringify(order_list));
+    $('#add_qty, #add_total').on('input', recalcAdd);
 
-        });
+    // Add the line to the order
+    $('#addItemForm').on('submit', function (event) {
+        event.preventDefault();
 
-        //add items to order
-        $('#addItemsModal').on('show.bs.modal', function (event) {
-            setTimeout(function (){
-                $('#sold_quantity').focus();
-            }, 500);
+        var id = parseInt($('#add_id').val());
+        var type = $('#add_type').val();
+        var name = $('#add_name').text();
+        var qty = parseInt($('#add_qty').val()) || 0;
+        var unitCost = parseFloat($('#add_unit_cost').val()) || 0;
 
-            var button = $(event.relatedTarget);
-            var modal = $(this);
+        if (qty < 1) { showAddError('Enter a quantity of at least 1.'); return; }
 
-            modal.find('.modal-body #id').val(button.data('id'));
-            modal.find('.modal-body #name').val(button.data('name'));
-            modal.find('.modal-body #quantity').val(button.data('quantity'));
-            modal.find('.modal-body #sale_price_1').val(button.data('sale_price_1'));
-            modal.find('.modal-body #sale_price').val(button.data('sale_price_1'));
-            modal.find('.modal-body #unit_cost').val(button.data('unit_cost'));
-            modal.find('.modal-body #sold_quantity').val("");
+        if (type === 'Service') {
+            var total = parseFloat($('#add_total').val()) || 0;
+            if (total <= 0) { showAddError('Enter the total cost for this service.'); return; }
 
-        });
+            // each service job is its own line
+            order_list.push([id, 0, name, qty, formatMoney(total / qty), formatMoney(total), 0, 'Service', total]);
+        } else {
+            var qoh = parseInt($('#add_qoh').val()) || 0;
+            var price = parseFloat($('#add_price_text').data('price')) || 0;
 
-        //on click of modal form add data to data table order list
-        $( '#addItemForm' ).submit(function( event ) {
-            event.preventDefault();
+            // same item already in the order: add to its quantity
+            var existing = order_list.findIndex(function (r) { return r[0] === id && r[7] === 'Item'; });
+            var newQty = qty + (existing >= 0 ? parseInt(order_list[existing][3]) : 0);
+            if (newQty > qoh) { showAddError('Only ' + qoh + ' in stock.'); return; }
 
-            var values = {};
-            $.each($(this).serializeArray(), function(i, field) {
-                values[field.name] = field.value;
-            });
+            var line = [id, qoh, name, newQty, formatMoney(price), formatMoney(price * newQty), unitCost, 'Item', price * newQty];
+            if (existing >= 0) { order_list[existing] = line; } else { order_list.push(line); }
+        }
 
-            //add item to order table
-            var data = [];
-            if(! rowExist(values.id,order_list)){
-                var qty;
-                if (parseInt(values.sold_quantity) > parseInt(values.quantity)) { //OrderQty > QOH
-                    qty = values.quantity;
-                }else{
-                    qty = values.sold_quantity;
-                }
-                data.push(parseInt(values.id));
-                data.push(parseInt(values.quantity));
-                data.push(values.name);
-                data.push(parseInt(qty));
-                data.push(formatMoney(values.sale_price));
-                data.push(formatMoney(values.sale_price * qty));
-                data.push(parseFloat(values.unit_cost));
+        refreshOrder();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('addItemsModal')).hide();
+    });
 
-                order_list.push(data);
-                
-                order_table.clear();
-                order_table.rows.add(order_list).draw();
-                $('#total').text(formatMoney(totalOrder(order_list)));
-                $('#sale_order').val(JSON.stringify(order_list));
-            }
+    // Remove a line
+    $('#order tbody').on('click', '.delete_btn', function () {
+        var index = order_table.row($(this).parents('tr')).index();
+        order_list.splice(index, 1);
+        refreshOrder();
+    });
 
-            $('#addItemsModal').modal('hide');
-                        
-        });
-  
+    // Do not submit an empty order
+    $('form[action="{{ route('sales.store') }}"]').on('submit', function (e) {
+        if (order_list.length === 0) {
+            e.preventDefault();
+            alert('Add at least one item or service to the order.');
+        }
+    });
 
             //check if items is already added on the table
             function rowExist(value2Check,Array2D) {
@@ -375,7 +334,7 @@ Point of Sales
             function totalOrder(array2d){
                 var sum = 0;
                 for(var i=0;i<array2d.length;i++){
-                    sum +=  parseFloat(array2d[i][5].replace(/\,/g, ''));
+                    sum += parseFloat(array2d[i][8]) || 0;
                 }
                 return sum;
             }

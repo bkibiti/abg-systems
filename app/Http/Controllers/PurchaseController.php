@@ -16,7 +16,7 @@ class PurchaseController extends Controller
     public function index()
     {
         $suppliers = Supplier::all();
-        $products = Stock::orderBy('name')->get();
+        $products = Stock::goods()->orderBy('name')->get();
 
         return View('purchases.goods_receiving', (compact( 'suppliers','products')));
     }
