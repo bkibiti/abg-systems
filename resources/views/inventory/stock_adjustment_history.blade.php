@@ -12,7 +12,7 @@ Stock Adjustment History
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> Inventory / Stock Adjustment History</a></li>
 @endsection
 
@@ -21,11 +21,14 @@ Stock Adjustment History
 
     <div class="col-sm-12">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Adjustment History</h3>
+            </div>
             <div class="card-body">
                 <form id="expense_form" action="{{route('adjustment.search')}}" method="post">
                     @csrf()
     
-                    <div class="form-group row">
+                    <div class="row mb-3">
     
                         <div class="col-md-2">
                             <div style="border: 2px solid white; border-radius: 6px;">
@@ -92,6 +95,7 @@ Stock Adjustment History
             </div>
         </div>
 
+    </div>
         @endsection
 
         @push("page_scripts")

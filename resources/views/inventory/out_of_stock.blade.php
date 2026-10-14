@@ -12,7 +12,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> Inventory / Items out of Stock</a></li>
 @endsection
 
@@ -21,14 +21,17 @@
 
     <div class="col-sm-12">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Items Out of Stock</h3>
+            </div>
             <div class="card-body">
                 <form id="expense_form" action="{{route('current-stock-filter')}}" method="GET">
                     @csrf()
 
-                    <div class="form-group row">
+                    <div class="row mb-3">
 
                         <div class="col-md-2">
-                            <select class="form-control select2"  class="form-control" name="status"  data-placeholder="Select Status" required data-width="100%">
+                            <select class="form-select select2"  class="form-select" name="status"  data-placeholder="Select Status" required data-width="100%">
                                 <option value="0" {{ (old('status')==0 ? "selected":"") }} >All Items</option>
                                 <option value="1" {{ (old('status')==1 ? "selected":"") }} >Out of Stock</option>
                                 <option value="2" {{ (old('status')==2 ? "selected":"") }} >Below Minimum Level</option>
@@ -81,6 +84,7 @@
             </div>
         </div>
 
+    </div>
         @endsection
 
         @push("page_scripts")

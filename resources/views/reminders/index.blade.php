@@ -9,7 +9,7 @@
 
 @section('content-sub-title')
 
-<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
 <li class="breadcrumb-item"><a href="#">Reminders</a> </li>
 
 
@@ -19,15 +19,16 @@
 
 
 <div class="col-sm-12">
-    <div class="card-block">
-        
-        <div class="col-sm-12">
-                <div class="card" >
-                    <div class="card-body" >
-                        @can('Add Reminders')
-                            <button style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                                        title="Add Reminder" data-target="#create"><i class="feather icon-plus"></i></button>
-                        @endcan
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Reminders</h3>
+                <div class="card-tools">
+                    @can('Add Reminders')
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" title="Add Reminder" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Reminder</button>
+                    @endcan
+                </div>
+            </div>
+            <div class="card-body">
                         <div class="table-responsive">
                             <table id="reminder-tb" class="display table nowrap table-striped table-hover"style="width:100%">
                             <thead>
@@ -70,9 +71,9 @@
 
                                             <td>
                                                 @if ($r->status == "On")
-                                                    <span class="badge badge-pill badge-success">{{$r->status}}</span>
+                                                    <span class="badge rounded-pill text-bg-success">{{$r->status}}</span>
                                                 @else
-                                                    <span class="badge badge-pill badge-danger">{{$r->status}}</span>
+                                                    <span class="badge rounded-pill text-bg-danger">{{$r->status}}</span>
                                                 @endif
                                                 
                                             </td>
@@ -81,7 +82,7 @@
                                                 <td>
                                                     @can('Edit Reminders')
                                                         <a href="#">
-                                                            <button class="btn btn-sm btn-rounded btn-info"
+                                                            <button class="btn btn-sm btn-info"
                                                                     data-id="{{$r->id}}"
                                                                     data-name="{{$r->name}}"
                                                                     data-start_date="{{$r->start_date}}"
@@ -89,18 +90,18 @@
                                                                     data-days_to_remind="{{$r->days_to_remind}}"
                                                                     data-status="{{$r->status}}"
                                                                     type="button"
-                                                                    data-toggle="modal" data-target="#edit">Edit
+                                                                    data-bs-toggle="modal" data-bs-target="#edit">Edit
                                                             </button>
                                                         </a>
                                                     @endcan
                                                     @can('Delete Reminders')
                                                         <a href="#">
-                                                            <button class="btn btn-sm btn-rounded btn-danger"
+                                                            <button class="btn btn-sm btn-danger"
                                                                 data-id="{{$r->id}}"
                                                                 data-name="{{$r->name}}"
                                                                 type="button"
-                                                                data-toggle="modal"
-                                                                data-target="#delete"> Delete
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#delete"> Delete
                                                             </button>
                                                         </a>
                                                     @endcan
@@ -114,7 +115,6 @@
                     </div>
             </div>
         </div>
-</div>
 
     @include('reminders.create')
     @include('reminders.delete')

@@ -1,11 +1,9 @@
-<div class="modal fade" id="edit" role="dialog">
+<div class="modal fade" id="edit" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Update Expense</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -24,8 +22,8 @@
                         <div class="modal-body">
                             <input type="hidden" id="id" name="id">
 
-                            <div class="form-group row">
-                                <label  class="col-md-4 col-form-label text-md-right">{{ __('Date') }}<span style="color: red;">*</span></label>
+                            <div class="row mb-3">
+                                <label  class="col-md-4 col-form-label text-md-end">{{ __('Date') }}<span style="color: red;">*</span></label>
                                 <div class="col-md-8">
                                     <div style="border: 2px solid white; border-radius: 6px;">
                                         <input type="text" id="date2" name="expense_date" class="form-control"
@@ -34,21 +32,21 @@
                                 </div>
                             </div>
                    
-                            <div class="form-group row">
-                                <label for="expense_amount" class="col-md-4 col-form-label text-md-right">{{ __('Expense
+                            <div class="row mb-3">
+                                <label for="expense_amount" class="col-md-4 col-form-label text-md-end">{{ __('Expense
                                     Amount') }}<span style="color: red;">*</span></label>
                                 <div class="col-md-8">
                                     <input type="text" id="expense_amount2" class="form-control"
                                         onkeypress="return isNumberKey(event,this)" name="expense_amount" required>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label for="expense_category"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Expense Category') }}<span
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Expense Category') }}<span
                                         style="color: red;">*</span></label>
                                 <div class="col-md-8">
                                     <div id="category" style="border: 2px solid white; border-radius: 6px;">
-                                        <select id="expense_category2" name="expense_category" class="form-control">
+                                        <select id="expense_category2" name="expense_category" class="form-select">
                                             <option selected="true" value="0" disabled="disabled">Select category
                                             </option>
                                             @foreach($expense_category as $x)
@@ -59,9 +57,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label for="expense_description"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Expense Description') }}</label>
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Expense Description') }}</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" id="expense_description2" name="expense_description" rows="3" required></textarea>
                                 </div>

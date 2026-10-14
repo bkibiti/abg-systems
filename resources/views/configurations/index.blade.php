@@ -14,7 +14,7 @@ Settings
 @endsection
 
 @section('content-sub-title')
-<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
 <li class="breadcrumb-item"><a href="#">Settings</a></li>
 @endsection
 
@@ -27,7 +27,10 @@ Settings
 
 <div class="col-sm-12">
   <div class="card">
-    <div class="card-body">
+            <div class="card-header">
+                <h3 class="card-title">Settings</h3>
+            </div>
+            <div class="card-body">
       <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
 
@@ -55,7 +58,7 @@ Settings
                 @endif
                 <td>
                   <a href="#">
-                    <button class="btn btn-sm btn-rounded btn-info" id="edit_btn">Edit
+                    <button class="btn btn-sm btn-info" id="edit_btn">Edit
                     </button>
                   </a>
                 </td>
@@ -69,6 +72,7 @@ Settings
       </div>
     </div>
   </div>
+</div>
   @include('configurations.edit')
 
   @endsection
@@ -257,22 +261,22 @@ element.setAttribute("placeholder", "Enter Website");
 document.getElementById("formInput").appendChild(element);
     break;
     case 110:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
     case 111:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
    case 112:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="Total Cost / Qty">Total Cost / Qty</option><option value="Total Cost * Qty">Total Cost * Qty</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="Total Cost / Qty">Total Cost / Qty</option><option value="Total Cost * Qty">Total Cost * Qty</option></select>';
     break;
   case 113:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
   case 114:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
     case 115:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
 case 116:
 element.setAttribute("type","number");
@@ -285,13 +289,13 @@ element.setAttribute("placeholder", "Enter Number of Copies");
 document.getElementById("formInput").appendChild(element);
     break;
    case 117:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
   case 118:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
   case 119:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="Thermal Paper">Thermal Paper</option><option value="A4 / Latter">A4 / Latter</option><option value="None">None</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="Thermal Paper">Thermal Paper</option><option value="A4 / Latter">A4 / Latter</option><option value="None">None</option></select>';
     break;
 case 120:
 element.setAttribute("type","number");
@@ -304,10 +308,10 @@ element.setAttribute("placeholder", "Enter VAT in %");
 document.getElementById("formInput").appendChild(element);
  break;
    case 121:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
   case 123:
- document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-control"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
+ document.getElementById("formInput").innerHTML = '<select  class="js-example-basic-single form-select"name="formdata"><option value="YES">YES</option><option value="NO">NO</option></select>';
     break;
   default:
     // code block

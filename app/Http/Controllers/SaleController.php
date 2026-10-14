@@ -33,7 +33,6 @@ class SaleController extends Controller
 
         $data = json_decode($request->sale_order, true);
         $receiptNo = $this->generateReceiptNo();
-        $orderNo = $this->generateOrderNo();
 
         $order_details = [];
         $sale_date = '';
@@ -46,8 +45,6 @@ class SaleController extends Controller
 
         for ($i = 0; $i < count($data); $i++) {
             $order_details[] = [
-                'order_number' => $orderNo,
-                'table_number' => $request->table_number,
                 'customer_id' => $request->customer_id,
                 'receipt_number' => $receiptNo,
                 'stock_id' => $data[$i][0],
@@ -141,28 +138,6 @@ class SaleController extends Controller
         $request->flash();
 
         return view('sales.history', compact('sales', 'total', 'products'));
-    }
-
-    public function pendingOrders()
-    {
-        $orders = Sale::where('status', 0)->get();
-        $order_nos = DB::table('sales')->distinct()->select('order_number')->get();
-
-        return view('sales.pending_order', compact('orders', 'order_nos'));
-
-    }
-
-    public function generateOrderNo()
-    {
-        $maxID = Sale::latest()->value('id');
-        if ($maxID == '') {
-            $maxID = 1000000;
-        } else {
-            $maxID = $maxID + 1;
-        }
-        $no = 'OSN'.$maxID;
-
-        return $no;
     }
 
     public function generateReceiptNo()

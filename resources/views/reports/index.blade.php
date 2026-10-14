@@ -12,7 +12,7 @@ Reports
 @endsection
 
 @section('content-sub-title')
-<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
 <li class="breadcrumb-item"><a href="#"> Reports </a></li>
 @endsection
 
@@ -21,6 +21,9 @@ Reports
 
 <div class="col-sm-12">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Reports</h3>
+            </div>
         <div class="card-body">
      
             @include('reports._search')

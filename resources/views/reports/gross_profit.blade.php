@@ -16,6 +16,9 @@ Gross Profit Report
 
 <div class="col-sm-12">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Gross Profit</h3>
+            </div>
         <div class="card-body">
 
             @include('reports._search')

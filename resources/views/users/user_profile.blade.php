@@ -10,18 +10,18 @@
 <div class="row" >
     
     <div class="col-sm-12">
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <h3 class="box-title">My Profile </h3>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">My Profile </h3>
             </div>
-            <div class="box-body">
+            <div class="card-body">
                 <form method="POST" action="{{route('update-profile') }}" >
                     @csrf
                     
       
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="name" class="col-md-3 col-form-label text-md-right">{{ __('Name') }}</label>
+                        <label for="name" class="col-md-3 col-form-label text-md-end">{{ __('Name') }}</label>
                         
                         <div class="col-md-7">
                             <input id="name" type="text" class="form-control" name="name" value="{{ $users->name}}" required>
@@ -33,9 +33,9 @@
                     </div>
                     
                     
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="email" class="col-md-3 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                        <label for="email" class="col-md-3 col-form-label text-md-end">{{ __('E-Mail Address') }}</label>
                         
                         <div class="col-md-7">
                             <input id="email" type="email" class="form-control" name="email" value="{{ $users->email }}" disabled>
@@ -45,9 +45,9 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="mobile1" class="col-md-3 col-form-label text-md-right">{{ __('Mobile Number') }}</label>
+                        <label for="mobile1" class="col-md-3 col-form-label text-md-end">{{ __('Mobile Number') }}</label>
                         
                         <div class="col-md-7">
                             <input id="mobile" type="text" class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}" name="mobile" value="{{ $users->mobile }}" data-inputmask='"mask": "0999-999-9999"' data-mask>
@@ -57,9 +57,9 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="job" class="col-md-3 col-form-label text-md-right">{{ __('Job Title') }}</label>
+                        <label for="job" class="col-md-3 col-form-label text-md-end">{{ __('Job Title') }}</label>
                         
                         <div class="col-md-7">
                             <input id="job" type="text" class="form-control" name="job" value="{{ $users->job_title }}">
@@ -71,9 +71,9 @@
                     </div>
               
 
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="role" class="col-md-3 col-form-label text-md-right">{{ __('Role') }}</label>
+                        <label for="role" class="col-md-3 col-form-label text-md-end">{{ __('Role') }}</label>
                         <div class="col-md-7">
                             <input  type="text" class="form-control" name="role" value="{{ implode(",",auth()->user()->getRoleNames()->toArray()) }}" disabled>
                         </div>
@@ -81,10 +81,10 @@
 
         
            
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-3"></div>
                         <div class="col-sm-8">
-                            <div class="pull-right">
+                            <div class="float-end">
                                 <button type="submit" id="update" class="btn btn-success">Update</button>
                                 
                             </div>
@@ -102,17 +102,17 @@
 <div class="row">
    
     <div class="col-sm-12">
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <h3 class="box-title">Change Password </h3>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Change Password </h3>
             </div>
-            <div class="box-body">
+            <div class="card-body">
                 <form method="POST" action="{{ route('change-password') }}">
                     @csrf
                     
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="current_password" class="col-md-3 col-form-label text-md-right">Current Password</label>
+                        <label for="current_password" class="col-md-3 col-form-label text-md-end">Current Password</label>
                         
                         <div class="col-md-7">
                             <input type="password" class="form-control" name="current_password"  required autofocus>
@@ -122,9 +122,9 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="new_password" class="col-md-3 col-form-label text-md-right">New Password</label>
+                        <label for="new_password" class="col-md-3 col-form-label text-md-end">New Password</label>
                         
                         <div class="col-md-7">
                             <input  type="password" class="form-control" name="new_password"    required>
@@ -135,9 +135,9 @@
                         </div>
                     </div>
                     
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-1"></div>
-                        <label for="username" class="col-md-3 col-form-label text-md-right">Confirm New Password</label>
+                        <label for="username" class="col-md-3 col-form-label text-md-end">Confirm New Password</label>
                         
                         <div class="col-md-7">
                             <input  type="password" class="form-control" name="new_password_confirmation" id="new_password_confirmation"  required>
@@ -147,10 +147,10 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-3"></div>
                         <div class="col-sm-8">
-                            <div class="pull-right">
+                            <div class="float-end">
                                 <button type="submit" id="save" class="btn btn-success">Change</button>
                                 
                             </div>
@@ -161,6 +161,7 @@
                 </form> 
             </div>
         </div>
+    </div>
     </div>
     @endsection 
     

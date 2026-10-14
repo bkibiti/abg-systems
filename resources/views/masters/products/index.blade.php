@@ -12,7 +12,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> Masters / Products </a></li>
 @endsection
 
@@ -21,12 +21,14 @@
 
     <div class="col-sm-12">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Product List</h3>
+                <div class="card-tools">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" title="Add Product" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Product</button>
+                </div>
+            </div>
             <div class="card-body">
                 <div>
-
-                    <button style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                            title="Add Product" data-target="#create"><i class="feather icon-plus"></i>
-                    </button>
 
 
                     <div id="product-table" class="table-responsive">
@@ -48,21 +50,21 @@
                                             <td>{{$prod->min_quantinty}}</td>
                                             <td>
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-rounded btn-info"
+                                                    <button class="btn btn-sm btn-info"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
                                                             data-min_quantinty="{{$prod->min_quantinty}}"
                                                             type="button"
-                                                            data-toggle="modal" data-target="#edit">Edit
+                                                            data-bs-toggle="modal" data-bs-target="#edit">Edit
                                                     </button>
                                                 </a>
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-rounded btn-danger"
+                                                    <button class="btn btn-sm btn-danger"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
                                                             type="button"
-                                                            data-toggle="modal"
-                                                            data-target="#delete">
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#delete">
                                                         Delete
                                                     </button>
                                                 </a>
@@ -77,6 +79,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
         @include('masters.products.create')
         @include('masters.products.edit')

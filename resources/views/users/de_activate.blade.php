@@ -12,7 +12,7 @@
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
                 <button type="submit" class="btn btn-warning btn-sm">Yes</button>
               </div>
             </form>

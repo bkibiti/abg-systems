@@ -12,7 +12,7 @@ Sales History
 @endsection
 
 @section('content-sub-title')
-<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
 <li class="breadcrumb-item"><a href="#">Sales / Sales History </a></li>
 @endsection
 
@@ -21,15 +21,18 @@ Sales History
 
 <div class="col-sm-12">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Sales History</h3>
+            </div>
         <div class="card-body">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
                 <form id="expense_form" action="{{route('sales.history-search')}}" method="post">
                     @csrf()
 
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-3">
-                            <select class="form-control select2"  class="form-control" name="product" data-width="100%">
+                            <select class="form-select select2"  class="form-select" name="product" data-width="100%">
                                     <option value="1" {{ (old('product')==0 ? "selected":"") }}>All Products</option>
 
                                     @foreach($products as $p)
@@ -86,7 +89,7 @@ Sales History
                                 @can('Edit Sales')
                                 <td>
                                     <a href="#">
-                                        <button class="btn btn-sm btn-rounded btn-info"
+                                        <button class="btn btn-sm btn-info"
                                                 data-id="{{$s->id}}"
                                                 data-name="{{$s->product->name}}"
                                                 data-created_at="{{$s->created_at}}"
@@ -94,16 +97,16 @@ Sales History
                                                 data-selling_price="{{$s->selling_price}}"
                                                 data-buying_price="{{$s->buying_price}}"
                                                 type="button"
-                                                data-toggle="modal" data-target="#edit">Edit
+                                                data-bs-toggle="modal" data-bs-target="#edit">Edit
                                         </button>
                                     </a>
                                     @if ($s->remarks <> '')
-                                        <button class="btn btn-sm btn-rounded btn-success"
+                                        <button class="btn btn-sm btn-success"
                                                 data-updated_by="{{'Updated by: '. $s->updater->name . '  at: '. $s->updated_at }}"
                                                 data-updated_at="{{$s->updated_at}}"
                                                 data-remarks="{{$s->remarks}}"
                                                 type="button"
-                                                data-toggle="modal" data-target="#view">View
+                                                data-bs-toggle="modal" data-bs-target="#view">View
                                         </button>
                                     @endif
                               
@@ -128,6 +131,7 @@ Sales History
         </div>
     </div>
 
+    </div>
     @endsection
 
     @push("page_scripts")

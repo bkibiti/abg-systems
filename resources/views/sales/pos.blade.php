@@ -10,10 +10,13 @@ Point of Sales
 
 <div class="col-sm-5">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Products</h3>
+            </div>
         <div class="card-body">
-            <div class="form-group row">
+            <div class="row mb-3">
                 <div class="col-md-12">
-                    <input type="text" class="form-control " id="search_products" placeholder="Search Item">
+                    <input type="text" class="form-control" id="search_products" placeholder="Search Item">
                 </div>
                 
             </div>
@@ -34,18 +37,18 @@ Point of Sales
                             <td>
                                 <a href="#">
                                     <button type="button" 
-                                        class="btn btn-sm btn-rounded btn-icon btn-success selectproduct"
+                                        class="btn btn-sm btn-success selectproduct"
                                         data-id="{{$stock->id}}" data-name="{{$stock->name}}"
                                         data-sale_price_1="{{$stock->sale_price_1}}"
                                         data-unit_cost="{{$stock->unit_cost}}" data-quantity="{{$stock->quantity}}"
-                                        data-toggle="button"><i class="feather icon-chevron-right"></i>
+                                        data-bs-toggle="button"><i class="bi bi-chevron-right"></i>
                                     </button>
                                     <button type="button"
-                                        class="btn btn-sm btn-rounded btn-icon btn-secondary selectProducts"
+                                        class="btn btn-sm btn-secondary selectProducts"
                                         data-id="{{$stock->id}}" data-name="{{$stock->name}}"
                                         data-sale_price_1="{{$stock->sale_price_1}}"
                                         data-unit_cost="{{$stock->unit_cost}}" data-quantity="{{$stock->quantity}}"
-                                        data-toggle="modal" data-target="#addItemsModal"><i class="feather icon-chevrons-right"></i>
+                                        data-bs-toggle="modal" data-bs-target="#addItemsModal"><i class="bi bi-chevron-double-right"></i>
                                     </button>
                             
                                 
@@ -68,20 +71,20 @@ Point of Sales
         <input type="hidden" name="sale_order" id="sale_order" required>
 
         <div class="card">
-            <div class="alert alert-success" role="alert">
-                <div class="form-group row">
+            <div class="card-header">
+                <div class="row g-2 w-100">
                     @if (getSettings('enable_sale_date_select')=='YES')
                         
                         <div class="col-md-3">
                             <div id="date" style="border-radius: 6px;">
-                                <input type="text" name="sale_date" class="form-control " id="sale_date" value="{{ old('sale_date') }}" required >
+                                <input type="text" name="sale_date" class="form-control" id="sale_date" value="{{ old('sale_date') }}" required >
                             </div>
                         </div>
                     @else
                         <input type="hidden" name="sale_date" value="NA">
                     @endif
                     {{-- <div class="col-md-3">
-                        <select class="form-control  select2" name="created_by" required data-width="100%">
+                        <select class="form-select select2" name="created_by" required data-width="100%">
                             <option value="">Select User</option>
 
                             @foreach($users as $u)
@@ -90,11 +93,8 @@ Point of Sales
                         </select>
 
                     </div> --}}
-                    <div class="col-md-2">
-                        <input type="text" class="form-control " name="table_number" placeholder="Table No.">
-                    </div>
                     <div class="col-md-4">
-                        <select class="form-control  select2" name="customer_id"  data-width="100%">
+                        <select class="form-select select2" name="customer_id"  data-width="100%">
                             <option value="">Select Customer</option>
 
                             @foreach($customers as $c)
@@ -199,7 +199,7 @@ Point of Sales
             { title: "Price" },
             { title: "Sub Total" },
             { title: "unit_cost"},
-            { title: "Action", defaultContent:  '<button type="button" id="edit_btn" class="btn btn-icon btn-rounded btn-sm btn-primary"><i class="feather icon-edit"></i></button><button type="button" id="delete_btn" class="btn btn-icon btn-rounded btn-sm btn-danger"><i class="feather icon-trash-2"></i></button>'},
+            { title: "Action", defaultContent:  '<button type="button" id="edit_btn" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button><button type="button" id="delete_btn" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>'},
             
         ]
     });

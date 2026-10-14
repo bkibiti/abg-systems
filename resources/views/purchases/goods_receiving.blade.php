@@ -7,13 +7,16 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#">Purchase Management / Purchase</a></li>
 @endsection
 @section("content")
 
     <div class="col-sm-5">
             <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Products</h3>
+            </div>
                     <div class="card-body">
                         <div id="product-table" class="table-responsive">
                             <table id="products" class="display table nowrap table-striped table-hover" style="width:100%">
@@ -31,10 +34,10 @@
                                             <td>{{$prod->quantity}}</td>
                                             <td>
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-rounded btn-info selectproduct"
+                                                    <button class="btn btn-sm btn-info selectproduct"
                                                             data-id="{{$prod->id}}"
                                                             data-name="{{$prod->name}}"
-                                                            data-toggle="button">Select
+                                                            data-bs-toggle="button">Select
                                                     </button>
                                                 </a>
 
@@ -49,26 +52,29 @@
     </div>
     <div class="col-sm-4">
           <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Receive Goods</h3>
+            </div>
                 <div class="card-body">
-                        <div class="panel-body">
+                        <div>
                                 <form method="POST" action="{{ route('goods-receiving.store') }}" >
                                     @csrf
                                     <input type="hidden" name="id" id="id">
 
 
-                                    <div class="form-group row">
-                                        <label for="product_name" class="col-md-4 col-form-label text-md-right">Date<font color="red">*</font></label>
+                                    <div class="row mb-3">
+                                        <label for="product_name" class="col-md-4 col-form-label text-md-end">Date<font color="red">*</font></label>
                                         <div class="col-md-8">
                                             <div id="date" style="border: 2px solid white; border-radius: 6px;">
                                                 <input type="text" name="purchase_date" class="form-control" id="purchase_date" value="{{ old('purchase_date') }}" required>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <label for="category" class="col-md-4 col-form-label text-md-right">Supplier<font color="red">*</font></label>
+                                    <div class="row mb-3">
+                                        <label for="category" class="col-md-4 col-form-label text-md-end">Supplier<font color="red">*</font></label>
 
                                         <div class="col-md-8">
-                                            <select class="form-control select2"  class="form-control" name="supplier" required data-width="100%">
+                                            <select class="form-select select2"  class="form-select" name="supplier" required data-width="100%">
                                                     <option value="">Select Supplier</option>
 
                                                     @foreach($suppliers as $supp)
@@ -77,8 +83,8 @@
                                             </select>
                                         </div>
                                 </div>
-                                    <div class="form-group row">
-                                        <label for="product_name" class="col-md-4 col-form-label text-md-right">Product</label>
+                                    <div class="row mb-3">
+                                        <label for="product_name" class="col-md-4 col-form-label text-md-end">Product</label>
 
                                         <div class="col-md-8">
                                             <input type="text" class="form-control" id="name" name="name" maxlength="50" minlength="2"
@@ -86,20 +92,20 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
-                                            <label for="category" class="col-md-4 col-form-label text-md-right" >Quantity<font color="red">*</font></label>
+                                    <div class="row mb-3">
+                                            <label for="category" class="col-md-4 col-form-label text-md-end" >Quantity<font color="red">*</font></label>
                                             <div class="col-md-8">
                                                     <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
                                             </div>
                                     </div>
-                                    <div class="form-group row">
-                                            <label for="category" class="col-md-4 col-form-label text-md-right">Total Price<font color="red">*</font></label>
+                                    <div class="row mb-3">
+                                            <label for="category" class="col-md-4 col-form-label text-md-end">Total Price<font color="red">*</font></label>
                                             <div class="col-md-8">
                                                     <input  class="form-control" id="total_cost" name="total_cost" min="1" required placeholder="Total Purchase Price">
                                             </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <label for="category" class="col-md-4 col-form-label text-md-right">Unit Price<font color="red">*</font></label>
+                                    <div class="row mb-3">
+                                        <label for="category" class="col-md-4 col-form-label text-md-end">Unit Price<font color="red">*</font></label>
                                         <div class="col-md-8">
                                                 <input  class="form-control" id="unit_cost" name="unit_cost" min="1" required readonly>
                                         </div>
@@ -121,11 +127,13 @@
 
     <div class="col-sm-3">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Product Purchase History</h3>
+            </div>
             <div class="card-body">
-                    <div class="panel-body">
+                    <div>
 
                         <div  class="table-responsive">
-                            <h6>Product Purchase History</h6>
                             <table id="purchase_history" class="display table nowrap table-striped table-hover" style="width:100%">
                                 <thead>
                                 <tr>

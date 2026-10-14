@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> User Management / Users </a> </li>
 @endsection
 
@@ -21,6 +21,14 @@
 <div class="col-sm-12">
 
 <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Users</h3>
+                <div class="card-tools">
+                    @can('Manage Users')
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" title="Add User" data-bs-target="#register"><i class="bi bi-plus-lg"></i> Add User</button>
+                    @endcan
+                </div>
+            </div>
 
 
 
@@ -28,10 +36,10 @@
         <form id="expense_form" action="{{route('users.search')}}" method="GET">
             @csrf()
 
-            <div class="form-group row">
+            <div class="row mb-3">
 
                 <div class="col-md-2">
-                    <select class="form-control select2"  class="form-control" name="status"  data-placeholder="Select Status" required data-width="100%">
+                    <select class="form-select select2"  class="form-select" name="status"  data-placeholder="Select Status" required data-width="100%">
                         <option value="0" {{ (old('status')==0 ? "selected":"") }} >All Users</option>
                         <option value="1" {{ (old('status')==1 ? "selected":"") }} >Active Users</option>
                         <option value="2" {{ (old('status')==2 ? "selected":"") }} >In Active Users</option>
@@ -41,14 +49,6 @@
                
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-success">Filter</button>
-                </div>
-
-                <div class="col-md-6"></div>
-                <div class="col-md-2">
-                    @can('Manage Users')
-                        <button type="button" style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                                     title="Add User" data-target="#register"><i class="feather icon-plus"></i></button>
-                    @endcan
                 </div>
             </div>
 
@@ -84,35 +84,35 @@
                 <td>{{$user->position}}</td>
                 <td>
                     @if ($user->status == 1)
-                        <h6 class="m-0 text-c-green">Active</h6>
+                        <h6 class="m-0 text-success">Active</h6>
                     @endif
                     @if ($user->status == -1)
-                        <h6 class="m-0 text-c-purple">In-active</h6>
+                        <h6 class="m-0 text-info">In-active</h6>
                     @endif
                     @if ($user->status == 0)
-                        <h6 class="m-0 text-c-red">De-activated</h6>
+                        <h6 class="m-0 text-danger">De-activated</h6>
                     @endif
                 </td>
                 @can('Manage Users')
                     <td style='white-space: nowrap'>
                 
                         <a href="#">
-                            <button class="btn btn-rounded btn-info btn-sm" data-name="{{$user->name}}"
+                            <button class="btn btn-info btn-sm" data-name="{{$user->name}}"
                                 data-email="{{$user->email}}" data-id="{{$user->id}}" data-username="{{$user->username}}"
                                 data-job="{{$user->position}}"  data-mobile="{{$user->mobile}}"
                                 data-role="{{ implode(", ", $user->getRoleNames()->toArray()) }}"
-                                type="button" data-toggle="modal" data-target="#editUser">Edit</button>
+                                type="button" data-bs-toggle="modal" data-bs-target="#editUser">Edit</button>
                         </a>
 
 
                             @if ($user->status == 1)
                             <a href="#">
-                                <button class="btn btn-danger btn-rounded btn-sm"  type="button" data-toggle="modal" data-target="#disableUser" data-id="{{$user->id}}" data-status="{{$user->status}}" data-name="{{$user->name}}">De Activate</button>
+                                <button class="btn btn-danger btn-sm"  type="button" data-bs-toggle="modal" data-bs-target="#disableUser" data-id="{{$user->id}}" data-status="{{$user->status}}" data-name="{{$user->name}}">De Activate</button>
                             </a>
                             @endif
                             @if ($user->status == 0)
                             <a href="#">
-                            <button class="btn btn-success btn-rounded btn-sm"  type="button" data-toggle="modal" data-target="#disableUser" data-id="{{$user->id}}" data-status="{{$user->status}}" data-name="{{$user->name}}">Activate</button>
+                            <button class="btn btn-success btn-sm"  type="button" data-bs-toggle="modal" data-bs-target="#disableUser" data-id="{{$user->id}}" data-status="{{$user->status}}" data-name="{{$user->name}}">Activate</button>
                             </a>
                             @endif
 

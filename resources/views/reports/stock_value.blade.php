@@ -16,6 +16,9 @@ Current Stock Value
 
 <div class="col-sm-12">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Current Stock Value</h3>
+            </div>
         <div class="card-body">
 
             @include('reports._search')

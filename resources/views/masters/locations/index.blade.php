@@ -12,20 +12,20 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> Masters / Locations </a></li>
 @endsection
 
 @section("content")
     <div class="col-sm-12">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Locations</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create">Add Location </button>
+                </div>
+            </div>
             <div class="card-body">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <button style="float: right;margin-bottom: 2%;" type="button" class="btn btn-secondary btn-sm"
-                            data-toggle="modal"
-                            data-target="#create">
-                        Add Location
-                    </button>
                     <div class="table-responsive">
                         <table id="fixed-header-1" class="display table nowrap table-striped table-hover"
                                style="width:100%">
@@ -41,18 +41,18 @@
                                     <td>{{$location->name}}</td>
                                     <td>
                                         <a href="#">
-                                            <button class="btn btn-sm btn-rounded btn-info"
+                                            <button class="btn btn-sm btn-info"
                                                     data-id="{{$location->id}}" data-name="{{$location->name}}"
                                                     type="button"
-                                                    data-toggle="modal" data-target="#edit">Edit
+                                                    data-bs-toggle="modal" data-bs-target="#edit">Edit
                                             </button>
                                         </a>
                                         <a href="#">
-                                            <button class="btn btn-sm btn-rounded btn-danger"
+                                            <button class="btn btn-sm btn-danger"
                                                     data-id="{{$location->id}}"
                                                     data-name="{{$location->name}}" type="button"
-                                                    data-toggle="modal"
-                                                    data-target="#delete">
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#delete">
                                                 Delete
                                             </button>
                                         </a>
@@ -61,12 +61,11 @@
                             @endforeach
                             </tbody>
                         </table>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @include('masters.locations.create')
+@include('masters.locations.create')
     @include('masters.locations.delete')
     @include('masters.locations.edit')
 

@@ -12,7 +12,7 @@ Expense
 @endsection
 
 @section('content-sub-title')
-<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+<li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
 <li class="breadcrumb-item"><a href="#"> Expense Management / Expense </a></li>
 @endsection
 
@@ -69,11 +69,19 @@ Expense
 
 <div class="col-sm-12">
     <div class="card">
+        <div class="card-header">
+                <h3 class="card-title">Expenses</h3>
+                <div class="card-tools">
+                    @can('Add Expenses')
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" name="issued_date" value="Add Expense" title="Add Expense" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Expense</button>
+                    @endcan
+                </div>
+            </div>
         <div class="card-body">
             <form id="expense_form" action="{{route('expense.search')}}" method="GET">
                 @csrf()
 
-                <div class="form-group row">
+                <div class="row mb-3">
 
                     <div class="col-md-2">
                         <div style="border: 2px solid white; border-radius: 6px;">
@@ -87,7 +95,7 @@ Expense
                     </div>
                     <div class="col-md-2">
                         <div id="category" style="border: 2px solid white; border-radius: 6px;">
-                            <select name="expense_category" class="form-control">
+                            <select name="expense_category" class="form-select">
                                 <option value="0" {{ (old('expense_category')==0 ? "selected":"") }} >All Categories
                                 </option>
                                 @foreach($expense_category as $x)
@@ -100,14 +108,6 @@ Expense
                         <button type="submit" class="btn btn-success">Filter</button>
                     </div>
                     <div class="col-md-2">
-                    </div>
-
-                    <div class="col-md-2">
-                        @can('Add Expenses')
-           
-                            <button type="button" style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                                    name="issued_date" value="Add Expense" title="Add Expense" data-target="#create"><i class="feather icon-plus"></i></button>
-                        @endcan
                     </div>
                 </div>
 
@@ -142,10 +142,10 @@ Expense
                                 <td>
 
                                     <a href="#">
-                                        <button class="btn btn-info btn-rounded btn-sm" data-expense_description="{{$x->expense_description}}"
+                                        <button class="btn btn-info btn-sm" data-expense_description="{{$x->expense_description}}"
                                             data-id="{{$x->id}}"   data-date="{{$x->created_at}}"  
                                             data-amount="{{$x->amount}}"    data-expense_category="{{$x->expense_category_id}}"
-                                            type="button" data-toggle="modal" data-target="#edit">Edit</button>
+                                            type="button" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
                                     </a>
                                 </td>
 
@@ -169,7 +169,7 @@ Expense
             {{-- show staff summary --}}
             @if ($total > 0)
                 
-                <div class="form-group row">
+                <div class="row mb-3">
                     <div class="col-md-2"> <h6> Total Expenses</h6></div>
                     <div class="col-md-2">
                         <h6>{{number_format($total,2)}}</h6>

@@ -11,7 +11,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#">Purchase / Purchase History </a></li>
 @endsection
 
@@ -20,14 +20,17 @@
 
     <div class="col-sm-12">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Purchase History</h3>
+            </div>
             <div class="card-body">
 
                 <form id="expense_form" action="{{route('goods-receiving.search')}}" method="GET">
                     @csrf()
 
-                    <div class="form-group row">
+                    <div class="row mb-3">
                         <div class="col-md-3">
-                            <select class="form-control select2"  class="form-control" name="supplier" data-width="100%">
+                            <select class="form-select select2"  class="form-select" name="supplier" data-width="100%">
                                     <option value="0" {{ (old('supplier')==0 ? "selected":"") }}>All Suppliers</option>
 
                                     @foreach($suppliers as $supp)
@@ -36,7 +39,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select class="form-control select2"  class="form-control" name="product" data-width="100%">
+                            <select class="form-select select2"  class="form-select" name="product" data-width="100%">
                                     <option value="1" {{ (old('product')==0 ? "selected":"") }}>All Products</option>
 
                                     @foreach($products as $p)
@@ -82,7 +85,6 @@
                                 <th>Purchase Date</th>
                                 <th>Item</th>
                                 <th>Purchase Qty</th>
-                                <th>Purchase Unit</th>
                                 <th>Qty per Unit</th>
                                 <th>Unit Cost</th>
                                 <th>Total Cost</th>
@@ -99,7 +101,6 @@
                                             <td>{{date_format($p->created_at,'d M Y')}}</td>
                                             <td>{{$p->product->name}}</td>
                                             <td>{{number_format($p->quantity,0) }}</td>
-                                            <td>{{$p->purchase_uom}}</td>
                                             <td>{{$p->quantity_per_unit}}</td>
                                             <td>{{number_format($p->unit_cost,2)}}</td>
                                             <td>{{number_format(($p->unit_cost * $p->quantity), 2)}}</td>
@@ -109,7 +110,7 @@
                                             @can('Edit Purchase')
                                             <td>
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-rounded btn-info"
+                                                    <button class="btn btn-sm btn-info"
                                                             data-id="{{$p->id}}"
                                                             data-name="{{$p->product->name}}"
                                                             data-quantity="{{$p->quantity}}"
@@ -117,7 +118,7 @@
                                                             data-unit_cost="{{$p->unit_cost}}"
                                                             data-supplier_id="{{$p->supplier_id}}"
                                                             type="button"
-                                                            data-toggle="modal" data-target="#edit">Edit
+                                                            data-bs-toggle="modal" data-bs-target="#edit">Edit
                                                     </button>
                                                 </a>
                                           
@@ -144,6 +145,7 @@
             </div>
         </div>
 
+    </div>
         @endsection
 
 @push("page_scripts")

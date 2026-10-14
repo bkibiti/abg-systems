@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> User Management / Roles </a> </li>
 @endsection
 
@@ -21,15 +21,16 @@
 <div class="col-sm-12">
 
 <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Roles</h3>
+                <div class="card-tools">
+                    <a href="{{route('roles.create')}}" class="btn btn-primary btn-sm" title="Add Role"><i class="bi bi-plus-lg"></i> Add Role</a>
+                </div>
+            </div>
 
 
 
     <div class="card-body">
-            <a href="{{route('roles.create')}}">
-                <button type="button" style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                        title="Add Role" data-target="#register"><i class="feather icon-plus"></i>
-                </button>
-            </a>
         <div class="table-responsive">
             <table id="fixed-header" class="display table nowrap table-striped table-hover" style="width:100%">
             <thead>
@@ -46,10 +47,10 @@
                 <td>{{$role->description}}</td>
                 <td>
                     <a href="{{route('roles.edit',$role->id)}}">
-                        <button class="btn btn-info btn-rounded btn-sm"  type="button">Edit</button>
+                        <button class="btn btn-info btn-sm"  type="button">Edit</button>
                     </a>
                     <a href="#">
-                        <button class="btn btn-danger btn-rounded btn-sm" data-id="{{$role->id}}" data-name="{{$role->name}}" type="button" data-toggle="modal" data-target="#deleteModal" > Delete</button>
+                        <button class="btn btn-danger btn-sm" data-id="{{$role->id}}" data-name="{{$role->name}}" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" > Delete</button>
                     </a>
 
 

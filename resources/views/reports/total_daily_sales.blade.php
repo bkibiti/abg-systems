@@ -17,6 +17,9 @@ Total Daily Sales Reports
 
 <div class="col-sm-12">
     <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Total Daily Sales</h3>
+            </div>
         <div class="card-body">
      
             @include('reports._search')

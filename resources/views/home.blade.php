@@ -36,7 +36,7 @@
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Dashboard</a>
+            <a class="nav-link active" data-bs-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Dashboard</a>
         </li>
 
     </ul>
@@ -47,53 +47,53 @@
                 <div class="col">
                     <div class="card statistial-visit">
                         <div class="card-header">
-                            <h5>This Month</h5>
+                            <h5 class="card-title">This Month</h5>
                         </div>
-                        <div class="card-block">
+                        <div class="card-body">
                             <span class="d-block">Net Profit</span>
-                            <h4 class="f-w-300 ">TZS {{ number_format( ((double)$thisMonth['profit']- (double)$thisMonth['expense']), 2) }}  
+                            <h4 class="fw-light">TZS {{ number_format( ((double)$thisMonth['profit']- (double)$thisMonth['expense']), 2) }}  
                                 @if (((double)$thisMonth['profit']- (double)$thisMonth['expense']) > 0)
-                                    <i class="far fa-smile text-c-green f-20"></i>
+                                    <i class="bi bi-emoji-smile text-success fs-5"></i>
                                 @else
-                                    <i class="far fa-frown text-c-red f-20"></i>
+                                    <i class="bi bi-emoji-frown text-danger fs-5"></i>
                                 @endif
                             </h4>
                            
                             <hr>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Purchases</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <span
-                                        class="label theme-bg text-white f-14 f-w-400 float-right">{{ number_format($thisMonth['purchase'],2) }}</span>
+                                        class="badge text-bg-primary fs-6 fw-normal float-end">{{ number_format($thisMonth['purchase'],2) }}</span>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Sales</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label theme-bg2 text-white f-14 f-w-400 float-right">{{ number_format($thisMonth['sales'], 2) }}</label>
+                                        class="badge text-bg-info fs-6 fw-normal float-end">{{ number_format($thisMonth['sales'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Expenses</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-blue text-white f-14 f-w-400 float-right">{{ number_format($thisMonth['expense'], 2) }}</label>
+                                        class="badge text-bg-danger fs-6 fw-normal float-end">{{ number_format($thisMonth['expense'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Gross Profit</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-green text-white f-14 f-w-400 float-right">{{ number_format($thisMonth['profit'], 2) }}</label>
+                                        class="badge text-bg-success fs-6 fw-normal float-end">{{ number_format($thisMonth['profit'], 2) }}</label>
                                 </div>
                             </div>
                      
@@ -103,53 +103,53 @@
                 <div class="col">
                     <div class="card statistial-visit">
                         <div class="card-header">
-                            <h5>Last Month</h5>
+                            <h5 class="card-title">Last Month</h5>
                         </div>
-                        <div class="card-block">
+                        <div class="card-body">
                             <span class="d-block">Net Profit</span>
-                            <h4 class="f-w-300 ">TZS {{ number_format( ((double)$lastMonth['profit']- (double)$lastMonth['expense']), 2) }}
+                            <h4 class="fw-light">TZS {{ number_format( ((double)$lastMonth['profit']- (double)$lastMonth['expense']), 2) }}
                                 @if (((double)$lastMonth['profit']- (double)$lastMonth['expense']) > 0)
-                                    <i class="far fa-smile text-c-green f-20"></i>
+                                    <i class="bi bi-emoji-smile text-success fs-5"></i>
                                 @else
-                                    <i class="far fa-frown text-c-red f-20"></i>
+                                    <i class="bi bi-emoji-frown text-danger fs-5"></i>
                                 @endif
                             </h4>
                             <hr>
 
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Purchases</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <span
-                                        class="label theme-bg text-white f-14 f-w-400 float-right">{{ number_format($lastMonth['purchase'],2) }}</span>
+                                        class="badge text-bg-primary fs-6 fw-normal float-end">{{ number_format($lastMonth['purchase'],2) }}</span>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Sales</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label theme-bg2 text-white f-14 f-w-400 float-right">{{ number_format($lastMonth['sales'], 2) }}</label>
+                                        class="badge text-bg-info fs-6 fw-normal float-end">{{ number_format($lastMonth['sales'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Expenses</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-blue text-white f-14 f-w-400 float-right">{{ number_format($lastMonth['expense'], 2) }}</label>
+                                        class="badge text-bg-danger fs-6 fw-normal float-end">{{ number_format($lastMonth['expense'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Gross Profit</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-green text-white f-14 f-w-400 float-right">{{ number_format($lastMonth['profit'], 2) }}</label>
+                                        class="badge text-bg-success fs-6 fw-normal float-end">{{ number_format($lastMonth['profit'], 2) }}</label>
                                 </div>
                             </div>
                         </div>
@@ -159,53 +159,53 @@
                 <div class="col">
                     <div class="card statistial-visit">
                         <div class="card-header">
-                            <h5>Daily Averages</h5>
+                            <h5 class="card-title">Daily Averages</h5>
                         </div>
-                        <div class="card-block">
+                        <div class="card-body">
                             <span class="d-block">Net Profit</span>
-                            <h4 class="f-w-300 ">TZS {{ number_format( ((double)$dailyAverage['profit']- (double)$dailyAverage['expense']), 2) }}
+                            <h4 class="fw-light">TZS {{ number_format( ((double)$dailyAverage['profit']- (double)$dailyAverage['expense']), 2) }}
                                 @if (((double)$dailyAverage['profit']- (double)$dailyAverage['expense']) > 0)
-                                    <i class="far fa-smile text-c-green f-20"></i>
+                                    <i class="bi bi-emoji-smile text-success fs-5"></i>
                                 @else
-                                    <i class="far fa-frown text-c-red f-20"></i>
+                                    <i class="bi bi-emoji-frown text-danger fs-5"></i>
                                 @endif
                             </h4>
                             <hr>
 
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Purchases</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <span
-                                        class="label theme-bg text-white f-14 f-w-400 float-right">{{ number_format($dailyAverage['purchase'],2) }}</span>
+                                        class="badge text-bg-primary fs-6 fw-normal float-end">{{ number_format($dailyAverage['purchase'],2) }}</span>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Sales</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label theme-bg2 text-white f-14 f-w-400 float-right">{{ number_format($dailyAverage['sales'], 2) }}</label>
+                                        class="badge text-bg-info fs-6 fw-normal float-end">{{ number_format($dailyAverage['sales'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Expenses</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-blue text-white f-14 f-w-400 float-right">{{ number_format($dailyAverage['expense'], 2) }}</label>
+                                        class="badge text-bg-danger fs-6 fw-normal float-end">{{ number_format($dailyAverage['expense'], 2) }}</label>
                                 </div>
                             </div>
-                            <div class="media">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="photo-table">
                                     <h6> Gross Profit</h6>
                                 </div>
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <label
-                                        class="label bg-c-green text-white f-14 f-w-400 float-right">{{ number_format($dailyAverage['profit'], 2) }}</label>
+                                        class="badge text-bg-success fs-6 fw-normal float-end">{{ number_format($dailyAverage['profit'], 2) }}</label>
                                 </div>
                             </div>
                         </div>
@@ -223,31 +223,19 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            <h5>Sales and Expenses </h5>
-                            <div class="card-header-right">
-                                <div class="btn-group card-option">
-                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        <i class="feather icon-more-horizontal"></i>
-                                    </button>
-                                    <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
-                                        <li class="dropdown-item full-card"><a href="#!"><span><i
-                                                        class="feather icon-maximize"></i> maximize</span><span
-                                                    style="display:none"><i class="feather icon-minimize"></i>
-                                                    Restore</span></a></li>
-                                        <li class="dropdown-item minimize-card"><a href="#!"><span><i
-                                                        class="feather icon-minus"></i> collapse</span><span
-                                                    style="display:none"><i class="feather icon-plus"></i>
-                                                    expand</span></a></li>
-                                        <li class="dropdown-item reload-card"><a href="#!"><i
-                                                    class="feather icon-refresh-cw"></i> reload</a></li>
-                                        <li class="dropdown-item close-card"><a href="#!"><i
-                                                    class="feather icon-trash"></i> remove</a></li>
-                                    </ul>
-                                </div>
+                            <h5 class="card-title">Sales and Expenses </h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-maximize">
+                                    <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                                    <i data-lte-icon="minimize" class="bi bi-fullscreen-exit"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="card-block">
+                        <div class="card-body">
                             <div id="monthly-sales"></div>
                         </div>
                     </div>
@@ -255,16 +243,17 @@
 
                 <div class="col-md-4">
                     <div class="card">
-
-                        <div class="card-block" style="height: 520px;">
-                            <h5 class="text-left">Stock Value</h5>
+                        <div class="card-header">
+                <h3 class="card-title">Stock Value</h3>
+            </div>
+                        <div class="card-body" style="height: 520px;">
                             <div class="row align-items-center justify-content-center">
                                 <div class="col-auto">
-                                    <h3 class="f-w-300 m-t-20">TZS {{ number_format($stockValue,2) }}
+                                    <h3 class="fw-light mt-3">TZS {{ number_format($stockValue,2) }}
 
                                 </div>
-                                <div class="col text-right">
-                                    <i class="fas fa-wallet f-30 text-c-purple"></i>
+                                <div class="col text-end">
+                                    <i class="bi bi-wallet2 fs-2 text-info"></i>
                                 </div>
                             </div>
                         </div>
@@ -278,7 +267,7 @@
             <div class="row">
                 <div class="col-md-6 col-xl-6">
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <div id='sale_by_day'></div>
                         </div>
                     </div>
@@ -287,7 +276,7 @@
 
                 <div class="col-md-6 col-xl-6">
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <div id='sales_by_month'></div>
                         </div>
                     </div>
@@ -299,31 +288,19 @@
             <div class="row">
                 <div class="card col-md-12">
                     <div class="card-header">
-                        <h5>Daily Sales</h5>
-                        <div class="card-header-right">
-                            <div class="btn-group card-option">
-                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="feather icon-more-horizontal"></i>
+                        <h5 class="card-title">Daily Sales</h5>
+                        <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
                                 </button>
-                                <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
-                                    <li class="dropdown-item full-card"><a href="#!"><span><i
-                                                    class="feather icon-maximize"></i> maximize</span><span
-                                                style="display:none"><i class="feather icon-minimize"></i>
-                                                Restore</span></a></li>
-                                    <li class="dropdown-item minimize-card"><a href="#!"><span><i
-                                                    class="feather icon-minus"></i> collapse</span><span
-                                                style="display:none"><i class="feather icon-plus"></i> expand</span></a>
-                                    </li>
-                                    <li class="dropdown-item reload-card"><a href="#!"><i
-                                                class="feather icon-refresh-cw"></i> reload</a></li>
-                                    <li class="dropdown-item close-card"><a href="#!"><i class="feather icon-trash"></i>
-                                            remove</a></li>
-                                </ul>
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-maximize">
+                                    <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                                    <i data-lte-icon="minimize" class="bi bi-fullscreen-exit"></i>
+                                </button>
                             </div>
-                        </div>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div id='daily_sales'></div>
                     </div>
                 </div>

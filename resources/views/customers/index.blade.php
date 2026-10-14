@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-sub-title')
-    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="feather icon-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bi bi-house"></i></a></li>
     <li class="breadcrumb-item"><a href="#"> Customers Management </a> </li>
 @endsection
 
@@ -21,6 +21,14 @@
 <div class="col-sm-12">
 
 <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Customers</h3>
+                <div class="card-tools">
+                    @can('Manage Customers')
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" title="Add Customer" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Customer</button>
+                    @endcan
+                </div>
+            </div>
 
 
 
@@ -28,10 +36,10 @@
         <form id="expense_form" action="{{route('users.search')}}" method="GET">
             @csrf()
 
-            <div class="form-group row">
+            <div class="row mb-3">
 
                 <div class="col-md-2">
-                    <select class="form-control select2"  class="form-control" name="status"  data-placeholder="Select Status" required data-width="100%">
+                    <select class="form-select select2"  class="form-select" name="status"  data-placeholder="Select Status" required data-width="100%">
                         <option value="0" {{ (old('status')==0 ? "selected":"") }} >All Customers</option>
                         <option value="1" {{ (old('status')==1 ? "selected":"") }} >Active Customers</option>
                         <option value="2" {{ (old('status')==2 ? "selected":"") }} >Inctive Customers</option>
@@ -41,14 +49,6 @@
                
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-success">Filter</button>
-                </div>
-
-                <div class="col-md-6"></div>
-                <div class="col-md-2">
-                    @can('Manage Customers')
-                        <button type="button" style="float: right; margin-bottom: 1%;" class="btn btn-icon btn-rounded btn-warning btn-sm" data-toggle="modal" 
-                                     title="Add Customer" data-target="#create"><i class="feather icon-plus"></i></button>
-                    @endcan
                 </div>
             </div>
 
@@ -82,10 +82,10 @@
                     <td>{{$c->dob}}</td>
                     <td>
                         @if ($c->status == 'Active')
-                            <h6 class="m-0 text-c-green">{{$c->status}} </h6>
+                            <h6 class="m-0 text-success">{{$c->status}} </h6>
                         @endif
                         @if ($c->status == 'Inactive')
-                            <h6 class="m-0 text-c-red">{{$c->status}} </h6>
+                            <h6 class="m-0 text-danger">{{$c->status}} </h6>
                         @endif
                      
                     </td>
@@ -94,10 +94,10 @@
                         <td style='white-space: nowrap'>
                     
                             <a href="#">
-                                <button class="btn btn-rounded btn-info btn-sm" data-name="{{$c->name}}"
+                                <button class="btn btn-info btn-sm" data-name="{{$c->name}}"
                                     data-email="{{$c->email}}" data-id="{{$c->id}}" data-mobile="{{$c->mobile}}"
                                     data-status="{{$c->status}}"  data-dob="{{$c->dob}}"
-                                    type="button" data-toggle="modal" data-target="#edit">Edit</button>
+                                    type="button" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
                             </a>
 
                         </td>
