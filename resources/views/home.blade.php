@@ -2,75 +2,210 @@
 
 @section('page_css')
 <style>
- 
+    .dashboard-card {
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        box-shadow: none;
+    }
 
-    #monthly-sales {
-        width: 100%;
-        height: 400px;
+    .dashboard-card > .card-header {
+        background-color: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 12px 12px 0 0;
+    }
+
+    .dashboard-label {
+        color: var(--bs-secondary-color);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-figure {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .dashboard-chart {
+        position: relative;
+        height: 340px;
+    }
+
+    .dashboard-bar-track {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+        height: 6px;
+        overflow: hidden;
+    }
+
+    .dashboard-bar {
+        border-radius: 4px;
+        height: 100%;
+    }
+
+    .dashboard-dot {
+        border-radius: 3px;
+        display: inline-block;
+        height: 10px;
+        margin-right: 4px;
+        width: 10px;
     }
 </style>
 @endsection
-
-
-
-
 
 @section("content")
 
 @can('View Advanced Dashboard')
 
-<div class="col-sm-12">
+@php
+    $periodLabel = $periods[$period];
+@endphp
 
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="pill" href="#pills-home" role="tab" aria-selected="true">Dashboard</a>
-        </li>
-
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-
-            <!-- start row 2-->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">Sales and Expenses </h5>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
-                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                                </button>
-                                <button type="button" class="btn btn-tool" data-lte-toggle="card-maximize">
-                                    <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-                                    <i data-lte-icon="minimize" class="bi bi-fullscreen-exit"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div id="monthly-sales"></div>
-                        </div>
-                    </div>
-                </div>
-
-         
-
-            </div>
-            <!-- end row 12 -->
-
-      
- 
-
-        </div>
-        {{-- /Tab 1 --}}
-
-
-
+<div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="text-body-secondary">{{ $today->format('l, j F Y') }} · figures in TZS</div>
+    <div class="btn-group btn-group-sm" role="group" aria-label="Dashboard period">
+        @foreach ($periods as $periodKey => $label)
+            <a href="{{ route('home', ['period' => $periodKey]) }}"
+                class="btn {{ $periodKey === $period ? 'btn-primary' : 'btn-outline-secondary' }}"
+                @if ($periodKey === $period) aria-current="page" @endif>{{ $label }}</a>
+        @endforeach
     </div>
 </div>
 
+{{-- Row 1: key figures --}}
+@foreach ($keyFigures as $figure)
+    @php
+        if (is_null($figure['change']) || abs($figure['change']) < 0.05) {
+            $changeClass = 'text-body-secondary';
+        } elseif (! $figure['upIsGood']) {
+            $changeClass = 'text-body-secondary';
+        } else {
+            $changeClass = $figure['change'] > 0 ? 'text-success' : 'text-danger';
+        }
+    @endphp
+    <div class="col-md-6 mb-4">
+        <div class="card dashboard-card h-100">
+            <div class="card-body">
+                <div class="dashboard-label">{{ $figure['title'] }} · {{ $periodLabel }}</div>
+                <div class="dashboard-figure">{{ formatCompactAmount($figure['amount']) }}</div>
+                <div class="small {{ $changeClass }}">
+                    @if (is_null($figure['change']))
+                        No {{ strtolower($figure['title']) }} for {{ $comparisonLabel }} to compare
+                    @elseif (abs($figure['change']) < 0.05)
+                        No change vs {{ $comparisonLabel }} ({{ formatCompactAmount($figure['previous']) }})
+                    @else
+                        {{ $figure['change'] > 0 ? '▲' : '▼' }} {{ number_format(abs($figure['change']), 1) }}%
+                        vs {{ $comparisonLabel }} ({{ formatCompactAmount($figure['previous']) }})
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 
+{{-- Row 2: monthly chart --}}
+<div class="col-12 mb-4">
+    <div class="card dashboard-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Sales and expenses per month</h5>
+            <div class="card-tools text-body-secondary small">Last {{ count($monthlyTrend) }} months</div>
+        </div>
+        <div class="card-body">
+            <div class="dashboard-chart">
+                <canvas id="sales-expenses-chart" aria-label="Monthly sales by items and services, and expenses" role="img"></canvas>
+            </div>
+            <script type="application/json" id="sales-expenses-data">@json($monthlyTrend)</script>
 
+          
+        </div>
+    </div>
+</div>
+
+{{-- Row 3: sales mix and expenses by category --}}
+<div class="col-lg-6 mb-4">
+    <div class="card dashboard-card h-100">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Sales mix</h5>
+            <div class="card-tools text-body-secondary small">{{ $periodLabel }}</div>
+        </div>
+        <div class="card-body">
+            @if ($salesMix['total'] <= 0)
+                <p class="text-body-secondary mb-0">No sales yet.</p>
+            @else
+                <div class="progress-stacked mb-2" style="height: 28px">
+                    <div class="progress" role="progressbar" aria-label="Items" style="height: 28px; width: {{ round($salesMix['itemsPercent'], 2) }}%"
+                        aria-valuenow="{{ round($salesMix['itemsPercent']) }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="background-color: #2B6CB0">{{ round($salesMix['itemsPercent']) >= 8 ? round($salesMix['itemsPercent']).'%' : '' }}</div>
+                    </div>
+                    <div class="progress" role="progressbar" aria-label="Services" style="height: 28px; width: {{ round($salesMix['servicesPercent'], 2) }}%"
+                        aria-valuenow="{{ round($salesMix['servicesPercent']) }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="background-color: #D9480F">{{ round($salesMix['servicesPercent']) >= 8 ? round($salesMix['servicesPercent']).'%' : '' }}</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between small mb-4">
+                    <div>
+                        <span class="dashboard-dot" style="background-color: #2B6CB0"></span>Items
+                        <strong>{{ formatCompactAmount($salesMix['items']) }}</strong>
+                        <span class="text-body-secondary">({{ number_format($salesMix['itemsPercent'], 1) }}%)</span>
+                    </div>
+                    <div class="text-end">
+                        <span class="dashboard-dot" style="background-color: #D9480F"></span>Services
+                        <strong>{{ formatCompactAmount($salesMix['services']) }}</strong>
+                        <span class="text-body-secondary">({{ number_format($salesMix['servicesPercent'], 1) }}%)</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-label mb-2">Services by revenue</div>
+                @forelse ($salesMix['serviceRows'] as $service)
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>{{ $service['name'] }}</span>
+                            <span>
+                                <strong>{{ formatCompactAmount($service['revenue']) }}</strong>
+                                <span class="text-body-secondary">· {{ $service['jobs'] }} {{ Str::plural('job', $service['jobs']) }}</span>
+                            </span>
+                        </div>
+                        <div class="dashboard-bar-track">
+                            <div class="dashboard-bar" style="width: {{ round($service['share'], 2) }}%; background-color: #D9480F"></div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-body-secondary small mb-0">No service sales in this period.</p>
+                @endforelse
+            @endif
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-6 mb-4">
+    <div class="card dashboard-card h-100">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Expenses by category</h5>
+            <div class="card-tools small">
+                <span class="text-body-secondary">{{ $periodLabel }} ·</span>
+                <strong>{{ formatCompactAmount($expensesByCategory['total']) }}</strong>
+            </div>
+        </div>
+        <div class="card-body">
+            @forelse ($expensesByCategory['rows'] as $category)
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>{{ $category['name'] }}</span>
+                        <strong>{{ formatCompactAmount($category['amount']) }}</strong>
+                    </div>
+                    <div class="dashboard-bar-track">
+                        <div class="dashboard-bar" style="width: {{ round($category['share'], 2) }}%; background-color: #2B9E8F"></div>
+                    </div>
+                </div>
+            @empty
+                <p class="text-body-secondary mb-0">No expenses yet.</p>
+            @endforelse
+        </div>
+    </div>
+</div>
 
 @else
 <div class="col-sm-12">
@@ -85,73 +220,12 @@
 
 @endsection
 
-
-
 @push("page_scripts")
+<script>
+    document.title = document.title.concat(" | Dashboard");
+</script>
 
 @can('View Advanced Dashboard')
-
-<script src="{{asset("assets/plugins/amcharts4/core.js")}}"></script>
-<script src="{{asset("assets/plugins/amcharts4/charts.js")}}"></script>
-<script src="{{asset("assets/plugins/amcharts4/themes/animated.js")}}"></script>
-<script src="{{asset("assets/plugins/amcharts4/themes/dataviz.js")}}"></script>
-
-<script>
-    var title = document.title;
-    document.title = title.concat(" | Dashboard");
-</script>
-
-
-
-<!-- Sales Monthly trend -->
-<script>
-    am4core.ready(function() {
-    
-    // Themes begin
-    am4core.useTheme(am4themes_animated);
-    // Themes end
-    
-    // Create chart instance
-    var chart = am4core.create("monthly-sales", am4charts.XYChart);
-    
-    // Add data
-    chart.data = @json($monthlyTrends)
-
-    // Create category axis
-    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "month";
-    
-    // Create value axis
-    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.title.text = "Amount";
-    
-    // Create series
-    var series1 = chart.series.push(new am4charts.LineSeries());
-    series1.dataFields.valueY = "sales";
-    series1.dataFields.categoryX = "month";
-    series1.name = "Sales";
-    series1.strokeWidth = 3;
-    series1.bullets.push(new am4charts.CircleBullet());
-    series1.legendSettings.valueText = "{valueY}";
-    
-    
-    var series2 = chart.series.push(new am4charts.LineSeries());
-    series2.dataFields.valueY = "expenses";
-    series2.dataFields.categoryX = "month";
-    series2.name = 'Expenses';
-    series2.strokeWidth = 3;
-    series2.bullets.push(new am4charts.CircleBullet());
-    series2.legendSettings.valueText = "{valueY}";
-    
-    // Add chart cursor
-    chart.cursor = new am4charts.XYCursor();
-    chart.cursor.behavior = "zoomY";
-    
-    // Add legend
-    chart.legend = new am4charts.Legend();
-    
-    }); // end am4core.ready()
-</script>
-
+    @vite('resources/js/dashboard.js')
 @endcan
 @endpush
