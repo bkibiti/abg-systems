@@ -122,7 +122,7 @@ Expense
                                 <th>Expense Category</th>
                                 <th>Description</th>
                                 <th>Amount</th>
-                                <th>User</th>
+                                <th>Added By</th>
                                 @can('Edit Expenses')
                                 <th>Action</th>
                                 @endcan

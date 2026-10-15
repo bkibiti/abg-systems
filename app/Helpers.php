@@ -67,6 +67,14 @@ function notifications()
 /**
  * Format an amount compactly for the dashboard: 36.50M from one million up, 850k below that.
  */
+/**
+ * Full amount with thousands separators, e.g. 1100000 -> "1,100,000". Used on the dashboard.
+ */
+function formatAmount($value)
+{
+    return number_format(round((float) $value));
+}
+
 function formatCompactAmount(float $amount): string
 {
     $absolute = abs($amount);

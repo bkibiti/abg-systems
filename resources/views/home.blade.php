@@ -90,15 +90,15 @@
         <div class="card dashboard-card h-100">
             <div class="card-body">
                 <div class="dashboard-label">{{ $figure['title'] }} · {{ $periodLabel }}</div>
-                <div class="dashboard-figure">{{ formatCompactAmount($figure['amount']) }}</div>
+                <div class="dashboard-figure">{{ formatAmount($figure['amount']) }}</div>
                 <div class="small {{ $changeClass }}">
                     @if (is_null($figure['change']))
                         No {{ strtolower($figure['title']) }} for {{ $comparisonLabel }} to compare
                     @elseif (abs($figure['change']) < 0.05)
-                        No change vs {{ $comparisonLabel }} ({{ formatCompactAmount($figure['previous']) }})
+                        No change vs {{ $comparisonLabel }} ({{ formatAmount($figure['previous']) }})
                     @else
                         {{ $figure['change'] > 0 ? '▲' : '▼' }} {{ number_format(abs($figure['change']), 1) }}%
-                        vs {{ $comparisonLabel }} ({{ formatCompactAmount($figure['previous']) }})
+                        vs {{ $comparisonLabel }} ({{ formatAmount($figure['previous']) }})
                     @endif
                 </div>
             </div>
@@ -148,12 +148,12 @@
                 <div class="d-flex justify-content-between small mb-4">
                     <div>
                         <span class="dashboard-dot" style="background-color: #2B6CB0"></span>Items
-                        <strong>{{ formatCompactAmount($salesMix['items']) }}</strong>
+                        <strong>{{ formatAmount($salesMix['items']) }}</strong>
                         <span class="text-body-secondary">({{ number_format($salesMix['itemsPercent'], 1) }}%)</span>
                     </div>
                     <div class="text-end">
                         <span class="dashboard-dot" style="background-color: #D9480F"></span>Services
-                        <strong>{{ formatCompactAmount($salesMix['services']) }}</strong>
+                        <strong>{{ formatAmount($salesMix['services']) }}</strong>
                         <span class="text-body-secondary">({{ number_format($salesMix['servicesPercent'], 1) }}%)</span>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                         <div class="d-flex justify-content-between small mb-1">
                             <span>{{ $service['name'] }}</span>
                             <span>
-                                <strong>{{ formatCompactAmount($service['revenue']) }}</strong>
+                                <strong>{{ formatAmount($service['revenue']) }}</strong>
                                 <span class="text-body-secondary">· {{ $service['jobs'] }} {{ Str::plural('job', $service['jobs']) }}</span>
                             </span>
                         </div>
@@ -186,7 +186,7 @@
             <h5 class="card-title mb-0">Expenses by category</h5>
             <div class="card-tools small">
                 <span class="text-body-secondary">{{ $periodLabel }} ·</span>
-                <strong>{{ formatCompactAmount($expensesByCategory['total']) }}</strong>
+                <strong>{{ formatAmount($expensesByCategory['total']) }}</strong>
             </div>
         </div>
         <div class="card-body">
@@ -194,7 +194,7 @@
                 <div class="mb-3">
                     <div class="d-flex justify-content-between small mb-1">
                         <span>{{ $category['name'] }}</span>
-                        <strong>{{ formatCompactAmount($category['amount']) }}</strong>
+                        <strong>{{ formatAmount($category['amount']) }}</strong>
                     </div>
                     <div class="dashboard-bar-track">
                         <div class="dashboard-bar" style="width: {{ round($category['share'], 2) }}%; background-color: #2B9E8F"></div>

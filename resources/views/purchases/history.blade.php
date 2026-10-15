@@ -88,7 +88,7 @@
                                 <th>Unit Cost</th>
                                 <th>Total Cost</th>
                                 <th>Supplier</th>
-                                <th>User</th>
+                                <th>Added By</th>
                                 @can('Edit Purchase')
                                 <th>Action</th>
                                 @endcan

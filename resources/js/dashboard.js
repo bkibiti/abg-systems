@@ -8,23 +8,6 @@ const colors = {
     expenses: '#2B9E8F',
 };
 
-/**
- * Matches formatCompactAmount() in app/Helpers.php: 36.50M from one million up, 850k below that.
- */
-function formatCompactAmount(value) {
-    const absolute = Math.abs(value);
-
-    if (absolute >= 999500) {
-        return `${(value / 1000000).toFixed(2)}M`;
-    }
-
-    if (absolute >= 1000) {
-        return `${Math.round(value / 1000).toLocaleString('en-US')}k`;
-    }
-
-    return Math.round(value).toLocaleString('en-US');
-}
-
 function formatFullAmount(value) {
     return `TZS ${Math.round(value).toLocaleString('en-US')}`;
 }
@@ -58,7 +41,7 @@ if (canvas && dataElement) {
                     stacked: true,
                     beginAtZero: true,
                     title: { display: true, text: 'TZS' },
-                    ticks: { callback: (value) => formatCompactAmount(value) },
+                    ticks: { callback: (value) => Math.round(value).toLocaleString('en-US') },
                 },
             },
             plugins: {

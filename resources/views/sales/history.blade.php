@@ -64,13 +64,13 @@ Sales History
                     <table id="fixed-header1" class="display table nowrap table-striped table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Receipt #</th>
+                       
                                 <th>Date</th>
                                 <th>Item</th>
                                 <th>Qty</th>
                                 <th>Unit Cost</th>
                                 <th>Total Cost</th>
-                                <th>User</th>
+                                <th>Added By</th>
                                 @can('Edit Sales')
                                 <th>Action</th>
                                 @endcan
@@ -79,7 +79,7 @@ Sales History
                         <tbody>
                             @foreach($sales as $s)
                             <tr>
-                                <td>{{$s->receipt_number}}</td>
+                          
                                 <td>{{date_format($s->created_at,'d M Y')}}</td>
                                 <td>{{ $s->product->name ?? '(deleted product #'.$s->stock_id.')' }}</td>
                                 <td>{{number_format($s->quantity,0)}}</td>
