@@ -2,10 +2,15 @@ import { BarController, BarElement, CategoryScale, Chart, Legend, LinearScale, T
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+const rootStyles = getComputedStyle(document.documentElement);
+const cssVar = (name, fallback) => rootStyles.getPropertyValue(name).trim() || fallback;
+
 const colors = {
-    items: '#2B6CB0',
-    services: '#D9480F',
-    expenses: '#2B9E8F',
+    items: cssVar('--abg-item', '#5B6FB5'),
+    services: cssVar('--abg-service', '#2A9D8F'),
+    expenses: cssVar('--abg-expense', '#E0874E'),
+    grid: '#EFEBE2',
+    axisText: cssVar('--abg-muted', '#5C5C5C'),
 };
 
 function formatFullAmount(value) {
@@ -33,22 +38,31 @@ if (canvas && dataElement) {
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             datasets: {
-                bar: { borderRadius: 3, maxBarThickness: 36, categoryPercentage: 0.7, barPercentage: 0.9 },
+                bar: { borderRadius: 4, maxBarThickness: 36, categoryPercentage: 0.7, barPercentage: 0.9 },
             },
             scales: {
-                x: { stacked: true, grid: { display: false } },
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: { color: colors.axisText, font: { family: 'Archivo' } },
+                },
                 y: {
                     stacked: true,
                     beginAtZero: true,
-                    title: { display: true, text: 'TZS' },
-                    ticks: { callback: (value) => Math.round(value).toLocaleString('en-US') },
+                    title: { display: true, text: 'TZS', color: colors.axisText, font: { family: 'Archivo' } },
+                    grid: { color: colors.grid },
+                    ticks: {
+                        color: colors.axisText,
+                        font: { family: 'Archivo' },
+                        callback: (value) => Math.round(value).toLocaleString('en-US'),
+                    },
                 },
             },
             plugins: {
                 legend: {
                     position: 'top',
                     align: 'start',
-                    labels: { boxWidth: 12, boxHeight: 12 },
+                    labels: { boxWidth: 12, boxHeight: 12, color: colors.axisText, font: { family: 'Archivo' } },
                 },
                 tooltip: {
                     callbacks: {

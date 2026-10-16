@@ -47,11 +47,23 @@
     }
 
     .dashboard-dot {
-        border-radius: 3px;
+        border-radius: 50%;
         display: inline-block;
         height: 10px;
         margin-right: 4px;
         width: 10px;
+    }
+
+    .dashboard-period-switch .btn {
+        background-color: transparent;
+        border-color: var(--abg-input-border, #D8D4CB);
+        color: var(--abg-text, #141414);
+    }
+
+    .dashboard-period-switch .btn.active {
+        background-color: var(--abg-black, #0B0B0B);
+        border-color: var(--abg-black, #0B0B0B);
+        color: #FFFFFF;
     }
 </style>
 @endsection
@@ -66,10 +78,10 @@
 
 <div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
     <div class="text-body-secondary">{{ $today->format('l, j F Y') }}</div>
-    <div class="btn-group btn-group-sm" role="group" aria-label="Dashboard period">
+    <div class="btn-group btn-group-sm dashboard-period-switch" role="group" aria-label="Dashboard period">
         @foreach ($periods as $periodKey => $label)
             <a href="{{ route('home', ['period' => $periodKey]) }}"
-                class="btn {{ $periodKey === $period ? 'btn-primary' : 'btn-outline-secondary' }}"
+                class="btn {{ $periodKey === $period ? 'active' : '' }}"
                 @if ($periodKey === $period) aria-current="page" @endif>{{ $label }}</a>
         @endforeach
     </div>
@@ -89,7 +101,10 @@
     <div class="col-md-6 mb-4">
         <div class="card dashboard-card h-100">
             <div class="card-body">
-                <div class="dashboard-label">{{ $figure['title'] }} · {{ $periodLabel }}</div>
+                <div class="dashboard-label">
+                    <span class="dashboard-dot" style="background-color: {{ $figure['title'] === 'Sales' ? 'var(--abg-sales)' : 'var(--abg-expense)' }}"></span>
+                    {{ $figure['title'] }} · {{ $periodLabel }}
+                </div>
                 <div class="dashboard-figure">{{ formatAmount($figure['amount']) }}</div>
                 <div class="small {{ $changeClass }}">
                     @if (is_null($figure['change']))
@@ -138,21 +153,21 @@
                 <div class="progress-stacked mb-2" style="height: 28px">
                     <div class="progress" role="progressbar" aria-label="Items" style="height: 28px; width: {{ round($salesMix['itemsPercent'], 2) }}%"
                         aria-valuenow="{{ round($salesMix['itemsPercent']) }}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="background-color: #2B6CB0">{{ round($salesMix['itemsPercent']) >= 8 ? round($salesMix['itemsPercent']).'%' : '' }}</div>
+                        <div class="progress-bar" style="background-color: var(--abg-item)">{{ round($salesMix['itemsPercent']) >= 8 ? round($salesMix['itemsPercent']).'%' : '' }}</div>
                     </div>
                     <div class="progress" role="progressbar" aria-label="Services" style="height: 28px; width: {{ round($salesMix['servicesPercent'], 2) }}%"
                         aria-valuenow="{{ round($salesMix['servicesPercent']) }}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="background-color: #D9480F">{{ round($salesMix['servicesPercent']) >= 8 ? round($salesMix['servicesPercent']).'%' : '' }}</div>
+                        <div class="progress-bar" style="background-color: var(--abg-service)">{{ round($salesMix['servicesPercent']) >= 8 ? round($salesMix['servicesPercent']).'%' : '' }}</div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between small mb-4">
                     <div>
-                        <span class="dashboard-dot" style="background-color: #2B6CB0"></span>Items
+                        <span class="dashboard-dot" style="background-color: var(--abg-item)"></span>Items
                         <strong>{{ formatAmount($salesMix['items']) }}</strong>
                         <span class="text-body-secondary">({{ number_format($salesMix['itemsPercent'], 1) }}%)</span>
                     </div>
                     <div class="text-end">
-                        <span class="dashboard-dot" style="background-color: #D9480F"></span>Services
+                        <span class="dashboard-dot" style="background-color: var(--abg-service)"></span>Services
                         <strong>{{ formatAmount($salesMix['services']) }}</strong>
                         <span class="text-body-secondary">({{ number_format($salesMix['servicesPercent'], 1) }}%)</span>
                     </div>
@@ -169,7 +184,7 @@
                             </span>
                         </div>
                         <div class="dashboard-bar-track">
-                            <div class="dashboard-bar" style="width: {{ round($service['share'], 2) }}%; background-color: #D9480F"></div>
+                            <div class="dashboard-bar" style="width: {{ round($service['share'], 2) }}%; background-color: var(--abg-service)"></div>
                         </div>
                     </div>
                 @empty
@@ -196,8 +211,8 @@
                         <span>{{ $category['name'] }}</span>
                         <strong>{{ formatAmount($category['amount']) }}</strong>
                     </div>
-                    <div class="dashboard-bar-track">
-                        <div class="dashboard-bar" style="width: {{ round($category['share'], 2) }}%; background-color: #2B9E8F"></div>
+                    <div class="dashboard-bar-track" style="background-color: var(--abg-expense-track)">
+                        <div class="dashboard-bar" style="width: {{ round($category['share'], 2) }}%; background-color: var(--abg-expense)"></div>
                     </div>
                 </div>
             @empty

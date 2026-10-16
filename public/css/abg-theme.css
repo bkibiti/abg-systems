@@ -1,0 +1,252 @@
+/* ABG brand theme — layered on top of AdminLTE 4 / Bootstrap 5. Layout only; charts/data use the data colours below. */
+
+:root {
+    --abg-black: #0B0B0B;
+    --abg-gold: #C9A13F;
+    --abg-gold-hover: #B8892B;
+    --abg-gold-dark-text: #8A6A1E;
+
+    --abg-bg: #F6F4EF;
+    --abg-card: #FFFFFF;
+    --abg-border: #E7E3D9;
+    --abg-input-border: #D8D4CB;
+
+    --abg-text: #141414;
+    --abg-muted: #5C5C5C;
+
+    --abg-sales: #2F6B8A;
+    --abg-expense: #E0874E;
+    --abg-expense-track: #F7E6DA;
+
+    --abg-service: #2A9D8F;
+    --abg-service-bg: #DDF1EE;
+    --abg-service-text: #1D6B62;
+
+    --abg-item: #5B6FB5;
+    --abg-item-bg: #E5E9F6;
+    --abg-item-text: #34458A;
+}
+
+/* ---- Base ---- */
+body,
+.app-content-header,
+.app-content {
+    background-color: var(--abg-bg);
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--abg-text);
+}
+
+/* ---- Sidebar ---- */
+.app-sidebar {
+    background-color: var(--abg-black) !important;
+}
+
+.app-sidebar .sidebar-brand {
+    border-bottom: 1px solid #262626;
+}
+
+.app-sidebar .sidebar-brand .brand-text {
+    color: #FFFFFF;
+}
+
+.app-sidebar .nav-sidebar > .nav-item > .nav-link,
+.app-sidebar .sidebar-menu > .nav-item > .nav-link {
+    color: #D6D6D6;
+    font-size: 15px;
+    border-radius: 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.app-sidebar .nav-link:hover {
+    background-color: #1C1C1C;
+    color: #FFFFFF;
+}
+
+.app-sidebar .nav-link.active {
+    background-color: var(--abg-gold);
+    color: var(--abg-black);
+    font-weight: 700;
+}
+
+.app-sidebar .nav-link.active .nav-icon,
+.app-sidebar .nav-link.active .nav-arrow {
+    color: inherit;
+}
+
+.app-sidebar .nav-treeview {
+    border-left: 1px solid #262626;
+    margin-left: 1rem;
+}
+
+.app-sidebar .nav-treeview > .nav-item > .nav-link {
+    color: #BDBDBD;
+    font-size: 14px;
+}
+
+.app-sidebar .nav-treeview > .nav-item > .nav-link.active {
+    background-color: var(--abg-gold);
+    color: var(--abg-black);
+    font-weight: 700;
+}
+
+/* ---- Top header ---- */
+.app-header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid var(--abg-border);
+}
+
+.app-header .user-menu .avatar-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--abg-black);
+    color: var(--abg-gold);
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+/* ---- Cards ---- */
+.card {
+    background-color: var(--abg-card);
+    border: 1px solid var(--abg-border);
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.card-header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid var(--abg-border);
+    border-radius: 14px 14px 0 0;
+}
+
+.card-header .card-title {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* ---- Buttons ---- */
+.btn-primary,
+.btn-success {
+    background-color: var(--abg-gold);
+    border-color: var(--abg-gold);
+    color: var(--abg-black);
+    font-weight: 700;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-success:hover,
+.btn-success:focus {
+    background-color: var(--abg-gold-hover);
+    border-color: var(--abg-gold-hover);
+    color: var(--abg-black);
+}
+
+.btn-secondary,
+.btn-default,
+.btn-outline-secondary {
+    background-color: #FFFFFF;
+    border-color: var(--abg-input-border);
+    color: var(--abg-text);
+}
+
+.btn-secondary:hover,
+.btn-default:hover,
+.btn-outline-secondary:hover {
+    background-color: var(--abg-bg);
+    border-color: var(--abg-input-border);
+    color: var(--abg-text);
+}
+
+/* ---- Links ---- */
+.app-content a:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link) {
+    color: var(--abg-gold-dark-text);
+}
+
+/* ---- Forms ---- */
+.form-control,
+.form-select {
+    border: 1.5px solid var(--abg-input-border);
+    border-radius: 8px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--abg-gold);
+    box-shadow: 0 0 0 3px rgba(201, 161, 63, .22);
+}
+
+/* ---- Tables / DataTables ---- */
+.table thead,
+table.dataTable thead {
+    background-color: var(--abg-black);
+}
+
+.table thead th,
+table.dataTable thead th {
+    color: #FFFFFF;
+    font-weight: 600;
+    border-color: var(--abg-black);
+}
+
+.table tbody tr,
+table.dataTable tbody tr {
+    border-color: #EFEBE2;
+}
+
+.table tbody tr:hover,
+table.dataTable tbody tr:hover {
+    background-color: #FAF8F3;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    border: 1.5px solid var(--abg-input-border);
+    border-radius: 8px;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+    background-color: #FFFFFF;
+    border-color: var(--abg-input-border);
+    color: var(--abg-text);
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    background-color: var(--abg-black);
+    border-color: var(--abg-black);
+    color: #FFFFFF;
+}
+
+/* ---- Modals ---- */
+.modal-header {
+    background-color: #FFFFFF;
+}
+
+.modal-title {
+    font-weight: 700;
+}
+
+/* ---- Product type badges ---- */
+.badge-service {
+    background-color: var(--abg-service-bg);
+    color: var(--abg-service-text);
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}
+
+.badge-item {
+    background-color: var(--abg-item-bg);
+    color: var(--abg-item-text);
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}

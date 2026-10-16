@@ -17,6 +17,11 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/abg-theme.css') }}?v={{ filemtime(public_path('css/abg-theme.css')) }}">
+
     <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker-master/css/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/intl-tel-input/css/intlTelInput.css') }}">
 
@@ -112,8 +117,15 @@
                     </li>
 
                     <li class="nav-item dropdown user-menu">
+                        @php
+                            $userInitials = collect(explode(' ', Auth::user()->name))
+                                ->filter()
+                                ->map(fn ($part) => mb_substr($part, 0, 1))
+                                ->take(2)
+                                ->implode('');
+                        @endphp
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
+                            <span class="avatar-initials">{{ mb_strtoupper($userInitials) }}</span>
                             <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">

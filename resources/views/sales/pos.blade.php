@@ -241,7 +241,7 @@ Point of Sales
         $('#add_qoh').val(b.data('qoh'));
         $('#add_unit_cost').val(b.data('unit_cost'));
         $('#add_name').text(b.data('name'));
-        $('#add_badge').text(type).attr('class', 'badge ms-1 ' + (type === 'Service' ? 'text-bg-info' : 'text-bg-success'));
+        $('#add_badge').text(type).attr('class', 'badge ms-1 ' + (type === 'Service' ? 'badge-service' : 'badge-item'));
         $('#add_qty').val(1).attr('max', type === 'Item' ? b.data('qoh') : null);
         $('#add_total').val('');
         $('#add_qoh_text').val(b.data('qoh'));

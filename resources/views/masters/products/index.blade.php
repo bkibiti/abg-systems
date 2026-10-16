@@ -53,9 +53,9 @@
                                             <td>{{ $prod->category->name ?? '—' }}</td>
                                             <td>
                                                 @if($prod->type === 'Service')
-                                                    <span class="badge text-bg-info">Service</span>
+                                                    <span class="badge badge-service">Service</span>
                                                 @else
-                                                    <span class="badge text-bg-secondary">Item</span>
+                                                    <span class="badge badge-item">Item</span>
                                                 @endif
                                             </td>
                                             <td>{{ $prod->sale_price_1 !== null ? number_format($prod->sale_price_1, 2) : '—' }}</td>
