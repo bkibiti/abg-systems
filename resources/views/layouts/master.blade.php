@@ -146,7 +146,7 @@
             <div class="sidebar-brand">
                 <a href="{{ route('home') }}" class="brand-link">
                     @if ($logoUrl)
-                        <img src="{{ $logoUrl }}" alt="{{ $businessName }}" class="brand-image opacity-75 shadow">
+                        {{-- <img src="{{ $logoUrl }}" alt="{{ $businessName }}" class="brand-image opacity-75 shadow"> --}}
                     @else
                         <i class="bi bi-tools brand-image fs-4 text-warning"></i>
                     @endif
