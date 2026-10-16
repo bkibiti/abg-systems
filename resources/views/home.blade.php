@@ -65,7 +65,7 @@
 @endphp
 
 <div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-    <div class="text-body-secondary">{{ $today->format('l, j F Y') }} · figures in TZS</div>
+    <div class="text-body-secondary">{{ $today->format('l, j F Y') }}</div>
     <div class="btn-group btn-group-sm" role="group" aria-label="Dashboard period">
         @foreach ($periods as $periodKey => $label)
             <a href="{{ route('home', ['period' => $periodKey]) }}"
