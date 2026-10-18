@@ -387,6 +387,39 @@ table.dataTable tbody tr:hover {
     font-weight: 700;
 }
 
+.staff-card-subtitle {
+    font-size: 13px;
+    color: var(--abg-muted);
+}
+
+/* Long "last 7 days" lists scroll inside the card; header and total stay visible */
+.staff-table-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.staff-table-scroll .staff-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--abg-card);
+}
+
+.staff-table tfoot th {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--abg-card);
+    border-top: 2px solid var(--abg-border);
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.staff-table tfoot .amount-col {
+    text-align: right;
+}
+
 /* ---- Installed app (PWA standalone): keep content clear of notches and the home bar ---- */
 @media (display-mode: standalone) {
     body {

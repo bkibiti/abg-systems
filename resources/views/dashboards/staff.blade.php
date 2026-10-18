@@ -67,33 +67,44 @@
 <div class="col-lg-6 mb-4">
     <div class="card h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">My recent sales</h5>
+            <div>
+                <h5 class="card-title mb-0">My recent sales</h5>
+                <div class="staff-card-subtitle">Last 7 days</div>
+            </div>
             @can('View Sales History')
                 <a href="{{ route('sales.history') }}" class="staff-view-all">View all</a>
             @endcan
         </div>
         <div class="card-body">
             @if ($recentSales->isEmpty())
-                <p class="text-body-secondary mb-0">No sales yet today.</p>
+                <p class="text-body-secondary mb-0">No sales in the last 7 days.</p>
             @else
-                <table class="staff-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Product</th>
-                            <th class="amount-col">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($recentSales as $sale)
+                <div class="staff-table-scroll">
+                    <table class="staff-table">
+                        <thead>
                             <tr>
-                                <td>{{ $sale['date']->format('j M Y') }}</td>
-                                <td>{{ $sale['product'] }}</td>
-                                <td class="amount-col">{{ formatAmount($sale['amount']) }}</td>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th class="amount-col">Amount</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($recentSales as $sale)
+                                <tr>
+                                    <td>{{ $sale['date']->format('j M Y') }}</td>
+                                    <td>{{ $sale['product'] }}</td>
+                                    <td class="amount-col">{{ formatAmount($sale['amount']) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">Total (last 7 days)</th>
+                                <th class="amount-col">{{ formatAmount($recentSalesTotal) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             @endif
         </div>
     </div>
@@ -102,33 +113,46 @@
 <div class="col-lg-6 mb-4">
     <div class="card h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">My recent expenses</h5>
+            <div>
+                <h5 class="card-title mb-0">My recent expenses</h5>
+                <div class="staff-card-subtitle">Last 7 days</div>
+            </div>
             @canany(['View Expense Management', 'View Expenses', 'Add Expenses', 'Edit Expenses'])
                 <a href="{{ route('expense.index') }}" class="staff-view-all">View all</a>
             @endcanany
         </div>
         <div class="card-body">
             @if ($recentExpenses->isEmpty())
-                <p class="text-body-secondary mb-0">No expenses recorded yet.</p>
+                <p class="text-body-secondary mb-0">No expenses in the last 7 days.</p>
             @else
-                <table class="staff-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th class="amount-col">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($recentExpenses as $expense)
+                <div class="staff-table-scroll">
+                    <table class="staff-table">
+                        <thead>
                             <tr>
-                                <td>{{ $expense['date']->format('j M Y') }}</td>
-                                <td>{{ $expense['description'] }}</td>
-                                <td class="amount-col">{{ formatAmount($expense['amount']) }}</td>
+                                <th>Date</th>
+                                {{-- <th>Category</th> --}}
+                                <th>Description</th>
+                                <th class="amount-col">Amount</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($recentExpenses as $expense)
+                                <tr>
+                                    <td>{{ $expense['date']->format('j M Y') }}</td>
+                                    {{-- <td>{{ $expense['category'] }}</td> --}}
+                                    <td>{{ $expense['description'] }}</td>
+                                    <td class="amount-col">{{ formatAmount($expense['amount']) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3">Total (last 7 days)</th>
+                                <th class="amount-col">{{ formatAmount($recentExpensesTotal) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             @endif
         </div>
     </div>

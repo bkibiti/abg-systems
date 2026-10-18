@@ -95,13 +95,14 @@ class HomeController extends Controller
 
     /**
      * Show the simple dashboard for a user without "View Advanced Dashboard": today's totals
-     * and the last 5 sales/expenses they personally recorded.
+     * and every sale/expense they personally recorded in the last 7 days (today + the previous 6).
      */
     private function staffDashboard(): Renderable
     {
         $userId = auth()->id();
         $todayStart = CarbonImmutable::now('Africa/Dar_es_Salaam')->startOfDay()->setTimezone('UTC');
         $todayEnd = $todayStart->addDay();
+        $weekStart = $todayStart->subDays(6);
 
         $mySalesToday = (float) Sale::where('created_by', $userId)
             ->where('created_at', '>=', $todayStart)
@@ -115,28 +116,43 @@ class HomeController extends Controller
 
         $recentSales = Sale::with('product')
             ->where('created_by', $userId)
+            ->where('created_at', '>=', $weekStart)
+            ->where('created_at', '<', $todayEnd)
             ->orderByDesc('created_at')
-            ->limit(5)
+            ->orderByDesc('id')
             ->get()
             ->map(fn (Sale $sale): array => [
-                'date' => CarbonImmutable::parse($sale->created_at),
+                'date' => CarbonImmutable::parse($sale->created_at)->setTimezone('Africa/Dar_es_Salaam'),
                 'product' => $sale->product->name ?? '—',
                 'amount' => (float) $sale->quantity * (float) $sale->selling_price,
             ]);
 
         $recentExpenses = Expense::with('category')
             ->where('updated_by', $userId)
+            ->where('created_at', '>=', $weekStart)
+            ->where('created_at', '<', $todayEnd)
             ->orderByDesc('created_at')
-            ->limit(5)
+            ->orderByDesc('id')
             ->get()
             ->map(fn (Expense $expense): array => [
-                'date' => CarbonImmutable::parse($expense->created_at),
+                'date' => CarbonImmutable::parse($expense->created_at)->setTimezone('Africa/Dar_es_Salaam'),
                 'category' => $expense->category->name ?? '—',
                 'description' => $expense->expense_description ?: '—',
                 'amount' => (float) $expense->amount,
             ]);
 
-        return view('dashboards.staff', compact('mySalesToday', 'myExpensesToday', 'recentSales', 'recentExpenses'));
+        // Totals come from the same rows that are listed, so they always match
+        $recentSalesTotal = $recentSales->sum('amount');
+        $recentExpensesTotal = $recentExpenses->sum('amount');
+
+        return view('dashboards.staff', compact(
+            'mySalesToday',
+            'myExpensesToday',
+            'recentSales',
+            'recentExpenses',
+            'recentSalesTotal',
+            'recentExpensesTotal',
+        ));
     }
 
     /**

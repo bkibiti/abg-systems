@@ -67,6 +67,9 @@ Expense
     <div class="card">
         <div class="card-header">
                 <h3 class="card-title">Expenses</h3>
+                @cannot('View Advanced Dashboard')
+                    <div class="staff-card-subtitle">Showing expenses you recorded.</div>
+                @endcannot
                 <div class="card-tools">
                     @can('Add Expenses')
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" name="issued_date" value="Add Expense" title="Add Expense" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Expense</button>
@@ -99,7 +102,9 @@ Expense
                                 <th>Expense Category</th>
                                 <th>Description</th>
                                 <th>Amount</th>
+                                @can('View Advanced Dashboard')
                                 <th>Added By</th>
+                                @endcan
                                 @can('Edit Expenses')
                                 <th>Action</th>
                                 @endcan
@@ -114,7 +119,9 @@ Expense
                             <td>{{$x->category->name}}</td>
                             <td>{{ $x->expense_description }}</td>
                             <td>{{number_format($x->amount,2)}}</td>
-                            <td>{{$x->user->name}}</td>
+                            @can('View Advanced Dashboard')
+                            <td>{{ $x->user->name ?? '—' }}</td>
+                            @endcan
                                 @can('Edit Expenses')
                                 <td>
 
