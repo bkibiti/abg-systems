@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
+use App\Models\Sale;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Query\Builder;
@@ -44,7 +46,7 @@ class HomeController extends Controller
     public function index(Request $request): Renderable
     {
         if (! auth()->user()->can('View Advanced Dashboard')) {
-            return view('home');
+            return $this->staffDashboard();
         }
 
         $period = array_key_exists((string) $request->query('period'), self::PERIODS) ? (string) $request->query('period') : 'month';
@@ -89,6 +91,52 @@ class HomeController extends Controller
             'salesMix',
             'expensesByCategory',
         ));
+    }
+
+    /**
+     * Show the simple dashboard for a user without "View Advanced Dashboard": today's totals
+     * and the last 5 sales/expenses they personally recorded.
+     */
+    private function staffDashboard(): Renderable
+    {
+        $userId = auth()->id();
+        $todayStart = CarbonImmutable::now('Africa/Dar_es_Salaam')->startOfDay()->setTimezone('UTC');
+        $todayEnd = $todayStart->addDay();
+
+        $mySalesToday = (float) Sale::where('created_by', $userId)
+            ->where('created_at', '>=', $todayStart)
+            ->where('created_at', '<', $todayEnd)
+            ->sum(DB::raw('quantity * selling_price'));
+
+        $myExpensesToday = (float) Expense::where('updated_by', $userId)
+            ->where('created_at', '>=', $todayStart)
+            ->where('created_at', '<', $todayEnd)
+            ->sum('amount');
+
+        $recentSales = Sale::with('product')
+            ->where('created_by', $userId)
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn (Sale $sale): array => [
+                'date' => CarbonImmutable::parse($sale->created_at),
+                'product' => $sale->product->name ?? '—',
+                'amount' => (float) $sale->quantity * (float) $sale->selling_price,
+            ]);
+
+        $recentExpenses = Expense::with('category')
+            ->where('updated_by', $userId)
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn (Expense $expense): array => [
+                'date' => CarbonImmutable::parse($expense->created_at),
+                'category' => $expense->category->name ?? '—',
+                'description' => $expense->expense_description ?: '—',
+                'amount' => (float) $expense->amount,
+            ]);
+
+        return view('dashboards.staff', compact('mySalesToday', 'myExpensesToday', 'recentSales', 'recentExpenses'));
     }
 
     /**

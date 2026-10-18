@@ -70,6 +70,8 @@ Sales History
                                 <th>Qty</th>
                                 <th>Unit Cost</th>
                                 <th>Total Cost</th>
+                                <th>Customer</th>
+                                <th>Payment</th>
                                 <th>Added By</th>
                                 @can('Edit Sales')
                                 <th>Action</th>
@@ -85,6 +87,8 @@ Sales History
                                 <td>{{number_format($s->quantity,0)}}</td>
                                 <td>{{number_format($s->selling_price,2)}}</td>
                                 <td>{{number_format(($s->selling_price * $s->quantity), 2)}}</td>
+                                <td>{{ $s->customer->name ?? 'Walk-in' }}</td>
+                                <td>{{ $s->paymentMethod->name ?? '—' }}</td>
                                 <td>{{ $s->user->name ?? '—' }}</td>
                                 @can('Edit Sales')
                                 <td>

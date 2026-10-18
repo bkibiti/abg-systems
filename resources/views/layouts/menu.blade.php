@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a href="{{ route('sales.index') }}" class="nav-link {{ request()->routeIs('sales.index') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-circle"></i>
-                        <p>Point of Sale</p>
+                        <p>New sale</p>
                     </a>
                 </li>
             @endcan

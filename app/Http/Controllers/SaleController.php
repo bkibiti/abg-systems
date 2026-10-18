@@ -3,121 +3,150 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Stock;
-use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SaleController extends Controller
 {
+    private const LOCAL_TIMEZONE = 'Africa/Dar_es_Salaam';
+
+    /**
+     * New sale screen: one product line per sale, plus the user's sales today.
+     */
     public function index()
     {
-        // Products with stock, plus all services (services have no stock)
-        $current_stock = Stock::where(function ($q) {
-            $q->where('quantity', '>', 0)->orWhere('type', Stock::TYPE_SERVICE);
-        })->servicesFirst()->get();
+        // Items with stock, plus all services (services have no stock)
+        $products = Stock::select('id', 'name', 'type', 'sale_price_1', 'quantity')
+            ->where(function ($q) {
+                $q->where('quantity', '>', 0)->orWhere('type', Stock::TYPE_SERVICE);
+            })
+            ->servicesFirst()
+            ->get();
 
-        $users = User::permission('POS Users')->get();
-        $customers = Customer::orderBy('name', 'ASC')->get();
+        $customers = Customer::select('id', 'name')->where('status', 'Active')->orderBy('name')->get();
+        $paymentMethods = PaymentMethod::orderBy('id')->get();
 
-        return view('sales.pos', compact('current_stock', 'customers', 'users'));
+        $todayStart = CarbonImmutable::now(self::LOCAL_TIMEZONE)->startOfDay()->setTimezone('UTC');
+
+        $todaySales = Sale::with(['product:id,name', 'customer:id,name'])
+            ->where('created_by', Auth::id())
+            ->where('created_at', '>=', $todayStart)
+            ->where('created_at', '<', $todayStart->addDay())
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        $todayCount = $todaySales->count();
+        $todayTotal = $todaySales->sum(fn (Sale $sale): float => (float) $sale->quantity * (float) $sale->selling_price);
+
+        $lastSale = session('last_sale');
+        $canSelectSaleDate = getSettings('enable_sale_date_select') === 'YES';
+        $todayDate = CarbonImmutable::now(self::LOCAL_TIMEZONE)->toDateString();
+
+        return view('sales.pos', compact(
+            'products',
+            'customers',
+            'paymentMethods',
+            'todaySales',
+            'todayCount',
+            'todayTotal',
+            'lastSale',
+            'canSelectSaleDate',
+            'todayDate',
+        ));
     }
 
+    /**
+     * Save one sale line. Prices for items always come from the stock table.
+     */
     public function store(Request $request)
     {
+        $request->merge(['total' => str_replace(',', '', (string) $request->total) ?: null]);
+
+        $todayDate = CarbonImmutable::now(self::LOCAL_TIMEZONE)->toDateString();
+
         $request->validate([
-            'sale_order' => 'required',
+            'product_id' => 'required|integer|exists:stock,id',
+            'quantity' => 'required|integer|min:1',
+            'total' => 'nullable|numeric|gt:0',
+            'customer_id' => 'nullable|integer|exists:customers,id',
+            'payment_method_id' => 'required|integer|exists:payment_method,id',
+            'sale_date' => 'nullable|date_format:Y-m-d|before_or_equal:'.$todayDate,
+        ], [
+            'product_id.required' => 'Select a product or service.',
+            'quantity.min' => 'Quantity must be at least 1.',
+            'payment_method_id.required' => 'Select a payment method.',
+            'sale_date.before_or_equal' => 'The sale date cannot be in the future.',
         ]);
 
-        // Each order line: [id, qoh, name, qty, price, subtotal, unit_cost, type, total]
-        $lines = json_decode($request->sale_order, true);
-
-        if (! is_array($lines) || count($lines) === 0) {
-            session()->flash('alert-danger', 'Add at least one item or service to the order.');
-
-            return back();
+        // A past date is only used when the admin has enabled date selection in Settings
+        $saleDate = Carbon::now();
+        if (getSettings('enable_sale_date_select') === 'YES' && filled($request->sale_date) && $request->sale_date !== $todayDate) {
+            $saleDate = Carbon::parse($request->sale_date.' 12:00', self::LOCAL_TIMEZONE)->setTimezone('UTC');
         }
 
-        if ($request->sale_date == 'NA' || empty($request->sale_date)) {
-            $sale_date = Carbon::now();
-        } else {
-            $sale_date = date('Y-m-d', strtotime($request->sale_date));
-        }
+        $quantity = (int) $request->quantity;
 
-        // Validate every line against the database before saving anything
-        $order_details = [];
-        $stockChanges = [];
-
-        foreach ($lines as $line) {
-            $stock = Stock::find($line[0] ?? null);
-            $qty = (int) ($line[3] ?? 0);
-
-            if (! $stock || $qty < 1) {
-                session()->flash('alert-danger', 'Invalid line in the order. Please check and try again.');
-
-                return back();
-            }
+        $sale = DB::transaction(function () use ($request, $quantity, $saleDate) {
+            $stock = Stock::whereKey($request->product_id)->lockForUpdate()->first();
 
             if ($stock->isService()) {
-                // Service: quantity and TOTAL cost are entered at the POS
-                $total = (float) str_replace(',', '', $line[8] ?? $line[5] ?? 0);
-                if ($total <= 0) {
-                    session()->flash('alert-danger', "Enter the total cost for '{$stock->name}'.");
-
-                    return back();
+                if (blank($request->total)) {
+                    throw ValidationException::withMessages(['total' => 'Enter the total amount for this service.']);
                 }
-                $sellingPrice = round($total / $qty, 4);
+                $sellingPrice = round((float) $request->total / $quantity, 4);
                 $buyingPrice = 0;
             } else {
-                // Item: price always comes from the stock table
                 if (! $stock->sale_price_1 || $stock->sale_price_1 <= 0) {
-                    session()->flash('alert-danger', "'{$stock->name}' has no selling price. Set it in Masters > Products.");
-
-                    return back();
+                    throw ValidationException::withMessages(['product_id' => "'{$stock->name}' has no selling price. Set it in Masters > Products."]);
                 }
-                $alreadyInOrder = $stockChanges[$stock->id] ?? 0;
-                if ($qty + $alreadyInOrder > $stock->quantity) {
-                    session()->flash('alert-danger', "Only {$stock->quantity} of '{$stock->name}' in stock.");
-
-                    return back();
+                if ($quantity > $stock->quantity) {
+                    throw ValidationException::withMessages(['quantity' => 'Only '.formatAmount($stock->quantity)." of '{$stock->name}' in stock."]);
                 }
                 $sellingPrice = $stock->sale_price_1;
                 $buyingPrice = $stock->unit_cost ?? 0;
-                $stockChanges[$stock->id] = $alreadyInOrder + $qty;
             }
 
-            $order_details[] = [
-                'customer_id' => $request->customer_id,
-                'stock_id' => $stock->id,
-                'quantity' => $qty,
-                'buying_price' => $buyingPrice,
-                'selling_price' => $sellingPrice,
-                'created_by' => Auth::User()->id,
-                'created_at' => $sale_date,
-                'updated_at' => Carbon::now(),
-                'status' => '1',
-            ];
-        }
+            $sale = new Sale;
+            $sale->receipt_number = $this->generateReceiptNo();
+            $sale->customer_id = $request->customer_id;
+            $sale->stock_id = $stock->id;
+            $sale->quantity = $quantity;
+            $sale->buying_price = $buyingPrice;
+            $sale->selling_price = $sellingPrice;
+            $sale->payment_method_id = $request->payment_method_id;
+            $sale->created_by = Auth::id();
+            $sale->created_at = $saleDate;
+            $sale->updated_at = Carbon::now();
+            $sale->status = 1;
+            $sale->save();
 
-        DB::transaction(function () use (&$order_details, $stockChanges) {
-            $receiptNo = $this->generateReceiptNo();
-            foreach ($order_details as &$row) {
-                $row['receipt_number'] = $receiptNo;
+            // Services are not stocked
+            if (! $stock->isService()) {
+                Stock::where('id', $stock->id)->decrement('quantity', $quantity);
             }
-            unset($row);
 
-            DB::table('sales')->insert($order_details);
-
-            // Deduct sold items from stock (services are not stocked)
-            foreach ($stockChanges as $stockId => $soldQty) {
-                Stock::where('id', $stockId)->decrement('quantity', $soldQty);
-            }
+            return $sale;
         });
 
-        session()->flash('alert-success', 'Sale recorded successfully!');
+        $sale->load(['product:id,name', 'customer:id,name', 'paymentMethod']);
+
+        session()->flash('last_sale', [
+            'receipt_number' => $sale->receipt_number,
+            'product' => $sale->product->name,
+            'quantity' => $sale->quantity,
+            'customer' => $sale->customer->name ?? 'Walk-in',
+            'payment_method' => $sale->paymentMethod->name,
+            'amount' => (float) $sale->quantity * (float) $sale->selling_price,
+            'time' => CarbonImmutable::parse($sale->created_at)->setTimezone(self::LOCAL_TIMEZONE)->format('j M Y, H:i'),
+        ]);
 
         return back();
     }
@@ -157,7 +186,9 @@ class SaleController extends Controller
 
     public function history()
     {
-        $sales = Sale::whereRaw('month(created_at) = month(now()) and year(created_at)=year(now())')->get();
+        $sales = Sale::with(['product', 'user', 'updater', 'customer', 'paymentMethod'])
+            ->whereRaw('month(created_at) = month(now()) and year(created_at)=year(now())')
+            ->get();
         $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
         $total = 0;
@@ -173,7 +204,8 @@ class SaleController extends Controller
         $from = date('Y-m-d', strtotime($request->from_date));
         $to = date('Y-m-d', strtotime($request->to_date));
 
-        $sales = Sale::whereRaw("date(created_at) between '".$from."' and '".$to."'")
+        $sales = Sale::with(['product', 'user', 'updater', 'customer', 'paymentMethod'])
+            ->whereRaw("date(created_at) between '".$from."' and '".$to."'")
             ->where('stock_id', 'like', '%'.$request->product.'%')
             ->get();
 
