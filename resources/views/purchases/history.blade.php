@@ -81,7 +81,7 @@
                                 <tbody>
                                     @foreach($purchases as $p)
                                     <tr>
-                                            <td>{{date_format($p->created_at,'d M Y')}}</td>
+                                            <td data-order="{{ $p->created_at->format('Y-m-d H:i:s') }}">{{date_format($p->created_at,'d M Y')}}</td>
                                             <td>{{ $p->product->name ?? '(deleted product)' }}</td>
                                             <td>{{number_format($p->quantity,0) }}</td>
                                             <td>{{number_format($p->unit_cost,2)}}</td>

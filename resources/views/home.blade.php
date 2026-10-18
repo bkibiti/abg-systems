@@ -143,7 +143,7 @@
 <div class="col-lg-6 mb-4">
     <div class="card dashboard-card h-100">
         <div class="card-header">
-            <h5 class="card-title mb-0">Sales mix</h5>
+            <h5 class="card-title mb-0">Sales Summary</h5>
             <div class="card-tools text-body-secondary small">{{ $periodLabel }}</div>
         </div>
         <div class="card-body">

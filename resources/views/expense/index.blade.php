@@ -115,7 +115,7 @@ Expense
                         @foreach($Expenses as $x)
                         <tr>
                             {{-- <td>{{$x->created_at}}</td> --}}
-                            <td>{{date_format(new DateTime($x->created_at),'d M Y')}}</td>
+                            <td data-order="{{ $x->created_at }}">{{date_format(new DateTime($x->created_at),'d M Y')}}</td>
                             <td>{{$x->category->name}}</td>
                             <td>{{ $x->expense_description }}</td>
                             <td>{{number_format($x->amount,2)}}</td>

@@ -66,7 +66,7 @@ Sales History
                             @foreach($sales as $s)
                             <tr>
                           
-                                <td>{{date_format($s->created_at,'d M Y')}}</td>
+                                <td data-order="{{ $s->created_at->format('Y-m-d H:i:s') }}">{{date_format($s->created_at,'d M Y')}}</td>
                                 <td>{{ $s->product->name ?? '(deleted product #'.$s->stock_id.')' }}</td>
                                 <td>{{number_format($s->quantity,0)}}</td>
                                 <td>{{number_format($s->selling_price,2)}}</td>

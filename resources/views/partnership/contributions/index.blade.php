@@ -17,7 +17,6 @@ Contributions
         <div class="card-body">
             <div class="staff-figure-label"><span class="staff-dot" style="background-color: #5B6FB5"></span>Investment</div>
             <div class="staff-figure-amount">TZS {{ formatAmount($investmentTotal) }}</div>
-            <div class="staff-card-subtitle mt-1">Decides ownership shares</div>
         </div>
     </div>
 </div>
@@ -27,7 +26,6 @@ Contributions
         <div class="card-body">
             <div class="staff-figure-label"><span class="staff-dot" style="background-color: #E0874E"></span>Operations</div>
             <div class="staff-figure-amount">TZS {{ formatAmount($operationsTotal) }}</div>
-            <div class="staff-card-subtitle mt-1">Shown separately, not in shares</div>
         </div>
     </div>
 </div>
