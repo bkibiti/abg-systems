@@ -4,24 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\AccExpenseCategory;
 use App\Models\Expense;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class ExpenseController extends Controller
 {
-
-    public function index()
+    /**
+     * Expenses, filtered by date range (this month by default) and optionally by category.
+     */
+    public function index(Request $request)
     {
+        [$fromDate, $toDate] = $this->historyDateRange($request);
+
         $expense_category = AccExpenseCategory::all();
-        $Expenses = Expense::whereRaw('month(created_at) = month(now()) and year(created_at)=year(now())')->get();
-        
-        $total = 0;
-        foreach ($Expenses as $x) {
-            $total = $total + $x->amount;
-        }
-        return view('expense.index', compact('expense_category','Expenses','total'));
+        $Expenses = Expense::with(['category', 'user'])
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->when($request->filled('expense_category') && $request->expense_category != 0, fn ($q) => $q->where('expense_category_id', $request->expense_category))
+            ->get();
+
+        $total = $Expenses->sum('amount');
+
+        return view('expense.index', compact('expense_category', 'Expenses', 'total', 'fromDate', 'toDate'));
     }
 
     public function store(Request $request)
@@ -29,7 +34,7 @@ class ExpenseController extends Controller
         $request->validate([
             'expense_date' => 'required|date',
             'expense_amount' => 'required',
-            'expense_description'=> 'max:200',
+            'expense_description' => 'max:200',
         ]);
 
         $expense = new Expense;
@@ -41,7 +46,8 @@ class ExpenseController extends Controller
         $expense->updated_by = Auth::user()->id;
         $expense->save();
 
-        session()->flash("alert-success", "Expense added successfully!");
+        session()->flash('alert-success', 'Expense added successfully!');
+
         return back();
     }
 
@@ -50,7 +56,7 @@ class ExpenseController extends Controller
         $request->validate([
             'expense_date' => 'required|date',
             'expense_amount' => 'required',
-            'expense_description'=> 'max:200',
+            'expense_description' => 'max:200',
         ]);
 
         $expense = Expense::findOrFail($request->id);
@@ -62,34 +68,13 @@ class ExpenseController extends Controller
         $expense->updated_by = Auth::user()->id;
         $expense->save();
 
-        session()->flash("alert-success", "Expense updated successfully!");
+        session()->flash('alert-success', 'Expense updated successfully!');
+
         return back();
     }
 
     public function search(Request $request)
     {
-        $from = date('Y-m-d', strtotime($request->from_date));
-        $to = date('Y-m-d', strtotime($request->to_date));
-
-        if($request->expense_category == 0){
-            $Expenses = Expense::whereRaw("date(created_at) between '". $from . "' and '". $to ."'")->get();
-        }
-        else{
-            $Expenses = Expense::whereRaw("date(created_at) between '". $from . "' and '". $to ."'")
-                    ->where('expense_category_id',$request->expense_category)
-                    ->get();
-        }
-
-        $expense_category = AccExpenseCategory::all();
-      
-        $total = 0;
-        foreach ($Expenses as $x) {
-            $total = $total + $x->amount;
-        }
-        $request->flash();
-        return view('expense.index', compact('expense_category','Expenses','total'));
+        return $this->index($request);
     }
-
-
-
 }

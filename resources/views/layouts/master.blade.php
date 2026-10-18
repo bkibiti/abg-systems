@@ -11,9 +11,10 @@
     <title>{{ $businessName }}</title>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ filemtime(public_path('favicon.ico')) }}">
+    @include('partials.pwa_head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -136,6 +137,11 @@
                                     <small>{{ Auth::user()->position }}</small>
                                 </p>
                             </li>
+                            <li class="user-body d-none" id="install-app-item">
+                                <button type="button" class="btn btn-primary w-100" id="install-app-button">
+                                    <i class="bi bi-download"></i> Install app
+                                </button>
+                            </li>
                             <li class="user-footer">
                                 <a href="{{ route('change-pass-form') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-key"></i> Change Password
@@ -215,6 +221,41 @@
 
     @stack('page_scripts')
     @stack('bk_script')
+
+    @include('partials.pwa_register')
+    <script>
+        // "Install app" in the user menu: only shown when the browser offers installation
+        (function () {
+            const item = document.getElementById('install-app-item');
+            const button = document.getElementById('install-app-button');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            let installPrompt = null;
+
+            window.addEventListener('beforeinstallprompt', function (event) {
+                if (isStandalone) {
+                    return;
+                }
+                event.preventDefault();
+                installPrompt = event;
+                item.classList.remove('d-none');
+            });
+
+            button.addEventListener('click', async function () {
+                if (! installPrompt) {
+                    return;
+                }
+                installPrompt.prompt();
+                await installPrompt.userChoice;
+                installPrompt = null;
+                item.classList.add('d-none');
+            });
+
+            window.addEventListener('appinstalled', function () {
+                installPrompt = null;
+                item.classList.add('d-none');
+            });
+        })();
+    </script>
 </body>
 
 </html>

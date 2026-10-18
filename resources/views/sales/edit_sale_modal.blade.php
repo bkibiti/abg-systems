@@ -1,5 +1,5 @@
 <div class="modal fade" id="edit" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-fullscreen-sm-down" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Update Sales</h5>
@@ -16,11 +16,10 @@
                             <input type="hidden" name="id" id="id">
 
                             <div class="row mb-3">
-                                <label  class="col-md-4 col-form-label text-md-end">Sale Date<span style="color: red;">*</span></label>
+                                <label for="saledate" class="col-md-4 col-form-label text-md-end">Sale Date<span style="color: red;">*</span></label>
                                 <div class="col-md-8">
-                                    <div style="border: 2px solid white; border-radius: 6px;">
-                                        <input type="text" id="saledate" name="created_at" class="form-control" required>
-                                    </div>
+                                    <input type="date" id="saledate" name="created_at" class="form-control"
+                                        max="{{ now('Africa/Dar_es_Salaam')->toDateString() }}" required>
                                 </div>
                             </div>
                    

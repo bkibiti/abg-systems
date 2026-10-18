@@ -387,6 +387,54 @@ table.dataTable tbody tr:hover {
     font-weight: 700;
 }
 
+/* ---- Installed app (PWA standalone): keep content clear of notches and the home bar ---- */
+@media (display-mode: standalone) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    .app-header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .app-sidebar {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .app-footer {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    }
+
+    .pos-phone-footer {
+        padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    }
+}
+
+/* ---- History page filters (native date inputs) ---- */
+.history-filter-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--abg-muted);
+    margin-bottom: 4px;
+}
+
+.history-filter-input {
+    min-height: 42px;
+    font-size: 16px; /* 16px stops iOS zooming in on focus */
+}
+
+.history-filter-btn {
+    min-height: 42px;
+    padding-left: 18px;
+    padding-right: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
 /* ---- New sale (POS) ---- */
 .pos-label {
     font-weight: 700;

@@ -1,5 +1,5 @@
 <div class="modal fade" id="edit" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" tabindex="-1">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-fullscreen-sm-down" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Update Supplier</h5>

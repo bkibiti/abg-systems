@@ -1,5 +1,5 @@
 <div class="modal fade" id="editUser" role="dialog" tabindex="-1">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-fullscreen-sm-down" role="document">
           <div class="modal-content">
                 <div class="modal-header">
                         <h5 class="modal-title" >Update User </h5>

@@ -19,10 +19,6 @@ Expense
 @section("content")
 
 <style>
-    .datepicker>.datepicker-days {
-        display: block;
-    }
-
     ol.linenums {
         margin: 0 0 0 -8px;
     }
@@ -78,39 +74,20 @@ Expense
                 </div>
             </div>
         <div class="card-body">
-            <form id="expense_form" action="{{route('expense.search')}}" method="GET">
-                @csrf()
+            <form action="{{ route('expense.search') }}" method="GET">
+                <div class="row g-2 g-md-3 mb-3">
+                    <div class="col-12 col-md">
+                        <label for="filter_category" class="form-label history-filter-label">Category</label>
+                        <select name="expense_category" id="filter_category" class="form-select">
+                            <option value="0">All Categories</option>
+                            @foreach($expense_category as $x)
+                                <option value="{{ $x->id }}" @selected(request('expense_category') == $x->id)>{{ $x->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <div class="row mb-3">
-
-                    <div class="col-md-2">
-                        <div style="border: 2px solid white; border-radius: 6px;">
-                            <input type="text" name="from_date" class="form-control" id="from_date" value="{{ old('from_date') }}" required>
-                        </div> 
-                    </div>
-                    <div class="col-md-2">
-                        <div style="border: 2px solid white; border-radius: 6px;">
-                            <input type="text" name="to_date" class="form-control" id="to_date" value="{{ old('to_date') }}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div id="category" style="border: 2px solid white; border-radius: 6px;">
-                            <select name="expense_category" class="form-select">
-                                <option value="0" {{ (old('expense_category')==0 ? "selected":"") }} >All Categories
-                                </option>
-                                @foreach($expense_category as $x)
-                                    <option value="{{$x->id}}" {{ (old('expense_category')==$x->id ? "selected":"") }}>{{$x->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success">Filter</button>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
+                    @include('partials.date_filter', ['resetRoute' => 'expense.index'])
                 </div>
-
             </form>
     <hr>
             <div class="table-responsive">
@@ -188,8 +165,6 @@ Expense
 @endsection
 
 @push("page_scripts")
-<script src="{{asset("assets/plugins/bootstrap-datetimepicker/js/bootstrap-datepicker.min.js")}}"></script>
-<script src="{{asset("assets/js/pages/ac-datepicker.js")}}"></script>
 @include('partials.notification')
 
 <script>
@@ -205,72 +180,11 @@ Expense
     });
 
 
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#from_date').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#to_date').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-    $(function () {
-    var start = moment();
-    var end = moment();
-
-    $('#date').daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            maxDate: end,
-            autoUpdateInput: true,
-            locale: {
-                format: 'DD-M-YYYY'
-            }
-        });
-    });
-
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#date2').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-
     $('#edit').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var modal = $(this)
-    
-        modal.find('.modal-body #date2').val(button.data('date'));
+
+        modal.find('.modal-body #date2').val(String(button.data('date')).substring(0, 10));
         modal.find('.modal-body #expense_amount2').val(button.data('amount'));
         modal.find('.modal-body #expense_category2').val(button.data('expense_category'));
         modal.find('.modal-body #expense_description2').val(button.data('expense_description'));

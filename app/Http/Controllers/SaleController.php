@@ -184,40 +184,28 @@ class SaleController extends Controller
 
     }
 
-    public function history()
+    /**
+     * Sales history, filtered by date range (this month by default) and optionally by product.
+     */
+    public function history(Request $request)
     {
+        [$fromDate, $toDate] = $this->historyDateRange($request);
+
         $sales = Sale::with(['product', 'user', 'updater', 'customer', 'paymentMethod'])
-            ->whereRaw('month(created_at) = month(now()) and year(created_at)=year(now())')
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->when($request->filled('product'), fn ($q) => $q->where('stock_id', $request->product))
             ->get();
         $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
 
-        $total = 0;
-        foreach ($sales as $s) {
-            $total = $total + ($s->quantity * $s->selling_price);
-        }
+        $total = $sales->sum(fn (Sale $sale): float => (float) $sale->quantity * (float) $sale->selling_price);
 
-        return view('sales.history', compact('sales', 'total', 'products'));
+        return view('sales.history', compact('sales', 'total', 'products', 'fromDate', 'toDate'));
     }
 
     public function historySearch(Request $request)
     {
-        $from = date('Y-m-d', strtotime($request->from_date));
-        $to = date('Y-m-d', strtotime($request->to_date));
-
-        $sales = Sale::with(['product', 'user', 'updater', 'customer', 'paymentMethod'])
-            ->whereRaw("date(created_at) between '".$from."' and '".$to."'")
-            ->where('stock_id', 'like', '%'.$request->product.'%')
-            ->get();
-
-        $total = 0;
-        foreach ($sales as $s) {
-            $total = $total + ($s->quantity * $s->selling_price);
-        }
-
-        $products = Stock::select('id', 'name', 'type')->servicesFirst()->get();
-        $request->flash();
-
-        return view('sales.history', compact('sales', 'total', 'products'));
+        return $this->history($request);
     }
 
     public function generateReceiptNo()

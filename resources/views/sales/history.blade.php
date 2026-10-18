@@ -27,36 +27,20 @@ Sales History
         <div class="card-body">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                <form id="expense_form" action="{{route('sales.history-search')}}" method="post">
-                    @csrf()
-
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <select class="form-select select2"  class="form-select" name="product" data-width="100%">
-                                    <option value="1" {{ (old('product')==0 ? "selected":"") }}>All Products</option>
-
-                                    @foreach($products as $p)
-                                    <option value="{{ $p->id }}" {{ (old('product')==$p->id ? "selected":"") }}>{{ $p->name }}</option>
-                                    @endforeach
+                <form action="{{ route('sales.history-search') }}" method="GET">
+                    <div class="row g-2 g-md-3 mb-3">
+                        <div class="col-12 col-md">
+                            <label for="filter_product" class="form-label history-filter-label">Product</label>
+                            <select class="form-select select2" name="product" id="filter_product" data-width="100%">
+                                <option value="">All Products</option>
+                                @foreach($products as $p)
+                                    <option value="{{ $p->id }}" @selected(request('product') == $p->id)>{{ $p->name }}</option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-2">
-                            <div id="date" style="border: 2px solid white; border-radius: 6px;">
-                                <input type="text" name="from_date" class="form-control" id="from_date" value="{{ old('from_date') }}" required>
-                            </div> 
-                        </div>
-                        <div class="col-md-2">
-                            <div id="date" style="border: 2px solid white; border-radius: 6px;">
-                                <input type="text" name="to_date" class="form-control" id="to_date" value="{{ old('to_date') }}" required>
-                            </div>
-                        </div>
-                       
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-success">Filter</button>
-                        </div>
+                        @include('partials.date_filter', ['resetRoute' => 'sales.history'])
                     </div>
-
                 </form>
 
                 <hr>
@@ -144,9 +128,6 @@ Sales History
     @include('sales.view_sale_modal')
     @include('partials.notification')
 
-    <script src="{{asset("assets/plugins/bootstrap-datetimepicker/js/bootstrap-datepicker.min.js")}}"></script>
-    <script src="{{asset("assets/js/pages/ac-datepicker.js")}}"></script>
-
     <script>
         var title = document.title;
         document.title = title.concat(" | Sales | History");
@@ -157,59 +138,12 @@ Sales History
           order: [[0, "desc"]]
       });
 
-   
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#from_date').daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            maxDate: end,
-            autoUpdateInput: true,
-            locale: {
-                format: 'DD-M-YYYY'
-            }
-        });
-    });
-
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#to_date').daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            maxDate: end,
-            autoUpdateInput: true,
-            locale: {
-                format: 'DD-M-YYYY'
-            }
-        });
-    });
-
-    $(function () {
-        var start = moment();
-        var end = moment();
-
-        $('#saledate').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                maxDate: end,
-                autoUpdateInput: true,
-                locale: {
-                    format: 'DD-M-YYYY'
-                }
-            });
-    });
-
-
     $('#edit').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var modal = $(this);
 
         modal.find('.modal-body #id').val(button.data('id'));
-        modal.find('.modal-body #saledate').val(button.data('created_at'));
+        modal.find('.modal-body #saledate').val(String(button.data('created_at')).substring(0, 10));
         modal.find('.modal-body #name').val(button.data('name'));
         modal.find('.modal-body #selling_price').val(button.data('selling_price'))
         modal.find('.modal-body #quantity').val(button.data('quantity'))

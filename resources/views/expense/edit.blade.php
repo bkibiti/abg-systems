@@ -1,5 +1,5 @@
 <div class="modal fade" id="edit" role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-md" role="document">
+    <div class="modal-dialog modal-md modal-fullscreen-sm-down" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Update Expense</h5>
@@ -23,12 +23,10 @@
                             <input type="hidden" id="id" name="id">
 
                             <div class="row mb-3">
-                                <label  class="col-md-4 col-form-label text-md-end">{{ __('Date') }}<span style="color: red;">*</span></label>
+                                <label for="date2" class="col-md-4 col-form-label text-md-end">{{ __('Date') }}<span style="color: red;">*</span></label>
                                 <div class="col-md-8">
-                                    <div style="border: 2px solid white; border-radius: 6px;">
-                                        <input type="text" id="date2" name="expense_date" class="form-control"
-                                            required>
-                                    </div>
+                                    <input type="date" id="date2" name="expense_date" class="form-control"
+                                        max="{{ now('Africa/Dar_es_Salaam')->toDateString() }}" required>
                                 </div>
                             </div>
                    
