@@ -121,7 +121,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/change-password', [UserController::class, 'changePasswordForm'])->name('change-pass-form');
     Route::post('user-profile/update', [UserController::class, 'updateProfile'])->name('update-profile');
     Route::get('users/search', [UserController::class, 'search'])->name('users.search');
-    Route::post('users/user-role-id', [UserController::class, 'getRoleID'])->name('getRoleID');
 
     // Partnership routes
     Route::get('partnership', [PartnerController::class, 'index'])->name('partnership.index')->middleware('can:View Partnership');

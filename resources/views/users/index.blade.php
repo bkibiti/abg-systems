@@ -100,7 +100,7 @@
                             <button class="btn btn-info btn-sm" data-name="{{$user->name}}"
                                 data-email="{{$user->email}}" data-id="{{$user->id}}" data-username="{{$user->username}}"
                                 data-job="{{$user->position}}"  data-mobile="{{$user->mobile}}"
-                                data-role="{{ implode(", ", $user->getRoleNames()->toArray()) }}"
+                                data-role-id="{{ optional($user->roles->first())->id }}"
                                 type="button" data-bs-toggle="modal" data-bs-target="#editUser">Edit</button>
                         </a>
 
@@ -157,7 +157,7 @@
         var email=button.data('email')
         var mobile=button.data('mobile')
         var job=button.data('job')
-        var role=button.data('role')
+        var roleId = button.data('role-id')
         var id=button.data('id')
         var modal = $(this)
 
@@ -168,17 +168,7 @@
         modal.find('.modal-body #position1').val(job);
         modal.find('.modal-body #mobile1').val(mobile).change();
         modal.find('.modal-body #UserID').val(id);
-
-        var _token = $('input[name="_token"]').val();
-        $.ajax({
-            url:"{{route('getRoleID')}}",
-            method:"POST",
-            data:{role:role, _token:_token},
-            success:function(result)
-            {
-                $('#role1').val(result).change();
-            }
-        })
+        modal.find('.modal-body #role1').val(roleId ? String(roleId) : '').change();
 
       });//end edit
 

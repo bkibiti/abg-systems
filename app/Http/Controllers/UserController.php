@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
-
 
 class UserController extends Controller
 {
@@ -17,9 +16,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::where('status',1)->orderBy('name')->get();
+        $users = User::where('status', 1)->orderBy('name')->get();
 
-        return view('users.index', compact("users"));
+        return view('users.index', compact('users'));
     }
 
     public function store(Request $request)
@@ -32,7 +31,6 @@ class UserController extends Controller
             'username' => 'required|string|max:20|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
-
 
         $roles = $this->selectedRoles($request->role);
         if ($roles->isEmpty()) {
@@ -54,7 +52,8 @@ class UserController extends Controller
             $user->syncRoles($roles);
         });
 
-        session()->flash("alert-success", "User created successfully!");
+        session()->flash('alert-success', 'User created successfully!');
+
         return back();
     }
 
@@ -65,7 +64,6 @@ class UserController extends Controller
             'role1' => 'required',
             'position1' => 'nullable|string|max:50',
         ]);
-
 
         $roles = $this->selectedRoles($request->role1);
         if ($roles->isEmpty()) {
@@ -80,10 +78,10 @@ class UserController extends Controller
 
         $user->syncRoles($roles);
 
-        session()->flash("alert-success", "User updated successfully!");
+        session()->flash('alert-success', 'User updated successfully!');
+
         return back();
     }
-
 
     public function deActivate(Request $request)
     {
@@ -94,7 +92,8 @@ class UserController extends Controller
             $user->status = 0;
             $user->save();
 
-            session()->flash("alert-success", "User de-activated successfully!");
+            session()->flash('alert-success', 'User de-activated successfully!');
+
             // return redirect()->back();
             return redirect()->route('users.index');
         }
@@ -104,7 +103,8 @@ class UserController extends Controller
             $user->status = 1;
             $user->save();
 
-            session()->flash("alert-success", "User activated successfully!");
+            session()->flash('alert-success', 'User activated successfully!');
+
             // return redirect()->back();
             return redirect()->route('users.index');
 
@@ -116,36 +116,38 @@ class UserController extends Controller
     {
         return view('users.change_password');
     }
-    
+
     public function changePassword(Request $request)
     {
-        if (!(Hash::check($request->current_password, Auth::user()->password))) {
-            //The passwords matches
-            session()->flash("alert-danger", "Your current password does not matches with the password you provided. Please try again.");
+        if (! (Hash::check($request->current_password, Auth::user()->password))) {
+            // The passwords matches
+            session()->flash('alert-danger', 'Your current password does not matches with the password you provided. Please try again.');
+
             return redirect()->back();
         }
- 
-        if(strcmp($request->current_password, $request->new_password) == 0){
-            //Current password and new password are same
-            session()->flash("alert-danger", "New Password cannot be same as your current password. Please choose a different password.");
+
+        if (strcmp($request->current_password, $request->new_password) == 0) {
+            // Current password and new password are same
+            session()->flash('alert-danger', 'New Password cannot be same as your current password. Please choose a different password.');
+
             return redirect()->back();
         }
- 
+
         $request->validate([
             'current_password' => 'required',
             'new_password' => 'required|string|min:6|confirmed',
         ]);
- 
-        //Change Password
+
+        // Change Password
         $user = Auth::user();
         $user->password = Hash::make($request->new_password);
         $user->save();
-        
-        session()->flash("alert-success","Password changed successfully !");
-        return redirect()->back();
-       
-    }
 
+        session()->flash('alert-success', 'Password changed successfully !');
+
+        return redirect()->back();
+
+    }
 
     /**
      * The form sends role IDs (role[] / role1[]). laravel-permission v6 treats plain
@@ -158,33 +160,21 @@ class UserController extends Controller
         return Role::whereIn('id', $ids)->get();
     }
 
-    public function getRoleID(Request $request)
+    public function search(Request $request)
     {
-        $data = DB::table('roles')
-            ->select('id')
-            ->where('name', $request->role)
-            ->get();
-
-        return $data[0]->id;
-    }
-
-    public function search(Request $request){
-        if ($request->status == '0'){
+        if ($request->status == '0') {
             $users = User::all();
         }
-        if ($request->status == '1'){
-            $users = User::where('status',1)->get();
+        if ($request->status == '1') {
+            $users = User::where('status', 1)->get();
         }
-        if ($request->status == '2'){
-            $users = User::where('status',0)->get();
+        if ($request->status == '2') {
+            $users = User::where('status', 0)->get();
         }
 
         $request->flash();
 
-        return view('users.index', compact("users"));
+        return view('users.index', compact('users'));
 
     }
-
-
-
 }
