@@ -4,6 +4,7 @@
     $purchasesActive = request()->routeIs('goods-receiving.*');
     $usersActive = request()->routeIs('roles.*', 'users.*');
     $mastersActive = request()->routeIs('products.*', 'categories.*', 'expense-categories.*', 'suppliers.*', 'reminders.*');
+    $partnershipActive = request()->routeIs('partnership.*');
 @endphp
 
 <li class="nav-item">
@@ -12,7 +13,28 @@
         <p>Dashboard</p>
     </a>
 </li>
-
+@can('View Partnership')
+    <li class="nav-item {{ $partnershipActive ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ $partnershipActive ? 'active' : '' }}">
+            <i class="nav-icon bi bi-people-fill"></i>
+            <p>Partnership <i class="nav-arrow bi bi-chevron-right"></i></p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{{ route('partnership.index') }}" class="nav-link {{ request()->routeIs('partnership.index', 'partnership.partners.show') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-circle"></i>
+                    <p>Overview</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('partnership.contributions.index') }}" class="nav-link {{ request()->routeIs('partnership.contributions.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-circle"></i>
+                    <p>Contributions</p>
+                </a>
+            </li>
+        </ul>
+    </li>
+@endcan
 @canany(['View Sales Management', 'Point of Sales', 'View Sales History'])
     <li class="nav-item {{ $salesActive ? 'menu-open' : '' }}">
         <a href="#" class="nav-link {{ $salesActive ? 'active' : '' }}">
@@ -102,6 +124,8 @@
         </a>
     </li>
 @endcanany
+
+
 
 @can('View Reports')
     <li class="nav-item">

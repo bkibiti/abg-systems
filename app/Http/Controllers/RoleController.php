@@ -9,19 +9,19 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-
     public function index()
     {
         $roles = Role::get();
         $permissions = Permission::get();
 
-        return view("roles.index", compact("roles", "permissions"));
+        return view('roles.index', compact('roles', 'permissions'));
     }
 
     public function create()
     {
         $permissions = Permission::get();
-        return view("roles.create", compact("permissions"));
+
+        return view('roles.create', compact('permissions'));
     }
 
     public function store(Request $request)
@@ -42,21 +42,22 @@ class RoleController extends Controller
         // as permission NAMES, so pass the Permission models instead.
         $role->syncPermissions($this->selectedPermissions($request));
 
-        session()->flash("alert-success", "Role created successfully!");
+        session()->flash('alert-success', 'Role created successfully!');
+
         return redirect()->route('roles.index');
     }
-
 
     public function edit($id)
     {
         $role = Role::findOrFail($id);
 
-        $permissionsAssigned = $role->permissions()->pluck('id')->all();
+        // Cast to int: pluck('id') can come back as strings depending on the DB driver's
+        // PDO attributes, which broke the view's in_array() ticking check on some servers.
+        $rolePermissions = $role->permissions()->pluck('id')->map(fn ($id) => (int) $id)->all();
         $permissionsAll = Permission::get();
 
-        return view("roles.edit", compact('role', 'permissionsAll', 'permissionsAssigned'));
+        return view('roles.edit', compact('role', 'permissionsAll', 'rolePermissions'));
     }
-
 
     public function update(Request $request)
     {
@@ -75,7 +76,8 @@ class RoleController extends Controller
 
         $role->syncPermissions($this->selectedPermissions($request));
 
-        session()->flash("alert-success", "Role updated successfully!");
+        session()->flash('alert-success', 'Role updated successfully!');
+
         return redirect()->route('roles.index');
     }
 
@@ -88,7 +90,8 @@ class RoleController extends Controller
             $role->delete();
         }
 
-        session()->flash("alert-success", "Role deleted successfully!");
+        session()->flash('alert-success', 'Role deleted successfully!');
+
         return back();
     }
 

@@ -75,6 +75,27 @@ function formatAmount($value)
     return number_format(round((float) $value));
 }
 
+/**
+ * Deterministic colour for a partner's avatar/bar segment, cycling through a fixed palette by id.
+ */
+function partnerColor(int $partnerId): string
+{
+    $colors = ['#2F6B8A', '#2A9D8F', '#6B5B95', '#8A6A1E', '#3D3D3D'];
+
+    return $colors[$partnerId % count($colors)];
+}
+
+/**
+ * Up to two uppercase initials from a name, e.g. "John Doe" -> "JD".
+ */
+function initials(string $name): string
+{
+    $words = array_filter(explode(' ', trim($name)));
+    $initials = array_map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)), $words);
+
+    return implode('', array_slice($initials, 0, 2)) ?: '?';
+}
+
 function formatCompactAmount(float $amount): string
 {
     $absolute = abs($amount);

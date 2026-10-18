@@ -420,6 +420,100 @@ table.dataTable tbody tr:hover {
     text-align: right;
 }
 
+/* ---- Partnership ---- */
+.partner-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.partner-avatar-lg {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    font-size: 18px;
+}
+
+.badge-investment {
+    background-color: #E5E9F6;
+    color: #34458A;
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}
+
+.badge-operations {
+    background-color: #FAEBDD;
+    color: #8A4A1C;
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}
+
+.partnership-share-bar {
+    display: flex;
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--abg-bg);
+}
+
+.partnership-share-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 8px;
+}
+
+.partnership-mini-bar {
+    display: inline-block;
+    width: 70px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: var(--abg-bg);
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.partnership-mini-bar-fill {
+    display: block;
+    height: 100%;
+    background-color: var(--abg-gold);
+    border-radius: 4px;
+}
+
+.partnership-share-card {
+    background-color: var(--abg-black);
+    border-radius: 14px;
+    color: #FFFFFF;
+}
+
+.partnership-share-card .partnership-share-value {
+    color: var(--abg-gold);
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.partnership-share-card .partnership-share-sub {
+    color: #CFCFCF;
+    font-size: 13px;
+}
+
 /* ---- Installed app (PWA standalone): keep content clear of notches and the home bar ---- */
 @media (display-mode: standalone) {
     body {

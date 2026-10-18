@@ -18,6 +18,15 @@
 
 @section("content")
 
+@php
+    // old('permissions') wins after a failed validation (e.g. duplicate name), so the admin's
+    // ticks aren't lost; otherwise fall back to what the role already has. Both sides are cast
+    // to int so in_array(..., true) compares reliably regardless of DB driver string/int quirks.
+    $selectedPermissions = old('permissions') !== null
+        ? array_map('intval', (array) old('permissions'))
+        : $rolePermissions;
+@endphp
+
 <div class="col-sm-12">
 
 <div class="card">
@@ -58,7 +67,7 @@
                     @foreach ($permissionsAll as $permission)
                         <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="permissions[]" id="{{$permission->id}}" value="{{$permission->id}}">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permissions[]" id="{{$permission->id}}" value="{{$permission->id}}" @checked(in_array((int) $permission->id, $selectedPermissions, true))>
                                     <label for="{{$permission->id}}" class="form-check-label"> {{$permission->name}}</label>
                                 </div>
                         </div>
@@ -89,40 +98,39 @@
 @push("page_scripts")
 @include('partials.notification')
 
+{{-- Plain JS (no jQuery) so "Check all" keeps working even if public/build assets drift. --}}
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    var checkAll = document.getElementById('check_all');
+    var checkboxes = document.querySelectorAll('.perm-checkbox');
 
-$(document).ready(function() {
-
-    $('#check_all').click(function() {
-            var c = this.checked;
-            $(':checkbox').prop('checked',c);
-    });
-
-    var permissions = @json($permissionsAssigned);
-
-
-    $('input[type=checkbox]').each(function () {
-              var id = $(this).val();
-              if (ValueExist(id,permissions)==1) {
-                      $(this).attr('checked', true);
-              }
-    });
-
-    function ValueExist(value,arr){
-        var status = '0';
-
-        for(var i=0; i<arr.length; i++){
-                var name = arr[i];
-                if(name == value){
-                        status = '1';
-                        break;
-                }
-        }
-        return status;
+    if (!checkAll || checkboxes.length === 0) {
+        return;
     }
 
+    function syncCheckAll() {
+        var checkedCount = 0;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                checkedCount++;
+            }
+        });
+        checkAll.checked = checkedCount === checkboxes.length;
+        checkAll.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+    }
+
+    checkAll.addEventListener('change', function () {
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = checkAll.checked;
+        });
+        checkAll.indeterminate = false;
+    });
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', syncCheckAll);
+    });
+
+    syncCheckAll();
 });
-
 </script>
-
 @endpush

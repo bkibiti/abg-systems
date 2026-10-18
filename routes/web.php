@@ -6,6 +6,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PartnerContributionController;
+use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
@@ -120,5 +122,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('user-profile/update', [UserController::class, 'updateProfile'])->name('update-profile');
     Route::get('users/search', [UserController::class, 'search'])->name('users.search');
     Route::post('users/user-role-id', [UserController::class, 'getRoleID'])->name('getRoleID');
+
+    // Partnership routes
+    Route::get('partnership', [PartnerController::class, 'index'])->name('partnership.index')->middleware('can:View Partnership');
+    Route::get('partnership/contributions', [PartnerContributionController::class, 'index'])->name('partnership.contributions.index')->middleware('can:View Partnership');
+    Route::get('partnership/partners/{partner}', [PartnerController::class, 'show'])->name('partnership.partners.show')->middleware('can:View Partnership');
+
+    Route::post('partnership/partners', [PartnerController::class, 'store'])->name('partnership.partners.store')->middleware('can:Manage Partnership');
+    Route::put('partnership/partners/{partner}', [PartnerController::class, 'update'])->name('partnership.partners.update')->middleware('can:Manage Partnership');
+    Route::delete('partnership/partners/{partner}', [PartnerController::class, 'destroy'])->name('partnership.partners.destroy')->middleware('can:Manage Partnership');
+
+    Route::post('partnership/contributions', [PartnerContributionController::class, 'store'])->name('partnership.contributions.store')->middleware('can:Manage Partnership');
+    Route::put('partnership/contributions/{contribution}', [PartnerContributionController::class, 'update'])->name('partnership.contributions.update')->middleware('can:Manage Partnership');
+    Route::delete('partnership/contributions/{contribution}', [PartnerContributionController::class, 'destroy'])->name('partnership.contributions.destroy')->middleware('can:Manage Partnership');
 
 });

@@ -18,6 +18,12 @@
 
 @section("content")
 
+@php
+    // Repopulate ticks after a failed validation (e.g. duplicate name) so the admin doesn't
+    // have to re-tick everything. Cast to int so in_array(..., true) compares reliably.
+    $selectedPermissions = array_map('intval', (array) old('permissions', []));
+@endphp
+
 <div class="col-sm-12">
 
 <div class="card">
@@ -56,7 +62,7 @@
                     @foreach ($permissions as $permission)
                         <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="permissions[]" id="{{$permission->id}}" value="{{$permission->id}}">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permissions[]" id="{{$permission->id}}" value="{{$permission->id}}" @checked(in_array((int) $permission->id, $selectedPermissions, true))>
                                     <label for="{{$permission->id}}" class="form-check-label"> {{$permission->name}}</label>
                                 </div>
                         </div>
@@ -87,19 +93,39 @@
 @push("page_scripts")
 @include('partials.notification')
 
+{{-- Plain JS (no jQuery) so "Check all" keeps working even if public/build assets drift. --}}
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    var checkAll = document.getElementById('check_all');
+    var checkboxes = document.querySelectorAll('.perm-checkbox');
 
-$(document).ready(function() {
+    if (!checkAll || checkboxes.length === 0) {
+        return;
+    }
 
-    $('#check_all').click(function() {
-            var c = this.checked;
-            $(':checkbox').prop('checked',c);
+    function syncCheckAll() {
+        var checkedCount = 0;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                checkedCount++;
+            }
+        });
+        checkAll.checked = checkedCount === checkboxes.length;
+        checkAll.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+    }
+
+    checkAll.addEventListener('change', function () {
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = checkAll.checked;
+        });
+        checkAll.indeterminate = false;
     });
 
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', syncCheckAll);
+    });
 
-
+    syncCheckAll();
 });
-
 </script>
-
 @endpush
