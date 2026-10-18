@@ -1,13 +1,12 @@
-import { BarController, BarElement, CategoryScale, Chart, Legend, LinearScale, Tooltip } from 'chart.js';
+import { CategoryScale, Chart, Filler, Legend, LinearScale, LineController, LineElement, PointElement, Tooltip } from 'chart.js';
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, Filler, Tooltip, Legend);
 
 const rootStyles = getComputedStyle(document.documentElement);
 const cssVar = (name, fallback) => rootStyles.getPropertyValue(name).trim() || fallback;
 
 const colors = {
-    items: cssVar('--abg-item', '#5B6FB5'),
-    services: cssVar('--abg-service', '#2A9D8F'),
+    sales: cssVar('--abg-sales', '#2F6B8A'),
     expenses: cssVar('--abg-expense', '#E0874E'),
     grid: '#EFEBE2',
     axisText: cssVar('--abg-muted', '#5C5C5C'),
@@ -17,6 +16,27 @@ function formatFullAmount(value) {
     return `TZS ${Math.round(value).toLocaleString('en-US')}`;
 }
 
+/** "#2F6B8A" + 0.08 -> "rgba(47, 107, 138, 0.08)" */
+function withAlpha(hex, alpha) {
+    const value = hex.replace('#', '');
+    const [red, green, blue] = [0, 2, 4].map((start) => parseInt(value.slice(start, start + 2), 16));
+
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
+const lineStyle = (color) => ({
+    borderColor: color,
+    borderWidth: 3,
+    tension: 0.3,
+    pointRadius: 3,
+    pointHoverRadius: 6,
+    pointBackgroundColor: '#FFFFFF',
+    pointBorderColor: color,
+    pointBorderWidth: 2,
+    pointHoverBackgroundColor: '#FFFFFF',
+    pointHoverBorderColor: color,
+});
+
 const canvas = document.getElementById('sales-expenses-chart');
 const dataElement = document.getElementById('sales-expenses-data');
 
@@ -24,30 +44,38 @@ if (canvas && dataElement) {
     const months = JSON.parse(dataElement.textContent);
 
     new Chart(canvas, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: months.map((month) => month.label),
             datasets: [
-                { label: 'Items', data: months.map((month) => month.items), backgroundColor: colors.items, stack: 'sales' },
-                { label: 'Services', data: months.map((month) => month.services), backgroundColor: colors.services, stack: 'sales' },
-                { label: 'Expenses', data: months.map((month) => month.expenses), backgroundColor: colors.expenses, stack: 'expenses' },
+                {
+                    label: 'Sales',
+                    // Months without sales are 0, never a gap
+                    data: months.map((month) => Number(month.total) || 0),
+                    ...lineStyle(colors.sales),
+                    fill: 'origin',
+                    backgroundColor: withAlpha(colors.sales, 0.08),
+                },
+                {
+                    label: 'Expenses',
+                    data: months.map((month) => Number(month.expenses) || 0),
+                    ...lineStyle(colors.expenses),
+                    borderDash: [6, 4],
+                    fill: false,
+                    backgroundColor: colors.expenses,
+                },
             ],
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
-            datasets: {
-                bar: { borderRadius: 4, maxBarThickness: 36, categoryPercentage: 0.7, barPercentage: 0.9 },
-            },
             scales: {
                 x: {
-                    stacked: true,
                     grid: { display: false },
                     ticks: { color: colors.axisText, font: { family: 'Archivo' } },
                 },
                 y: {
-                    stacked: true,
                     beginAtZero: true,
                     title: { display: true, text: 'TZS', color: colors.axisText, font: { family: 'Archivo' } },
                     grid: { color: colors.grid },
@@ -62,14 +90,20 @@ if (canvas && dataElement) {
                 legend: {
                     position: 'top',
                     align: 'start',
-                    labels: { boxWidth: 12, boxHeight: 12, color: colors.axisText, font: { family: 'Archivo' } },
+                    // A short line sample in the legend, so the dashed Expenses line is recognisable there too
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                        pointStyleWidth: 28,
+                        color: colors.axisText,
+                        font: { family: 'Archivo' },
+                    },
                 },
                 tooltip: {
+                    mode: 'index',
+                    intersect: false,
                     callbacks: {
                         label: (context) => `${context.dataset.label}: ${formatFullAmount(context.raw)}`,
-                        afterLabel: (context) => context.datasetIndex === 1
-                            ? `Total sales: ${formatFullAmount(months[context.dataIndex].total)}`
-                            : '',
                     },
                 },
             },

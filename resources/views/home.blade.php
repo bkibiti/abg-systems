@@ -130,7 +130,7 @@
         </div>
         <div class="card-body">
             <div class="dashboard-chart">
-                <canvas id="sales-expenses-chart" aria-label="Monthly sales by items and services, and expenses" role="img"></canvas>
+                <canvas id="sales-expenses-chart" aria-label="Line chart of monthly sales and expenses" role="img"></canvas>
             </div>
             <script type="application/json" id="sales-expenses-data">@json($monthlyTrend)</script>
 
