@@ -25,6 +25,9 @@
     --abg-item: #5B6FB5;
     --abg-item-bg: #E5E9F6;
     --abg-item-text: #34458A;
+
+    --abg-negative: #B42318;
+    --abg-negative-on-dark: #F5B5B5;
 }
 
 /* ---- Base ---- */
@@ -922,5 +925,94 @@ table.dataTable tbody tr:hover {
     .pos-just-saved .pos-form-col,
     .pos-just-saved .pos-today-col {
         display: none;
+    }
+}
+
+/* ---- Cash available (dashboard) ---- */
+.cash-available-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.cash-available-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    margin-right: 6px;
+    background-color: var(--abg-service-bg);
+    color: var(--abg-service-text);
+}
+
+.cash-available-figure {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--abg-text);
+}
+
+.cash-available-figure-negative {
+    color: var(--abg-negative);
+}
+
+.cash-available-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.cash-available-operator {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--abg-muted);
+}
+
+.cash-available-box {
+    background-color: var(--abg-bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.cash-available-box-label {
+    font-size: 13px;
+    color: var(--abg-muted);
+}
+
+.cash-available-box-label a {
+    color: inherit;
+}
+
+.cash-available-box-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--abg-text);
+}
+
+.cash-available-box-total {
+    background-color: var(--abg-black);
+}
+
+.cash-available-box-total .cash-available-box-label {
+    color: #FFFFFF;
+}
+
+.cash-available-box-total .cash-available-box-amount {
+    color: var(--abg-gold);
+}
+
+.cash-available-box-amount-negative {
+    color: var(--abg-negative-on-dark);
+}
+
+@media (max-width: 575.98px) {
+    .cash-available-body {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

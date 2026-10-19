@@ -87,6 +87,54 @@
     </div>
 </div>
 
+{{-- Cash available --}}
+<div class="col-12 mb-4">
+    <div class="card dashboard-card">
+        <div class="card-body cash-available-body">
+            <div>
+                <div class="dashboard-label">
+                    <span class="cash-available-icon"><i class="bi bi-wallet2"></i></span>
+                    Cash available
+                </div>
+                <div class="cash-available-figure {{ $cashAvailable['available'] < 0 ? 'cash-available-figure-negative' : '' }}">
+                    {{ $cashAvailable['available'] < 0 ? '-' : '' }}TZS {{ formatAmount(abs($cashAvailable['available'])) }}
+                </div>
+                <div class="small text-body-secondary">All time, up to today · not affected by the period filter</div>
+            </div>
+            <div class="cash-available-breakdown" role="group" aria-label="How cash available is calculated">
+                <div class="cash-available-box">
+                    <div class="cash-available-box-label"><span class="dashboard-dot" style="background-color: var(--abg-sales)"></span>All sales</div>
+                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['sales']) }}</div>
+                </div>
+                <span class="cash-available-operator" aria-hidden="true">+</span>
+                <div class="cash-available-box">
+                    <div class="cash-available-box-label">
+                        <span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>
+                        @can('View Partnership')
+                            <a href="{{ route('partnership.contributions.index', ['type' => 'Operations']) }}">Operational contributions</a>
+                        @else
+                            Operational contributions
+                        @endcan
+                    </div>
+                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['operational']) }}</div>
+                </div>
+                <span class="cash-available-operator" aria-hidden="true">−</span>
+                <div class="cash-available-box">
+                    <div class="cash-available-box-label"><span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>All expenses</div>
+                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['expenses']) }}</div>
+                </div>
+                <span class="cash-available-operator" aria-hidden="true">=</span>
+                <div class="cash-available-box cash-available-box-total">
+                    <div class="cash-available-box-label">Cash available</div>
+                    <div class="cash-available-box-amount {{ $cashAvailable['available'] < 0 ? 'cash-available-box-amount-negative' : '' }}">
+                        {{ $cashAvailable['available'] < 0 ? '-' : '' }}{{ formatAmount(abs($cashAvailable['available'])) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Row 1: key figures --}}
 @foreach ($keyFigures as $figure)
     @php
