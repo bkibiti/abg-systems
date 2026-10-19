@@ -79,6 +79,7 @@ Overview
     </div>
 </div>
 
+
 <div class="col-12 mb-4">
     <div class="card">
         <div class="card-header">
@@ -93,7 +94,8 @@ Overview
                             <th>Investment</th>
                             <th>Operations</th>
                             <th>Total contributed</th>
-                            <th>% (investment)</th>
+                            <th>Equal share</th>
+                            <th>Balance</th>
                             <th>View</th>
                         </tr>
                     </thead>
@@ -114,12 +116,23 @@ Overview
                                 <td>{{ formatAmount($partner->investment_total ?? 0) }}</td>
                                 <td>{{ formatAmount($partner->operations_total ?? 0) }}</td>
                                 <td class="fw-bold">{{ formatAmount(($partner->investment_total ?? 0) + ($partner->operations_total ?? 0)) }}</td>
+                             
                                 <td>
-                                    @if ($partner->share === null)
+                                    @if ($equalShareCheck['equalShare'] === null)
                                         &mdash;
                                     @else
-                                        <span class="partnership-mini-bar"><span class="partnership-mini-bar-fill" style="width: {{ $partner->share }}%"></span></span>
-                                        {{ number_format($partner->share, 1) }}%
+                                        {{ formatAmount($equalShareCheck['equalShare']) }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($partner->balance === null)
+                                        &mdash;
+                                    @elseif ($partner->balance < 0)
+                                        <span class="badge-balance-add">Add {{ formatAmount(abs($partner->balance)) }}</span>
+                                    @elseif ($partner->balance > 0)
+                                        <span class="badge-balance-over">Over {{ formatAmount($partner->balance) }}</span>
+                                    @else
+                                        <span class="text-body-secondary">Equal</span>
                                     @endif
                                 </td>
                                 <td class="text-nowrap">
@@ -146,6 +159,8 @@ Overview
                             <th>{{ formatAmount($totalOperations) }}</th>
                             <th>{{ formatAmount($totalContributed) }}</th>
                             <th>{{ $totalInvestment > 0 ? '100.0%' : '—' }}</th>
+                            <th>{{ $equalShareCheck['equalShare'] === null ? '—' : formatAmount($equalShareCheck['equalShare']) }}</th>
+                            <th>{{ $equalShareCheck['equalShare'] === null ? '—' : formatAmount(0) }}</th>
                             <th></th>
                         </tr>
                     </tfoot>

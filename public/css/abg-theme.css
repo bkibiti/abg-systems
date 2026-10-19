@@ -462,6 +462,24 @@ table.dataTable tbody tr:hover {
     padding: 0.35em 0.8em;
 }
 
+.badge-balance-add {
+    background-color: #FAEBDD;
+    color: #8A4A1C;
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}
+
+.badge-balance-over {
+    background-color: var(--abg-service-bg);
+    color: var(--abg-service-text);
+    border-radius: 50rem;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0.35em 0.8em;
+}
+
 .partnership-share-bar {
     display: flex;
     width: 100%;

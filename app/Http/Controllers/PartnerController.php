@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Partner;
 use App\Models\PartnerContribution;
+use App\Services\PartnershipService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Illuminate\Validation\Rule;
 
 class PartnerController extends Controller
 {
+    public function __construct(private PartnershipService $partnershipService) {}
+
     /**
      * Partners & shares overview. Shares are based on investment contributions only.
      */
@@ -26,16 +29,19 @@ class PartnerController extends Controller
         $totalContributed = $totalInvestment + $totalOperations;
         $totalContributions = (int) $partners->sum('contributions_count');
 
-        $partners = $partners->map(function (Partner $partner) use ($totalInvestment) {
+        $equalShareCheck = $this->partnershipService->equalShareBalances($partners, $totalInvestment);
+
+        $partners = $partners->map(function (Partner $partner) use ($totalInvestment, $equalShareCheck) {
             $partner->share = $totalInvestment > 0
                 ? round(((float) $partner->investment_total / $totalInvestment) * 100, 1)
                 : null;
+            $partner->balance = $equalShareCheck['balances'][$partner->id] ?? null;
 
             return $partner;
         })->sortByDesc('share')->values();
 
         return view('partnership.overview', compact(
-            'partners', 'totalInvestment', 'totalOperations', 'totalContributed', 'totalContributions'
+            'partners', 'totalInvestment', 'totalOperations', 'totalContributed', 'totalContributions', 'equalShareCheck'
         ));
     }
 
