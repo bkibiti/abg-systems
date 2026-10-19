@@ -68,7 +68,7 @@ Total Monthly Sales Reports
 
     $('#fixed-header1').DataTable({
       bAutoWidth: true,
-      order: [[0, "desc"]]
+      order: [] // keep the server's newest-first order; "Mon YYYY" text would sort alphabetically, not chronologically
     });
 
 

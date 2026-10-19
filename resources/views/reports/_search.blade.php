@@ -8,7 +8,7 @@
                     <option value="">Select Report</option>
                     <option value="1" {{ (old('report')==1 ? "selected":"") }}>Total Daily Sales</option>
                     <option value="2" {{ (old('report')==2 ? "selected":"") }}>Total Monthly Sales</option>
-         
+                    <option value="3" {{ (old('report')==3 ? "selected":"") }}>Total Monthly Expenses</option>
                 </select>
             </div>
         </div>

@@ -49,12 +49,17 @@ class ReportController extends Controller
                     return $pdf->stream();
                 }
                 break;
-            
-
-
+            case 3:
+                $data = $this->TotalMonthlyExpenses($from, $to);
                 $request->flash();
+                if ($request->action == 'view') {
+                    return view('reports.total_monthly_expenses', compact('data', 'products'));
+                }
+                if ($request->action == 'print') {
+                    $pdf = PDF::loadView('reports.total_monthly_expenses_pdf', compact('data'));
 
-                return view('reports.item_movement_history', compact('data', 'products'));
+                    return $pdf->stream();
+                }
                 break;
             default:
 
@@ -78,10 +83,23 @@ class ReportController extends Controller
         $totalMonthlySales = DB::table('sales')
             ->select(DB::raw("DATE_FORMAT(created_at, '%b %Y') month,sum(quantity*selling_price) amount"))
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y%m')"))
+            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%Y%m')"), 'desc')
             ->limit('12')
             ->get();
 
         return $totalMonthlySales;
+    }
+
+    private function TotalMonthlyExpenses($from, $to)
+    {
+        $totalMonthlyExpenses = DB::table('expenses')
+            ->select(DB::raw("DATE_FORMAT(created_at, '%b %Y') month,sum(amount) amount"))
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y%m')"))
+            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%Y%m')"), 'desc')
+            ->limit('12')
+            ->get();
+
+        return $totalMonthlyExpenses;
     }
 
     private function fastMovingItems()
@@ -130,7 +148,7 @@ class ReportController extends Controller
             ->selectRaw('date(created_at) date,sum((selling_price-buying_price)*quantity) profit')
             ->whereRaw("date(created_at) between '".$from."' and '".$to."'")
             ->groupBy(DB::raw('date(created_at)'))
-            ->orderBy('date','asc')
+            ->orderBy('date', 'asc')
             ->get();
 
         return $profit;
