@@ -78,7 +78,7 @@ class HomeController extends Controller
         ];
         $comparisonLabel = $range['comparisonLabel'];
 
-        $monthlyTrend = $this->monthlyTrend($today, $period === '12m' ? 12 : 6);
+        $monthlyTrend = $this->monthlyTrend($today);
         $salesMix = $this->salesMix($range['start'], $range['end']);
         $expensesByCategory = $this->expensesByCategory($range['start'], $range['end']);
         $cashAvailable = [
@@ -264,12 +264,14 @@ class HomeController extends Controller
     }
 
     /**
-     * Items, services and expenses per calendar month, oldest first, ending with the current month.
+     * Items, services and expenses for each of the last 12 calendar months, oldest first,
+     * ending with the current month. Always 12 months; does not follow the period switch.
      *
      * @return list<array{label: string, items: float, services: float, total: float, expenses: float}>
      */
-    private function monthlyTrend(CarbonImmutable $today, int $months): array
+    private function monthlyTrend(CarbonImmutable $today): array
     {
+        $months = 12;
         $firstMonth = $today->startOfMonth()->subMonths($months - 1);
         $end = $today->addDay();
 
@@ -294,7 +296,7 @@ class HomeController extends Controller
             $services = (float) ($salesByMonth[$key]->services ?? 0);
 
             $trend[] = [
-                'label' => $month->isSameMonth($today) ? $month->format('M').' (to '.$today->format('jS').')' : $month->format('M'),
+                'label' => $month->format('M y'),
                 'items' => $items,
                 'services' => $services,
                 'total' => $items + $services,

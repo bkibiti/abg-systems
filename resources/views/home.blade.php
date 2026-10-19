@@ -181,7 +181,7 @@
     <div class="card dashboard-card">
         <div class="card-header">
             <h5 class="card-title mb-0">Sales and expenses per month</h5>
-            <div class="card-tools text-body-secondary small">Last {{ count($monthlyTrend) }} months</div>
+            <div class="card-tools text-body-secondary small">Last 12 months</div>
         </div>
         <div class="card-body">
             <div class="dashboard-chart">
