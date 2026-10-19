@@ -17,6 +17,11 @@ class Partner extends Model
         return $this->hasMany(PartnerContribution::class, 'partner_id');
     }
 
+    public function payouts()
+    {
+        return $this->hasMany(PartnerPayout::class, 'partner_id');
+    }
+
     public function investmentTotal(): float
     {
         return (float) $this->contributions()->investment()->sum('amount');
@@ -30,5 +35,10 @@ class Partner extends Model
     public function totalContributed(): float
     {
         return (float) $this->contributions()->sum('amount');
+    }
+
+    public function paidOutTotal(): float
+    {
+        return (float) $this->payouts()->paid()->sum('amount');
     }
 }

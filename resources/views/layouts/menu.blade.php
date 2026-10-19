@@ -32,6 +32,12 @@
                     <p>Contributions</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('partnership.payouts.index') }}" class="nav-link {{ request()->routeIs('partnership.payouts.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-circle"></i>
+                    <p>Payouts</p>
+                </a>
+            </li>
         </ul>
     </li>
 @endcan

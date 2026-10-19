@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
-use App\Models\PartnerContribution;
 use App\Models\Sale;
+use App\Services\CashService;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
@@ -31,7 +30,7 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private CashService $cashService)
     {
         $this->middleware('auth');
     }
@@ -82,7 +81,13 @@ class HomeController extends Controller
         $monthlyTrend = $this->monthlyTrend($today, $period === '12m' ? 12 : 6);
         $salesMix = $this->salesMix($range['start'], $range['end']);
         $expensesByCategory = $this->expensesByCategory($range['start'], $range['end']);
-        $cashAvailable = $this->cashAvailable();
+        $cashAvailable = [
+            'sales' => $this->cashService->salesTotal(),
+            'operational' => $this->cashService->operationalTotal(),
+            'expenses' => $this->cashService->expensesTotal(),
+            'payouts' => $this->cashService->payoutsTotal(),
+            'available' => $this->cashService->available(),
+        ];
 
         return view('home', compact(
             'period',
@@ -243,42 +248,6 @@ class HomeController extends Controller
             ->where('created_at', '>=', $start)
             ->where('created_at', '<', $end)
             ->sum('amount');
-    }
-
-    /**
-     * Cash available, all time from the first record up to and including today (Africa/Dar_es_Salaam).
-     * Sales and expenses use the same columns as the dashboard totals above; this is not affected by
-     * the period switch and does not include purchases, equipment contributions, an opening balance,
-     * or credit-sale adjustments.
-     *
-     * @return array{sales: float, operational: float, expenses: float, available: float}
-     */
-    private function cashAvailable(): array
-    {
-        $end = CarbonImmutable::now('Africa/Dar_es_Salaam')->startOfDay()->addDay()->setTimezone('UTC');
-        $todayDar = CarbonImmutable::now('Africa/Dar_es_Salaam')->toDateString();
-
-        $sales = (float) DB::table('sales')
-            ->where('created_at', '<', $end)
-            ->sum(DB::raw('quantity * selling_price'));
-
-        $expenses = (float) DB::table('expenses')
-            ->where('created_at', '<', $end)
-            ->sum('amount');
-
-        // Partnership module may not be installed in every environment; treat operational contributions as 0 if so.
-        $operational = Schema::hasTable('partner_contributions')
-            ? (float) PartnerContribution::operations()
-                ->whereDate('contribution_date', '<=', $todayDar)
-                ->sum('amount')
-            : 0.0;
-
-        return [
-            'sales' => $sales,
-            'operational' => $operational,
-            'expenses' => $expenses,
-            'available' => $sales + $operational - $expenses,
-        ];
     }
 
     /**

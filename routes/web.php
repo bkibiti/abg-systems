@@ -8,6 +8,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PartnerContributionController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PartnerPayoutController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
@@ -134,5 +135,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('partnership/contributions', [PartnerContributionController::class, 'store'])->name('partnership.contributions.store')->middleware('can:Manage Partnership');
     Route::put('partnership/contributions/{contribution}', [PartnerContributionController::class, 'update'])->name('partnership.contributions.update')->middleware('can:Manage Partnership');
     Route::delete('partnership/contributions/{contribution}', [PartnerContributionController::class, 'destroy'])->name('partnership.contributions.destroy')->middleware('can:Manage Partnership');
+
+    Route::get('partnership/payouts', [PartnerPayoutController::class, 'index'])->name('partnership.payouts.index')->middleware('can:View Partnership');
+    Route::post('partnership/payouts', [PartnerPayoutController::class, 'store'])->name('partnership.payouts.store')->middleware('can:Manage Partnership');
+    Route::post('partnership/payouts/{payout}/reverse', [PartnerPayoutController::class, 'reverse'])->name('partnership.payouts.reverse')->middleware('can:Reverse payouts');
 
 });

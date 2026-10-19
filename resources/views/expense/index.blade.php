@@ -67,9 +67,7 @@ Expense
     <div class="card">
         <div class="card-header">
                 <h3 class="card-title">Expenses</h3>
-                @cannot('View Advanced Dashboard')
-                    <div class="staff-card-subtitle">Showing expenses you recorded.</div>
-                @endcannot
+            
                 <div class="card-tools">
                     @can('Add Expenses')
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" name="issued_date" value="Add Expense" title="Add Expense" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Expense</button>

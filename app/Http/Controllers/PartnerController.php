@@ -53,9 +53,13 @@ class PartnerController extends Controller
             : null;
 
         $contributions = $partner->contributions()->orderByDesc('contribution_date')->orderByDesc('id')->get();
+        $payouts = $partner->payouts()->with(['paymentMethod'])->orderByDesc('payout_date')->orderByDesc('id')->get();
+        $paidOutTotal = $partner->paidOutTotal();
         $partners = Partner::orderBy('name')->get();
 
-        return view('partnership.partners.show', compact('partner', 'share', 'totalInvestment', 'contributions', 'partners'));
+        return view('partnership.partners.show', compact(
+            'partner', 'share', 'totalInvestment', 'contributions', 'payouts', 'paidOutTotal', 'partners'
+        ));
     }
 
     public function store(Request $request)

@@ -99,7 +99,7 @@
                 <div class="cash-available-figure {{ $cashAvailable['available'] < 0 ? 'cash-available-figure-negative' : '' }}">
                     {{ $cashAvailable['available'] < 0 ? '-' : '' }}TZS {{ formatAmount(abs($cashAvailable['available'])) }}
                 </div>
-                <div class="small text-body-secondary">All time, up to today · not affected by the period filter</div>
+                <div class="small text-body-secondary">All time, up to today</div>
             </div>
             <div class="cash-available-breakdown" role="group" aria-label="How cash available is calculated">
                 <div class="cash-available-box">
@@ -111,7 +111,7 @@
                     <div class="cash-available-box-label">
                         <span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>
                         @can('View Partnership')
-                            <a href="{{ route('partnership.contributions.index', ['type' => 'Operations']) }}">Operational contributions</a>
+                            <a href="{{ route('partnership.contributions.index', ['type' => 'Operations']) }}">Operational cost contributions</a>
                         @else
                             Operational contributions
                         @endcan
@@ -123,13 +123,20 @@
                     <div class="cash-available-box-label"><span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>All expenses</div>
                     <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['expenses']) }}</div>
                 </div>
-                <span class="cash-available-operator" aria-hidden="true">=</span>
-                <div class="cash-available-box cash-available-box-total">
-                    <div class="cash-available-box-label">Cash available</div>
-                    <div class="cash-available-box-amount {{ $cashAvailable['available'] < 0 ? 'cash-available-box-amount-negative' : '' }}">
-                        {{ $cashAvailable['available'] < 0 ? '-' : '' }}{{ formatAmount(abs($cashAvailable['available'])) }}
+                <span class="cash-available-operator" aria-hidden="true">−</span>
+                <div class="cash-available-box">
+                    <div class="cash-available-box-label">
+                        <span class="dashboard-dot" style="background-color: #6B5B95"></span>
+                        @can('View Partnership')
+                            <a href="{{ route('partnership.payouts.index') }}">Payouts</a>
+                        @else
+                            Payouts
+                        @endcan
                     </div>
+                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['payouts']) }}</div>
                 </div>
+          
+              
             </div>
         </div>
     </div>

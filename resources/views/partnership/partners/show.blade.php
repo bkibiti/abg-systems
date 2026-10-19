@@ -155,6 +155,60 @@
     </div>
 </div>
 
+<div class="col-12 mb-4">
+    <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h5 class="card-title mb-0">Payouts</h5>
+            <div class="staff-card-subtitle">Paid out: TZS {{ formatAmount($paidOutTotal) }}</div>
+        </div>
+        <div class="card-body">
+            @if ($payouts->isEmpty())
+                <p class="text-body-secondary mb-0">No payouts recorded yet.</p>
+            @else
+                <div class="table-responsive">
+                    <table class="table nowrap table-striped table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Payout no.</th>
+                                <th>Date</th>
+                                <th>Method · ref</th>
+                                <th>Status</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($payouts as $payout)
+                                <tr>
+                                    <td>{{ $payout->payout_no }}</td>
+                                    <td>{{ $payout->payout_date->format('j M Y') }}</td>
+                                    <td>{{ collect([$payout->paymentMethod->name ?? null, $payout->reference])->filter()->implode(' · ') ?: '—' }}</td>
+                                    <td>
+                                        @if ($payout->status === \App\Models\PartnerPayout::STATUS_PAID)
+                                            <span class="badge-paid">Paid</span>
+                                        @else
+                                            <span class="badge-reversed" title="{{ $payout->reversal_reason }}">Reversed</span>
+                                            <div class="payout-reversal-reason">{{ $payout->reversal_reason }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="text-end {{ $payout->status === \App\Models\PartnerPayout::STATUS_REVERSED ? 'payout-amount-reversed' : '' }}">
+                                        {{ formatAmount($payout->amount) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4">Total paid out</th>
+                                <th class="text-end">{{ formatAmount($paidOutTotal) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
 @can('Manage Partnership')
     <div class="col-lg-4 mb-4">
         <div class="card h-100">
