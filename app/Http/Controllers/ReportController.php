@@ -49,68 +49,8 @@ class ReportController extends Controller
                     return $pdf->stream();
                 }
                 break;
-            case 3:
-                $data = $this->fastMovingItems();
-                $days = DB::table('sales')->select(DB::raw('date(created_at)'))->distinct()->get();
+            
 
-                $request->flash();
-                if ($request->action == 'view') {
-                    return view('reports.fast_moving_items', compact('data', 'days', 'products'));
-                }
-                if ($request->action == 'print') {
-                    $pdf = PDF::loadView('reports.fast_moving_items_pdf', compact('data', 'days'));
-
-                    return $pdf->stream();
-                }
-                break;
-
-            case 4:
-                $data = $this->grossProfit($from, $to);
-                $total = 0;
-                foreach ($data as $d) {
-                    $total = $total + $d->profit;
-                }
-                $request->flash();
-
-                if ($request->action == 'view') {
-                    return view('reports.gross_profit', compact('data', 'total', 'products'));
-                }
-                if ($request->action == 'print') {
-                    $filterMsg = 'From '.date('d M Y', strtotime($request->from_date)).'    to '.date('d M Y', strtotime($request->to_date));
-                    $pdf = PDF::loadView('reports.gross_profit_pdf', compact('data', 'total', 'filterMsg'));
-
-                    return $pdf->stream();
-                }
-                break;
-
-            case 5:
-                $data = $this->stockValue();
-                $total = DB::table('stock')->selectRaw('sum(quantity*unit_cost) total_purchase_value,sum(quantity*sale_price_1) total_sale_value')->get();
-                $request->flash();
-                if ($request->action == 'view') {
-                    return view('reports.stock_value', compact('data', 'total', 'products'));
-                }
-                if ($request->action == 'print') {
-                    $pdf = PDF::loadView('reports.stock_value_pdf', compact('data', 'total'));
-
-                    return $pdf->stream();
-                }
-                break;
-
-            case 7:
-                $movements = $this->stockMovementsSql();
-                $data = DB::select("SELECT * FROM 
-                            (SELECT s.Date,s.Action,SUM(s.qty) as Qty,
-                                    (   SELECT SUM(sm.qty) 
-                                        FROM ($movements) sm
-                                        WHERE sm.Date <= s.Date and sm.id = ?
-                                    ) AS QOH
-                                        FROM ($movements) s
-                            WHERE s.id = ?
-                            GROUP BY s.date,s.action
-                            ORDER BY s.Date
-                            ) AS Q
-                            WHERE Q.Date between ? and ?", [$request->product, $request->product, $from, $to]);
 
                 $request->flash();
 

@@ -8,10 +8,7 @@
                     <option value="">Select Report</option>
                     <option value="1" {{ (old('report')==1 ? "selected":"") }}>Total Daily Sales</option>
                     <option value="2" {{ (old('report')==2 ? "selected":"") }}>Total Monthly Sales</option>
-                    <option value="3" {{ (old('report')==3 ? "selected":"") }}>Fast Moving Items</option>
-                    <option value="4" {{ (old('report')==4 ? "selected":"") }}>Gross Profit</option>
-                    <option value="5" {{ (old('report')==5 ? "selected":"") }}>Current Stock Value</option>
-                    <option value="7" {{ (old('report')==7 ? "selected":"") }}>Item Movement History</option>
+         
                 </select>
             </div>
         </div>
