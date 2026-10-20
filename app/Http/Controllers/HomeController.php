@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\Sale;
 use App\Services\CashService;
+use App\Services\DashboardService;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Query\Builder;
@@ -30,7 +31,7 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct(private CashService $cashService)
+    public function __construct(private CashService $cashService, private DashboardService $dashboardService)
     {
         $this->middleware('auth');
     }
@@ -79,8 +80,17 @@ class HomeController extends Controller
         $comparisonLabel = $range['comparisonLabel'];
 
         $monthlyTrend = $this->monthlyTrend($today);
-        $salesMix = $this->salesMix($range['start'], $range['end']);
-        $expensesByCategory = $this->expensesByCategory($range['start'], $range['end']);
+        $periodMonths = match ($period) {
+            '12m' => 12,
+            '6m' => 6,
+            default => 1,
+        };
+        $salesByService = $this->dashboardService->salesByService(
+            $range['start'], $range['end'], $range['previousStart'], $range['previousEnd']
+        );
+        $expensesByCategory = $this->dashboardService->expensesByCategory(
+            $range['start'], $range['end'], $range['previousStart'], $range['previousEnd'], $periodMonths
+        );
         $cashAvailable = [
             'sales' => $this->cashService->salesTotal(),
             'operational' => $this->cashService->operationalTotal(),
@@ -96,9 +106,10 @@ class HomeController extends Controller
             'keyFigures',
             'comparisonLabel',
             'monthlyTrend',
-            'salesMix',
+            'salesByService',
             'expensesByCategory',
             'cashAvailable',
+            'range',
         ));
     }
 
@@ -305,72 +316,5 @@ class HomeController extends Controller
         }
 
         return $trend;
-    }
-
-    /**
-     * Items vs services split and each service's revenue for the period.
-     *
-     * @return array{items: float, services: float, total: float, itemsPercent: float, servicesPercent: float, serviceRows: list<array{name: string, revenue: float, jobs: int, share: float}>}
-     */
-    private function salesMix(CarbonImmutable $start, CarbonImmutable $end): array
-    {
-        $split = $this->salesWithProduct($start, $end)->first();
-        $items = (float) ($split->items ?? 0);
-        $services = (float) ($split->services ?? 0);
-        $total = $items + $services;
-
-        $serviceRows = DB::table('sales')
-            ->join('stock', 'stock.id', '=', 'sales.stock_id')
-            ->where('stock.type', 'Service')
-            ->where('sales.created_at', '>=', $start)
-            ->where('sales.created_at', '<', $end)
-            ->groupBy('stock.id', 'stock.name')
-            ->selectRaw('stock.name, SUM(sales.quantity * sales.selling_price) as revenue, COUNT(sales.id) as jobs')
-            ->orderByDesc('revenue')
-            ->get();
-
-        $topRevenue = (float) ($serviceRows->first()->revenue ?? 0);
-
-        return [
-            'items' => $items,
-            'services' => $services,
-            'total' => $total,
-            'itemsPercent' => $total > 0 ? $items / $total * 100 : 0,
-            'servicesPercent' => $total > 0 ? $services / $total * 100 : 0,
-            'serviceRows' => $serviceRows->map(fn (object $row): array => [
-                'name' => $row->name,
-                'revenue' => (float) $row->revenue,
-                'jobs' => (int) $row->jobs,
-                'share' => $topRevenue > 0 ? max(0, (float) $row->revenue / $topRevenue * 100) : 0,
-            ])->all(),
-        ];
-    }
-
-    /**
-     * Expenses per category for the period, largest first.
-     *
-     * @return array{total: float, rows: list<array{name: string, amount: float, share: float}>}
-     */
-    private function expensesByCategory(CarbonImmutable $start, CarbonImmutable $end): array
-    {
-        $categories = DB::table('expenses')
-            ->leftJoin('expense_categories', 'expense_categories.id', '=', 'expenses.expense_category_id')
-            ->where('expenses.created_at', '>=', $start)
-            ->where('expenses.created_at', '<', $end)
-            ->groupBy('expenses.expense_category_id', 'expense_categories.name')
-            ->selectRaw("COALESCE(expense_categories.name, 'Uncategorised') as name, SUM(expenses.amount) as amount")
-            ->orderByDesc('amount')
-            ->get();
-
-        $largest = (float) ($categories->first()->amount ?? 0);
-
-        return [
-            'total' => (float) $categories->sum('amount'),
-            'rows' => $categories->map(fn (object $row): array => [
-                'name' => $row->name,
-                'amount' => (float) $row->amount,
-                'share' => $largest > 0 ? max(0, (float) $row->amount / $largest * 100) : 0,
-            ])->all(),
-        ];
     }
 }

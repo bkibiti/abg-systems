@@ -28,6 +28,17 @@
 
     --abg-negative: #B42318;
     --abg-negative-on-dark: #F5B5B5;
+
+    /* Dashboard "Sales by service": fixed per-product colours, never by rank. Keep in sync with
+       DashboardService::SERVICE_COLORS in app/Services/DashboardService.php. */
+    --abg-svc-bending: #2A9D8F;
+    --abg-svc-plasma: #5B6FB5;
+    --abg-svc-pipe: #C9A13F;
+    --abg-svc-other: #6E6E6E;
+
+    /* Dashboard "Expenses by category" bars */
+    --abg-expense-copper: #C77A45;
+    --abg-expense-copper-light: #E3B48F;
 }
 
 /* ---- Base ---- */
@@ -1174,5 +1185,209 @@ table.dataTable tbody tr:hover {
     .cash-available-body {
         flex-direction: column;
         align-items: stretch;
+    }
+}
+
+/* ---- Dashboard: Sales by service ---- */
+.sbs-total {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--abg-text);
+}
+
+.sbs-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex: 0 0 auto;
+}
+
+.sbs-row {
+    padding: 10px 0;
+    border-bottom: 1px solid #EFEBE2;
+}
+
+.sbs-row:last-of-type {
+    border-bottom: none;
+}
+
+.sbs-bar-track {
+    background-color: #F1EEE6;
+    border-radius: 6px;
+    height: 12px;
+    overflow: hidden;
+}
+
+.sbs-bar {
+    height: 100%;
+    border-radius: 6px;
+}
+
+.sbs-change {
+    color: var(--abg-text);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sbs-mix-label {
+    color: var(--abg-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.sbs-mix {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    overflow-x: auto;
+    padding-top: 8px;
+}
+
+.sbs-mix-col {
+    flex: 1 0 36px;
+    min-width: 36px;
+    text-align: center;
+}
+
+.sbs-mix-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 96px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #F1EEE6;
+    gap: 2px;
+}
+
+.sbs-mix-seg {
+    width: 100%;
+}
+
+.sbs-mix-month {
+    white-space: nowrap;
+}
+
+.sbs-mix-total {
+    white-space: nowrap;
+    color: var(--abg-text);
+}
+
+/* ---- Dashboard: Expenses by category ---- */
+.ebc-toggle-btn {
+    background-color: transparent;
+    border-color: var(--abg-input-border);
+    color: var(--abg-text);
+}
+
+.ebc-toggle-btn.active {
+    background-color: var(--abg-black);
+    border-color: var(--abg-black);
+    color: #FFFFFF;
+}
+
+.ebc-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 190px) 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 4px;
+    padding: 10px 0;
+    border-bottom: 1px solid #EFEBE2;
+}
+
+.ebc-row:last-of-type {
+    border-bottom: none;
+}
+
+.ebc-name {
+    min-width: 0;
+    overflow-wrap: break-word;
+    font-weight: 600;
+    color: var(--abg-text);
+}
+
+.ebc-name a {
+    color: var(--abg-text);
+}
+
+.ebc-bar-wrap {
+    min-width: 0;
+}
+
+.ebc-bar {
+    height: 10px;
+    min-width: 3px;
+    border-radius: 0 4px 4px 0;
+    background-color: var(--abg-expense-copper);
+}
+
+.ebc-bar-grouped {
+    background-color: var(--abg-expense-copper-light);
+}
+
+.ebc-value {
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--abg-text);
+}
+
+.ebc-percent {
+    color: var(--abg-muted);
+    font-weight: 400;
+}
+
+.ebc-change {
+    display: none;
+    color: var(--abg-text);
+}
+
+.ebc-view-change .ebc-percent {
+    display: none;
+}
+
+.ebc-view-change .ebc-change {
+    display: inline;
+}
+
+.ebc-insight {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background-color: #FAF8F3;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--abg-text);
+}
+
+.ebc-insight .bi {
+    color: var(--abg-muted);
+    margin-top: 2px;
+}
+
+/* Phones: name + amount on one line, bar full width underneath */
+@media (max-width: 575.98px) {
+    .ebc-row {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "name value"
+            "bar bar";
+    }
+
+    .ebc-name {
+        grid-area: name;
+    }
+
+    .ebc-value {
+        grid-area: value;
+    }
+
+    .ebc-bar-wrap {
+        grid-area: bar;
     }
 }
