@@ -64,13 +64,23 @@ Overview
                 <p class="text-body-secondary mb-0">No investment contributions yet, so shares can't be calculated.</p>
             @else
                 @php
+                    // $partners is already sorted by share, highest first; filtering keeps that order.
                     $barPartners = $partners->filter(fn ($p) => (float) $p->investment_total > 0);
                     $ariaLabel = $barPartners->map(fn ($p) => $p->name.' '.number_format($p->share, 1).'%')->implode(', ');
                 @endphp
-                <div class="partnership-share-bar" role="img" aria-label="Ownership shares: {{ $ariaLabel }}">
+                <div class="share-bar" role="img" aria-label="Ownership shares: {{ $ariaLabel }}">
                     @foreach ($barPartners as $partner)
-                        <div class="partnership-share-segment" style="width: {{ $partner->share }}%; background-color: {{ partnerColor($partner->id) }}">
-                            {{ $partner->name }} &middot; {{ number_format($partner->share, 1) }}%
+                        <div class="share-seg" style="width: {{ $partner->share }}%; background-color: {{ partnerColor($partner->id) }}"
+                            title="{{ $partner->name }} &middot; {{ number_format($partner->share, 1) }}%"></div>
+                    @endforeach
+                </div>
+                <div class="share-legend">
+                    @foreach ($barPartners as $partner)
+                        <div class="share-legend-item">
+                            <span class="share-legend-swatch" style="background-color: {{ partnerColor($partner->id) }}"></span>
+                            <span class="share-legend-name">{{ $partner->name }}</span>
+                            <span class="share-legend-percent">{{ number_format($partner->share, 1) }}%</span>
+                            <span class="share-legend-sub">TZS {{ formatAmount($partner->investment_total) }}</span>
                         </div>
                     @endforeach
                 </div>
@@ -87,7 +97,7 @@ Overview
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table nowrap table-striped table-hover" style="width:100%">
+                <table class="table nowrap table-striped table-hover partners-table">
                     <thead>
                         <tr>
                             <th>Partner</th>
