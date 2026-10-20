@@ -277,7 +277,7 @@
         <div class="card-header d-flex flex-wrap justify-content-between align-items-start gap-2">
             <div>
                 <h5 class="card-title mb-0">Expenses by category</h5>
-                <div class="card-tools text-body-secondary small">{{ $periodLabel }} &middot; biggest first</div>
+                <div class="card-tools text-body-secondary small">{{ $periodLabel }} </div>
             </div>
             <div class="text-end">
                 <div class="sbs-total">TZS {{ formatAmount($expensesByCategory['total']) }}</div>
