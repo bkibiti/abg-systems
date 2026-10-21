@@ -1099,6 +1099,99 @@ table.dataTable tbody tr:hover {
     }
 }
 
+/* ---- Record expense ---- */
+.expense-amount-input {
+    min-height: 56px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* Quick category / date-choice buttons */
+.expense-cat-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 14px;
+    background-color: #FFFFFF;
+    border: 1.5px solid var(--abg-input-border);
+    border-radius: 8px;
+    color: var(--abg-text);
+    font-weight: 600;
+    text-align: center;
+}
+
+.expense-cat-btn:hover {
+    background-color: var(--abg-bg);
+    border-color: var(--abg-input-border);
+    color: var(--abg-text);
+}
+
+.btn-check:checked + .expense-cat-btn,
+.btn-check:checked + .expense-cat-btn:hover,
+.expense-cat-btn.active {
+    background-color: var(--abg-black);
+    border-color: var(--abg-black);
+    color: #FFFFFF;
+}
+
+.btn-check:focus-visible + .expense-cat-btn {
+    box-shadow: 0 0 0 3px rgba(201, 161, 63, .35);
+}
+
+.expense-category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.expense-date-group {
+    display: flex;
+    gap: 8px;
+}
+
+.expense-date-group .expense-cat-btn {
+    flex: 1 1 0;
+}
+
+/* Description suggestion chips */
+.expense-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.expense-chip {
+    padding: 6px 12px;
+    background-color: #FFFFFF;
+    border: 1px solid var(--abg-border);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--abg-text);
+}
+
+.expense-chip:hover,
+.expense-chip:focus-visible {
+    background-color: #FAF8F3;
+    border-color: var(--abg-gold);
+    outline: none;
+}
+
+@media (min-width: 992px) {
+    .expense-category-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .expense-category-grid .expense-cat-btn {
+        width: auto;
+        min-width: 140px;
+        flex: 0 1 auto;
+    }
+}
+
 /* ---- Cash available (dashboard) ---- */
 .cash-available-body {
     display: flex;

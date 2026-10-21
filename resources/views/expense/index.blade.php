@@ -67,10 +67,10 @@ Expense
     <div class="card">
         <div class="card-header">
                 <h3 class="card-title">Expenses</h3>
-            
+
                 <div class="card-tools">
                     @can('Add Expenses')
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" name="issued_date" value="Add Expense" title="Add Expense" data-bs-target="#create"><i class="bi bi-plus-lg"></i> Add Expense</button>
+                        <a href="{{ route('expense.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Record Expense</a>
                     @endcan
                 </div>
             </div>
@@ -163,7 +163,6 @@ Expense
     </div>
 </div>
 
-@include("expense.create")
 @include("expense.edit")
 
 

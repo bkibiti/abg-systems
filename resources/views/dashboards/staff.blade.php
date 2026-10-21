@@ -30,7 +30,7 @@
 
 @can('Add Expenses')
     <div class="col-md-6 mb-4">
-        <a href="{{ route('expense.index') }}" class="card staff-shortcut text-decoration-none">
+        <a href="{{ route('expense.create') }}" class="card staff-shortcut text-decoration-none">
             <div class="card-body d-flex align-items-center gap-3">
                 <span class="staff-shortcut-icon staff-shortcut-icon-copper"><i class="bi bi-wallet2"></i></span>
                 <div>

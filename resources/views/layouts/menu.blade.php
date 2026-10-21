@@ -1,5 +1,6 @@
 @php
     $salesActive = request()->routeIs('sales.index', 'sales.history*');
+    $expensesActive = request()->routeIs('expense.*');
     $inventoryActive = request()->routeIs('current-stock.*', 'current-stock-filter', 'out-of-stock', 'below-min-level', 'stock-adjustment.*', 'adjustment.search');
     $purchasesActive = request()->routeIs('goods-receiving.*');
     $usersActive = request()->routeIs('roles.*', 'users.*');
@@ -123,11 +124,29 @@
 @endcanany
 
 @canany(['View Expense Management', 'View Expenses', 'Add Expenses', 'Edit Expenses'])
-    <li class="nav-item">
-        <a href="{{ route('expense.index') }}" class="nav-link {{ request()->routeIs('expense.*') ? 'active' : '' }}">
+    <li class="nav-item {{ $expensesActive ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ $expensesActive ? 'active' : '' }}">
             <i class="nav-icon bi bi-wallet2"></i>
-            <p>Expenses</p>
+            <p>Expenses <i class="nav-arrow bi bi-chevron-right"></i></p>
         </a>
+        <ul class="nav nav-treeview">
+            @can('Add Expenses')
+                <li class="nav-item">
+                    <a href="{{ route('expense.create') }}" class="nav-link {{ request()->routeIs('expense.create') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i>
+                        <p>Record expense</p>
+                    </a>
+                </li>
+            @endcan
+            @canany(['View Expense Management', 'View Expenses', 'Edit Expenses'])
+                <li class="nav-item">
+                    <a href="{{ route('expense.index') }}" class="nav-link {{ request()->routeIs('expense.index', 'expense.search') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-circle"></i>
+                        <p>Expense History</p>
+                    </a>
+                </li>
+            @endcanany
+        </ul>
     </li>
 @endcanany
 
