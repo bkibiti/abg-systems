@@ -74,6 +74,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('sales/sale-histories', [SaleController::class, 'history'])->name('sales.history');
     Route::get('sales/sale-histories/search', [SaleController::class, 'historySearch'])->name('sales.history-search');
     Route::post('sales/update-sales', [SaleController::class, 'update'])->name('sales.update');
+    Route::delete('sales/delete-sale', [SaleController::class, 'destroy'])->name('sales.destroy');
+    Route::get('sales/deletions', [SaleController::class, 'deletions'])->name('sales.deletions')->middleware('can:Delete Sales');
     // sale reports
     Route::get('reports/index', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/total-daily-sales', [ReportController::class, 'getReport'])->name('reports.getreport');
