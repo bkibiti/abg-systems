@@ -88,7 +88,7 @@
 </div>
 
 {{-- Cash available --}}
-<div class="col-12 mb-4">
+<div class="col-4 mb-4">
     <div class="card dashboard-card">
         <div class="card-body cash-available-body">
             <div>
@@ -101,43 +101,7 @@
                 </div>
                 <div class="small text-body-secondary">All time, up to today</div>
             </div>
-            <div class="cash-available-breakdown" role="group" aria-label="How cash available is calculated">
-                <div class="cash-available-box">
-                    <div class="cash-available-box-label"><span class="dashboard-dot" style="background-color: var(--abg-sales)"></span>All sales</div>
-                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['sales']) }}</div>
-                </div>
-                <span class="cash-available-operator" aria-hidden="true">+</span>
-                <div class="cash-available-box">
-                    <div class="cash-available-box-label">
-                        <span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>
-                        @can('View Partnership')
-                            <a href="{{ route('partnership.contributions.index', ['type' => 'Operations']) }}">Operational cost contributions</a>
-                        @else
-                            Operational contributions
-                        @endcan
-                    </div>
-                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['operational']) }}</div>
-                </div>
-                <span class="cash-available-operator" aria-hidden="true">−</span>
-                <div class="cash-available-box">
-                    <div class="cash-available-box-label"><span class="dashboard-dot" style="background-color: var(--abg-expense)"></span>All expenses</div>
-                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['expenses']) }}</div>
-                </div>
-                <span class="cash-available-operator" aria-hidden="true">−</span>
-                <div class="cash-available-box">
-                    <div class="cash-available-box-label">
-                        <span class="dashboard-dot" style="background-color: #6B5B95"></span>
-                        @can('View Partnership')
-                            <a href="{{ route('partnership.payouts.index') }}">Payouts</a>
-                        @else
-                            Payouts
-                        @endcan
-                    </div>
-                    <div class="cash-available-box-amount">{{ formatAmount($cashAvailable['payouts']) }}</div>
-                </div>
-          
-              
-            </div>
+
         </div>
     </div>
 </div>
@@ -153,7 +117,7 @@
             $changeClass = $figure['change'] > 0 ? 'text-success' : 'text-danger';
         }
     @endphp
-    <div class="col-md-6 mb-4">
+    <div class="col-md-4 mb-4">
         <div class="card dashboard-card h-100">
             <div class="card-body">
                 <div class="dashboard-label">
