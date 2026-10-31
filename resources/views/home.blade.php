@@ -87,26 +87,23 @@
     </div>
 </div>
 
-{{-- Cash available --}}
-<div class="col-4 mb-4">
-    <div class="card dashboard-card">
-        <div class="card-body cash-available-body">
-            <div>
-                <div class="dashboard-label">
-                    <span class="cash-available-icon"><i class="bi bi-wallet2"></i></span>
-                    Cash available
-                </div>
-                <div class="cash-available-figure {{ $cashAvailable['available'] < 0 ? 'cash-available-figure-negative' : '' }}">
-                    {{ $cashAvailable['available'] < 0 ? '-' : '' }}TZS {{ formatAmount(abs($cashAvailable['available'])) }}
-                </div>
-                <div class="small text-body-secondary">All time, up to today</div>
+{{-- Row 1: cash available and key figures --}}
+<div class="col-md-4 mb-4">
+    <div class="card dashboard-card h-100">
+        <div class="card-body">
+            <div class="dashboard-label">
+                <i class="bi bi-wallet2 me-1"></i>
+                Cash available
             </div>
-
+            <div class="dashboard-figure {{ $cashAvailable['available'] < 0 ? 'text-danger' : '' }}">
+                {{ $cashAvailable['available'] < 0 ? '-' : '' }}{{ formatAmount(abs($cashAvailable['available'])) }}
+            </div>
+            <div class="small text-body-secondary">All time, up to today</div>
         </div>
     </div>
 </div>
 
-{{-- Row 1: key figures --}}
+
 @foreach ($keyFigures as $figure)
     @php
         if (is_null($figure['change']) || abs($figure['change']) < 0.05) {
