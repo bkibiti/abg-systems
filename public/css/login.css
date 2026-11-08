@@ -1,5 +1,18 @@
 /* ABG Metal Works — login page */
 
+/* Light-only lock: the browser must never auto-darken this page. The phone layout's black panel
+   is a deliberate brand design with explicit colours (see "Phone layout" below), not a dark mode. */
+:root {
+    color-scheme: light only;
+}
+
+.login-input,
+input,
+select,
+textarea {
+    color-scheme: light;
+}
+
 :root {
     --black: #0B0B0B;
     --gold: #C9A13F;

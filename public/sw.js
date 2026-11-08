@@ -8,7 +8,7 @@
  *
  * When you change this file, bump CACHE_VERSION (abg-v2, abg-v3, ...) so phones pick up the update.
  */
-const CACHE_VERSION = 'abg-v1';
+const CACHE_VERSION = 'abg-v2';
 
 const PRECACHE_URLS = [
     '/offline.html',

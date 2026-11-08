@@ -1,5 +1,65 @@
 /* ABG brand theme — layered on top of AdminLTE 4 / Bootstrap 5. Layout only; charts/data use the data colours below. */
 
+/* ---- Light-only lock ----
+   The app has no dark theme. Stop the browser (and phone dark modes / Chrome's forced dark) from
+   auto-darkening anything: native controls, scrollbars and form widgets always render light.
+   Kept at the top with plain specificity so deliberately dark parts below (sidebar, black table
+   headers, dark tiles) still override it. */
+:root {
+    color-scheme: light only;
+}
+
+html,
+body {
+    background-color: var(--abg-bg);
+    color: var(--abg-text);
+}
+
+.form-control,
+.form-select,
+.form-check-input,
+.input-group-text,
+input,
+select,
+textarea,
+.modal-content,
+.modal-header,
+.modal-body,
+.modal-footer,
+.dropdown-menu,
+.card,
+.card-body,
+.card-footer,
+.list-group-item,
+.dataTables_wrapper,
+table.dataTable,
+.table,
+.select2-container .select2-selection,
+.select2-dropdown,
+.daterangepicker,
+.iti__country-list {
+    background-color: #FFFFFF;
+    color: var(--abg-text);
+    color-scheme: light;
+}
+
+.dropdown-item,
+.form-label,
+.modal-title,
+.card-title,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    color: var(--abg-text);
+}
+
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="month"] {
+    color-scheme: light;
+}
+
 :root {
     --abg-black: #0B0B0B;
     --abg-gold: #C9A13F;
