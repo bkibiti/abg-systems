@@ -178,6 +178,13 @@
         color: #FFFFFF;
     }
 
+    /* abg-theme.css forces every .card-body to a white background (so native controls stay
+       light); this card's content lives in one, so it needs its own override to stay dark. */
+    .phone-cash-card .card-body {
+        background-color: transparent;
+        color: #FFFFFF;
+    }
+
     .phone-cash-label {
         color: #CFCFCF;
         font-size: 13px;
