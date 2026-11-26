@@ -1,0 +1,804 @@
+/* ABG phone app shell — loaded after abg-theme.css. Everything here is scoped to
+   @media (max-width: 768px) so desktop (>=769px) is pixel-for-pixel unchanged. */
+
+/* ---- App shell: hide the AdminLTE sidebar/header/footer, show the phone bars ---- */
+.phone-app-bar,
+.phone-bottom-nav,
+.phone-splash {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .app-sidebar,
+    .app-header,
+    .app-footer,
+    .app-content-header {
+        display: none !important;
+    }
+
+    .app-content {
+        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+    }
+
+    /* ---- Top app bar ---- */
+    .phone-app-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 60px;
+        padding: 0 14px;
+        background-color: var(--abg-black);
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+    }
+
+    .phone-app-bar-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-left: -10px;
+        border-radius: 8px;
+        color: #FFFFFF;
+        font-size: 20px;
+        flex: 0 0 auto;
+    }
+
+    .phone-app-bar-back:active {
+        background-color: rgba(255, 255, 255, .08);
+    }
+
+    .phone-app-bar-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 17px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .phone-app-bar-title-center {
+        text-align: center;
+    }
+
+    .phone-app-bar-brand {
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        color: var(--abg-gold);
+        font-size: 22px;
+    }
+
+    .phone-app-bar-logo {
+        height: 28px;
+        width: auto;
+    }
+
+    .phone-app-bar-logo-sm {
+        height: 22px;
+        width: auto;
+    }
+
+    .phone-app-bar-brand-sm {
+        width: 44px;
+        justify-content: flex-end;
+    }
+
+    /* ---- Bottom tab bar ---- */
+    .phone-bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1030;
+        background-color: var(--abg-black);
+        padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
+        justify-content: space-between;
+    }
+
+    .phone-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 3px;
+        min-height: 48px;
+        padding: 4px 2px;
+        color: #A8A8A8;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .phone-tab:hover,
+    .phone-tab:focus {
+        color: #A8A8A8;
+        text-decoration: none;
+    }
+
+    .phone-tab > .bi {
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .phone-tab.phone-tab-active {
+        color: var(--abg-gold);
+    }
+
+    .phone-tab-sell {
+        position: relative;
+    }
+
+    .phone-tab-sell-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        margin-top: -28px;
+        border: 4px solid var(--abg-black);
+        border-radius: 50%;
+        background-color: var(--abg-gold);
+        color: var(--abg-black);
+        font-size: 24px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, .35);
+    }
+
+    .phone-tab-sell:active .phone-tab-sell-btn {
+        background-color: var(--abg-gold-hover);
+    }
+
+    /* ---- PWA feel: no selection/tap-flash on interactive elements, touch-friendly sizes ---- */
+    a,
+    button,
+    .btn,
+    .phone-tab,
+    .phone-app-bar-back {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    /* ---- Home (admin + staff) ---- */
+    .phone-home-block {
+        margin-top: -14px;
+    }
+
+    .phone-cash-card {
+        background-color: #1A1A1A;
+        border-color: #1A1A1A;
+        border-radius: 18px;
+        color: #FFFFFF;
+    }
+
+    .phone-cash-label {
+        color: #CFCFCF;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 6px;
+    }
+
+    .phone-cash-amount {
+        color: var(--abg-gold);
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 14px;
+    }
+
+    .phone-cash-amount-negative {
+        color: var(--abg-negative-on-dark);
+    }
+
+    .phone-cash-tiles {
+        display: flex;
+        gap: 10px;
+    }
+
+    .phone-cash-tile {
+        flex: 1 1 0;
+        min-width: 0;
+        background-color: rgba(255, 255, 255, .06);
+        border-radius: 10px;
+        padding: 8px 12px;
+    }
+
+    .phone-cash-tile-label {
+        font-size: 12px;
+        color: #CFCFCF;
+    }
+
+    .phone-cash-tile-amount {
+        font-size: 15px;
+        font-weight: 700;
+        color: #FFFFFF;
+    }
+
+    .phone-quick-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .phone-quick-action {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        color: var(--abg-text);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .phone-quick-action:hover,
+    .phone-quick-action:focus {
+        color: var(--abg-text);
+        text-decoration: none;
+    }
+
+    .phone-quick-action-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        font-size: 22px;
+    }
+
+    .phone-quick-action-icon.tint-gold-solid {
+        background-color: var(--abg-gold);
+        color: var(--abg-black);
+    }
+
+    .phone-quick-action-icon.tint-expense {
+        background-color: #FAEBDD;
+        color: #8A4A1C;
+    }
+
+    .phone-quick-action-icon.tint-indigo {
+        background-color: #E5E9F6;
+        color: #34458A;
+    }
+
+    .phone-quick-action-icon.tint-sales {
+        background-color: var(--abg-service-bg);
+        color: var(--abg-service-text);
+    }
+
+    .phone-section-title {
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .phone-feed-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #EFEBE2;
+    }
+
+    .phone-feed-row:last-child {
+        border-bottom: none;
+    }
+
+    .phone-feed-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .phone-feed-icon.tint-sales {
+        background-color: var(--abg-service-bg);
+        color: var(--abg-service-text);
+    }
+
+    .phone-feed-icon.tint-expense {
+        background-color: #FAEBDD;
+        color: #8A4A1C;
+    }
+
+    .phone-feed-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .phone-feed-title {
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .phone-feed-sub {
+        font-size: 13px;
+        color: var(--abg-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .phone-feed-amount {
+        flex: 0 0 auto;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .phone-feed-amount-sale {
+        color: var(--abg-service-text);
+    }
+
+    .phone-feed-amount-expense {
+        color: #8A4A1C;
+    }
+
+    .phone-staff-tiles {
+        display: flex;
+        gap: 10px;
+    }
+
+    .phone-staff-tile {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .phone-staff-btn {
+        min-height: 64px;
+        font-size: 17px;
+        font-weight: 700;
+        border-radius: 14px;
+    }
+
+    .phone-staff-btn-dark {
+        background-color: var(--abg-black);
+        border-color: var(--abg-black);
+        color: #FFFFFF;
+    }
+
+    /* ---- Generic list tables -> cards (products, customers, and any other table) ----
+       Add class="table-cards" to the <table> and data-label="Column name" to every <td>
+       (skip it on a <td> you want hidden on phones). Currently applied to
+       customers/index.blade.php and masters/products/index.blade.php; apply the same two
+       changes to any other table (partners, payouts, users, ...) to get the same cards. */
+    .table-cards,
+    .table-cards tbody,
+    .table-cards tr,
+    .table-cards td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-cards thead {
+        display: none;
+    }
+
+    .table-cards tr {
+        margin-bottom: 10px;
+        padding: 10px 14px;
+        background-color: #FFFFFF;
+        border: 1px solid var(--abg-border);
+        border-radius: 12px;
+    }
+
+    .table-cards td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 6px 0;
+        border: none;
+        text-align: right;
+        white-space: normal;
+    }
+
+    .table-cards td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: 600;
+        color: var(--abg-muted);
+        text-align: left;
+    }
+
+    .table-cards td:not([data-label]) {
+        display: none;
+    }
+
+    /* ---- Bottom-sheet pickers (product/customer/category search modals) ---- */
+    .sheet-modal .modal-dialog {
+        margin: 0;
+        display: flex;
+        align-items: flex-end;
+        min-height: 100%;
+        max-width: 100%;
+    }
+
+    .sheet-modal .modal-content {
+        width: 100%;
+        max-height: 85vh;
+        border: none;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .sheet-modal.modal.fade .modal-dialog {
+        transform: translateY(100%);
+        transition: transform .25s ease-out;
+    }
+
+    .sheet-modal.modal.show .modal-dialog {
+        transform: translateY(0);
+    }
+
+    .sheet-modal .modal-header {
+        position: relative;
+        padding-top: 22px;
+        border-bottom: none;
+    }
+
+    .sheet-handle {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 5px;
+        border-radius: 3px;
+        background-color: var(--abg-input-border);
+    }
+
+    .sheet-modal .modal-body {
+        overflow-y: auto;
+    }
+
+    /* ---- POS: Service/Item segmented toggle ---- */
+    .pos-segmented {
+        display: flex;
+        background-color: var(--abg-bg);
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .pos-segment {
+        flex: 1 1 0;
+        min-height: 40px;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: var(--abg-text);
+        font-weight: 700;
+    }
+
+    .pos-segment.active {
+        background-color: var(--abg-black);
+        color: #FFFFFF;
+    }
+
+    /* ---- History ---- */
+    .history-phone-title {
+        font-weight: 800;
+    }
+
+    .history-search-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        background-color: var(--abg-bg);
+        color: var(--abg-text);
+        font-size: 17px;
+    }
+
+    .history-chip-row {
+        display: flex;
+        gap: 8px;
+    }
+
+    .history-chip {
+        padding: 6px 16px;
+        border-radius: 999px;
+        background-color: #FFFFFF;
+        border: 1.5px solid var(--abg-input-border);
+        color: var(--abg-text);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .history-chip:hover,
+    .history-chip:focus {
+        color: var(--abg-text);
+        text-decoration: none;
+    }
+
+    .history-chip-active {
+        background-color: var(--abg-black);
+        border-color: var(--abg-black);
+        color: #FFFFFF;
+    }
+
+    .history-card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 8px;
+        background-color: #FFFFFF;
+        border: 1px solid var(--abg-border);
+        border-radius: 12px;
+        text-align: left;
+    }
+
+    .history-card-clickable {
+        cursor: pointer;
+    }
+
+    .history-card-clickable:hover,
+    .history-card-clickable:focus-visible {
+        border-color: var(--abg-gold);
+        outline: none;
+    }
+
+    .history-card-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .history-card-badge.tint-sales {
+        background-color: var(--abg-service-bg);
+        color: var(--abg-service-text);
+    }
+
+    .history-card-badge.tint-expense {
+        background-color: #FAEBDD;
+        color: #8A4A1C;
+    }
+
+    .history-card-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .history-card-title {
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .history-card-sub {
+        font-size: 13px;
+        color: var(--abg-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .history-card-end {
+        flex: 0 0 auto;
+        text-align: right;
+    }
+
+    .history-card-amount {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .history-card-time {
+        font-size: 12px;
+        color: var(--abg-muted);
+    }
+
+    .history-card-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: var(--abg-muted);
+        font-size: 15px;
+    }
+
+    .history-card-delete:hover {
+        background-color: #FAF8F3;
+        color: #B3261E;
+    }
+
+    .history-fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: 18px;
+        bottom: calc(92px + env(safe-area-inset-bottom));
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--abg-gold);
+        color: var(--abg-black);
+        font-size: 26px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+        z-index: 1020;
+    }
+
+    .history-fab:hover,
+    .history-fab:focus {
+        color: var(--abg-black);
+        background-color: var(--abg-gold-hover);
+    }
+
+    /* ---- More page ---- */
+    .more-profile {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .more-profile-avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        border-radius: 50%;
+        background-color: var(--abg-gold);
+        color: var(--abg-black);
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .more-profile-name {
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .more-profile-sub {
+        color: var(--abg-muted);
+        font-size: 14px;
+    }
+
+    .more-group-label {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--abg-muted);
+        margin-bottom: 8px;
+    }
+
+    .more-group-card {
+        padding: 4px 4px;
+    }
+
+    .more-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        min-height: 54px;
+        padding: 8px 12px;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #EFEBE2;
+        color: var(--abg-text);
+        text-decoration: none;
+        text-align: left;
+    }
+
+    .more-row:last-child {
+        border-bottom: none;
+    }
+
+    .more-row:hover,
+    .more-row:focus {
+        color: var(--abg-text);
+        text-decoration: none;
+        background-color: #FAF8F3;
+    }
+
+    .more-row-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 8px;
+        font-size: 17px;
+    }
+
+    .more-row-icon.tint-gold {
+        background-color: rgba(201, 161, 63, .15);
+        color: var(--abg-gold-dark-text);
+    }
+
+    .more-row-icon.tint-indigo {
+        background-color: #E5E9F6;
+        color: #34458A;
+    }
+
+    .more-row-icon.tint-sales {
+        background-color: var(--abg-service-bg);
+        color: var(--abg-service-text);
+    }
+
+    .more-row-icon.tint-black {
+        background-color: var(--abg-black);
+        color: var(--abg-gold);
+    }
+
+    .more-row-icon.tint-danger {
+        background-color: rgba(179, 38, 30, .1);
+        color: #B3261E;
+    }
+
+    .more-row-label {
+        flex: 1 1 auto;
+        font-weight: 600;
+    }
+
+    .more-row-chevron {
+        color: var(--abg-muted);
+    }
+
+    .more-row-danger .more-row-label {
+        color: #B3261E;
+    }
+
+    /* ---- Splash shown briefly while the installed app starts ---- */
+    @media (display-mode: standalone) {
+        .phone-splash {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--abg-black);
+            transition: opacity .25s ease;
+        }
+
+        .phone-splash.phone-splash-hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .phone-splash-logo {
+            width: 96px;
+            height: auto;
+        }
+    }
+}

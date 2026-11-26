@@ -23,6 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/abg-theme.css') }}?v={{ filemtime(public_path('css/abg-theme.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/abg-app.css') }}?v={{ filemtime(public_path('css/abg-app.css')) }}">
 
     <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker-master/css/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/intl-tel-input/css/intlTelInput.css') }}">
@@ -66,6 +67,21 @@
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div id="phone-splash" class="phone-splash" aria-hidden="true">
+        <img src="{{ asset('images/abg-logo.png') }}" alt="" class="phone-splash-logo">
+    </div>
+    <script>
+        (function () {
+            var splash = document.getElementById('phone-splash');
+            window.addEventListener('DOMContentLoaded', function () {
+                splash.classList.add('phone-splash-hide');
+                setTimeout(function () { splash.remove(); }, 300);
+            });
+        })();
+    </script>
+
+    @include('layouts.phone_app_bar')
+
     <div class="app-wrapper">
 
         <nav class="app-header navbar navbar-expand bg-body">
@@ -210,6 +226,20 @@
             <strong>&copy; {{ date('Y') }} {{ $businessName }}.</strong>
         </footer>
     </div>
+
+    @include('layouts.phone_bottom_nav')
+
+    <script>
+        // Phone app bar back arrow: prefer the real browser history over always landing on the dashboard.
+        document.querySelectorAll('[data-phone-back]').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                if (window.history.length > 1 && window.history.state) {
+                    event.preventDefault();
+                    window.history.back();
+                }
+            });
+        });
+    </script>
 
     <script>
         // Tables with id="fixed-header" were initialised by the old theme's demo script.

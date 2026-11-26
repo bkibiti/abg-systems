@@ -186,10 +186,11 @@ Record expense
 </div>
 
 {{-- Category search --}}
-<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalTitle" aria-hidden="true">
+<div class="modal fade sheet-modal" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
         <div class="modal-content">
             <div class="modal-header">
+                <span class="sheet-handle d-lg-none" aria-hidden="true"></span>
                 <h5 class="modal-title" id="categoryModalTitle">Select category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -433,4 +434,5 @@ Record expense
         refresh();
     })();
 </script>
+@include('partials.sheet_modal_js')
 @endpush

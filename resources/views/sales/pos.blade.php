@@ -70,6 +70,11 @@ New sale
         @endif
 
         <div class="col-lg-8 mb-4 pos-form-col">
+            <div class="pos-segmented d-lg-none mb-3" role="tablist" aria-label="Browse by type" id="pos_type_toggle">
+                <button type="button" class="pos-segment active" data-pos-type="Service" role="tab" aria-selected="true">Service</button>
+                <button type="button" class="pos-segment" data-pos-type="Item" role="tab" aria-selected="false">Item</button>
+            </div>
+
             <form method="POST" action="{{ route('sales.store') }}" id="sale_form" class="card pos-form-card" novalidate>
                 @csrf
                 <div class="card-body">
@@ -224,10 +229,11 @@ New sale
 </div>
 
 {{-- Product search --}}
-<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalTitle" aria-hidden="true">
+<div class="modal fade sheet-modal" id="productModal" tabindex="-1" aria-labelledby="productModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down">
         <div class="modal-content">
             <div class="modal-header">
+                <span class="sheet-handle d-lg-none" aria-hidden="true"></span>
                 <h5 class="modal-title" id="productModalTitle">Select product or service</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -264,10 +270,11 @@ New sale
 </div>
 
 {{-- Customer search --}}
-<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalTitle" aria-hidden="true">
+<div class="modal fade sheet-modal" id="customerModal" tabindex="-1" aria-labelledby="customerModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down">
         <div class="modal-content">
             <div class="modal-header">
+                <span class="sheet-handle d-lg-none" aria-hidden="true"></span>
                 <h5 class="modal-title" id="customerModalTitle">Select customer</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -488,9 +495,52 @@ New sale
             });
         }
 
+        // Phone: Service/Item toggle above the form pre-filters the product sheet by type.
+        // Purely a browsing convenience — the posted product_id is still set by selectProduct().
+        const typeToggle = document.getElementById('pos_type_toggle');
+        if (typeToggle) {
+            const productSearch = document.querySelector('#productModal .js-search');
+            const productNoMatch = document.querySelector('#product_list .js-no-match');
+
+            function applyProductTypeFilter() {
+                const selectedType = typeToggle.querySelector('.active').dataset.posType;
+                const term = productSearch.value.trim().toLowerCase();
+                let shown = 0;
+                document.querySelectorAll('#product_list .pos-pick-row').forEach(function (row) {
+                    const visible = row.dataset.type === selectedType && row.dataset.search.includes(term);
+                    row.classList.toggle('d-none', ! visible);
+                    if (visible) { shown++; }
+                });
+                productNoMatch.classList.toggle('d-none', shown > 0);
+            }
+
+            typeToggle.querySelectorAll('.pos-segment').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    typeToggle.querySelectorAll('.pos-segment').forEach(function (b) {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-selected', 'false');
+                    });
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    applyProductTypeFilter();
+                });
+            });
+
+            productSearch.addEventListener('input', applyProductTypeFilter);
+            document.getElementById('productModal').addEventListener('show.bs.modal', applyProductTypeFilter);
+        }
+
         // Restore old() values after a validation error
         if (productInput.value) {
-            selectProduct(document.querySelector('.js-product[data-id="' + CSS.escape(productInput.value) + '"]'));
+            const selectedRow = document.querySelector('.js-product[data-id="' + CSS.escape(productInput.value) + '"]');
+            selectProduct(selectedRow);
+            if (selectedRow && typeToggle) {
+                typeToggle.querySelectorAll('.pos-segment').forEach(function (b) {
+                    const matches = b.dataset.posType === selectedRow.dataset.type;
+                    b.classList.toggle('active', matches);
+                    b.setAttribute('aria-selected', matches ? 'true' : 'false');
+                });
+            }
         }
         if (customerInput.value) {
             selectCustomer(document.querySelector('.js-customer[data-id="' + CSS.escape(customerInput.value) + '"]'));
@@ -498,4 +548,5 @@ New sale
         refresh();
     })();
 </script>
+@include('partials.sheet_modal_js')
 @endpush

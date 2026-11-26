@@ -14,8 +14,70 @@
     <div class="staff-greeting-date">{{ $todayLabel }}</div>
 </div>
 
+{{-- Phone: overlapping "my totals" cards, big action buttons, mixed recent-entries feed --}}
+<div class="col-12 d-lg-none phone-home-block mb-4">
+    <div class="phone-staff-tiles mb-3">
+        <div class="card phone-staff-tile">
+            <div class="card-body">
+                <div class="staff-figure-label">
+                    <span class="staff-dot" style="background-color: var(--abg-sales)"></span>MY SALES TODAY
+                </div>
+                <div class="staff-figure-amount">TZS {{ formatAmount($mySalesToday) }}</div>
+                <div class="staff-card-subtitle">{{ $mySalesTodayCount }} {{ Str::plural('sale', $mySalesTodayCount) }}</div>
+            </div>
+        </div>
+        <div class="card phone-staff-tile">
+            <div class="card-body">
+                <div class="staff-figure-label">
+                    <span class="staff-dot" style="background-color: var(--abg-expense)"></span>MY EXPENSES TODAY
+                </div>
+                <div class="staff-figure-amount">TZS {{ formatAmount($myExpensesToday) }}</div>
+                <div class="staff-card-subtitle">{{ $myExpensesTodayCount }} {{ Str::plural('expense', $myExpensesTodayCount) }}</div>
+            </div>
+        </div>
+    </div>
+
+    @can('Point of Sales')
+        <a href="{{ route('sales.index') }}" class="btn btn-primary w-100 phone-staff-btn mb-2">New sale</a>
+    @endcan
+    @can('Add Expenses')
+        <a href="{{ route('expense.create') }}" class="btn phone-staff-btn phone-staff-btn-dark w-100 mb-4">Expense</a>
+    @endcan
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="phone-section-title">My recent entries</div>
+        @can('View Sales History')
+            <a href="{{ route('history.index') }}" class="staff-view-all">See all</a>
+        @endcan
+    </div>
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            @forelse ($recentEntries as $row)
+                @php
+                    $entryDate = $row['date'];
+                    $entryLabel = $entryDate->isToday() ? 'Today' : ($entryDate->isYesterday() ? 'Yesterday' : $entryDate->format('j M'));
+                @endphp
+                <div class="phone-feed-row">
+                    <span class="phone-feed-icon {{ $row['kind'] === 'sale' ? 'tint-sales' : 'tint-expense' }}">
+                        <i class="bi {{ $row['kind'] === 'sale' ? 'bi-cash-coin' : 'bi-wallet2' }}"></i>
+                    </span>
+                    <div class="phone-feed-main">
+                        <div class="phone-feed-title">{{ $row['title'] }}</div>
+                        <div class="phone-feed-sub">{{ $entryLabel }} &middot; {{ $row['sub'] }}</div>
+                    </div>
+                    <div class="phone-feed-amount {{ $row['kind'] === 'sale' ? 'phone-feed-amount-sale' : 'phone-feed-amount-expense' }}">
+                        {{ $row['kind'] === 'sale' ? '+' : '-' }}{{ formatAmount($row['amount']) }}
+                    </div>
+                </div>
+            @empty
+                <p class="pos-muted mb-0">No sales or expenses in the last 7 days.</p>
+            @endforelse
+        </div>
+    </div>
+</div>
+
 @can('Point of Sales')
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4 d-none d-lg-block">
         <a href="{{ route('sales.index') }}" class="card staff-shortcut staff-shortcut-gold text-decoration-none">
             <div class="card-body d-flex align-items-center gap-3">
                 <span class="staff-shortcut-icon staff-shortcut-icon-dark"><i class="bi bi-plus-lg"></i></span>
@@ -29,7 +91,7 @@
 @endcan
 
 @can('Add Expenses')
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4 d-none d-lg-block">
         <a href="{{ route('expense.create') }}" class="card staff-shortcut text-decoration-none">
             <div class="card-body d-flex align-items-center gap-3">
                 <span class="staff-shortcut-icon staff-shortcut-icon-copper"><i class="bi bi-wallet2"></i></span>
@@ -42,7 +104,7 @@
     </div>
 @endcan
 
-<div class="col-md-6 mb-4">
+<div class="col-md-6 mb-4 d-none d-lg-block">
     <div class="card staff-figure-card h-100">
         <div class="card-body">
             <div class="staff-figure-label">
@@ -53,7 +115,7 @@
     </div>
 </div>
 
-<div class="col-md-6 mb-4">
+<div class="col-md-6 mb-4 d-none d-lg-block">
     <div class="card staff-figure-card h-100">
         <div class="card-body">
             <div class="staff-figure-label">

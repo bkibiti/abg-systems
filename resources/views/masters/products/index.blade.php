@@ -32,7 +32,7 @@
 
 
                     <div id="product-table" class="table-responsive">
-                        <table id="fixed-header1" class="display table nowrap table-striped table-hover"
+                        <table id="fixed-header1" class="display table table-cards nowrap table-striped table-hover"
                                style="width:100%">
                             <thead>
                             <tr>
@@ -49,18 +49,18 @@
                                     @foreach($products as $prod)
                                     <tr>
                                             {{-- <td>{{$prod->id}}</td> --}}
-                                            <td>{{$prod->name}}</td>
-                                            <td>{{ $prod->category->name ?? '—' }}</td>
-                                            <td>
+                                            <td data-label="Name">{{$prod->name}}</td>
+                                            <td data-label="Category">{{ $prod->category->name ?? '—' }}</td>
+                                            <td data-label="Type">
                                                 @if($prod->type === 'Service')
                                                     <span class="badge badge-service">Service</span>
                                                 @else
                                                     <span class="badge badge-item">Item</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $prod->sale_price_1 !== null ? number_format($prod->sale_price_1, 2) : '—' }}</td>
-                                            <td>{{$prod->min_quantinty}}</td>
-                                            <td>
+                                            <td data-label="Price">{{ $prod->sale_price_1 !== null ? number_format($prod->sale_price_1, 2) : '—' }}</td>
+                                            <td data-label="Min Qty">{{$prod->min_quantinty}}</td>
+                                            <td data-label="Actions">
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-info"
                                                             data-id="{{$prod->id}}"

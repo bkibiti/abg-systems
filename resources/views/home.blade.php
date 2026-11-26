@@ -87,7 +87,85 @@
     </div>
 </div>
 
-{{-- Row 1: cash available and key figures --}}
+{{-- Phone home: overlapping cash card, quick actions, today's mixed feed --}}
+<div class="col-12 d-lg-none phone-home-block mb-4">
+    <div class="card phone-cash-card mb-3">
+        <div class="card-body">
+            <div class="phone-cash-label">Cash available</div>
+            <div class="phone-cash-amount {{ $cashAvailable['available'] < 0 ? 'phone-cash-amount-negative' : '' }}">
+                {{ $cashAvailable['available'] < 0 ? '-' : '' }}TZS {{ formatAmount(abs($cashAvailable['available'])) }}
+            </div>
+            <div class="phone-cash-tiles">
+                <div class="phone-cash-tile">
+                    <div class="phone-cash-tile-label">Sales today</div>
+                    <div class="phone-cash-tile-amount">TZS {{ formatAmount($salesToday) }}</div>
+                </div>
+                <div class="phone-cash-tile">
+                    <div class="phone-cash-tile-label">Expenses today</div>
+                    <div class="phone-cash-tile-amount">TZS {{ formatAmount($expensesToday) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="phone-quick-actions mb-4">
+        @can('Point of Sales')
+            <a href="{{ route('sales.index') }}" class="phone-quick-action">
+                <span class="phone-quick-action-icon tint-gold-solid"><i class="bi bi-plus-lg"></i></span>
+                <span>New sale</span>
+            </a>
+        @endcan
+        @can('Add Expenses')
+            <a href="{{ route('expense.create') }}" class="phone-quick-action">
+                <span class="phone-quick-action-icon tint-expense"><i class="bi bi-wallet2"></i></span>
+                <span>Expense</span>
+            </a>
+        @endcan
+        @can('View Partnership')
+            <a href="{{ route('partnership.index') }}" class="phone-quick-action">
+                <span class="phone-quick-action-icon tint-indigo"><i class="bi bi-people-fill"></i></span>
+                <span>Partners</span>
+            </a>
+        @endcan
+        @can('View Reports')
+            <a href="{{ route('reports.index') }}" class="phone-quick-action">
+                <span class="phone-quick-action-icon tint-sales"><i class="bi bi-file-earmark-bar-graph"></i></span>
+                <span>Reports</span>
+            </a>
+        @endcan
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="phone-section-title">Today</div>
+        @can('View Sales History')
+            <a href="{{ route('history.index') }}" class="staff-view-all">See all</a>
+        @endcan
+    </div>
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            @forelse ($todayFeed as $row)
+                <div class="phone-feed-row">
+                    <span class="phone-feed-icon {{ $row['kind'] === 'sale' ? 'tint-sales' : 'tint-expense' }}">
+                        <i class="bi {{ $row['kind'] === 'sale' ? 'bi-cash-coin' : 'bi-wallet2' }}"></i>
+                    </span>
+                    <div class="phone-feed-main">
+                        <div class="phone-feed-title">{{ $row['title'] }}</div>
+                        <div class="phone-feed-sub">{{ $row['sub'] }}</div>
+                    </div>
+                    <div class="phone-feed-amount {{ $row['kind'] === 'sale' ? 'phone-feed-amount-sale' : 'phone-feed-amount-expense' }}">
+                        {{ $row['kind'] === 'sale' ? '+' : '-' }}{{ formatAmount($row['amount']) }}
+                    </div>
+                </div>
+            @empty
+                <p class="pos-muted mb-0">Nothing recorded today yet.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <div class="phone-section-title mb-2">Full dashboard</div>
+</div>
+
+{{-- Row 1: cash available and key figures (desktop; also shown on phones below the summary above) --}}
 <div class="col-md-4 mb-4">
     <div class="card dashboard-card h-100">
         <div class="card-body">

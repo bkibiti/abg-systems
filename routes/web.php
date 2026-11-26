@@ -5,7 +5,9 @@ use App\Http\Controllers\CurrentStockController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MoreController;
 use App\Http\Controllers\PartnerContributionController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PartnerPayoutController;
@@ -31,6 +33,10 @@ Auth::routes(['register' => false]);
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // Phone app shell: "More" and "History" tabs
+    Route::get('/more', [MoreController::class, 'index'])->name('more.index');
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
     // Products routes
     Route::resource('masters/products', ProductController::class)->only([

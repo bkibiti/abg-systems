@@ -10,6 +10,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -99,6 +100,13 @@ class HomeController extends Controller
             'available' => $this->cashService->available(),
         ];
 
+        // Phone home: today's figures and a mixed sales+expenses feed, independent of the period switch above.
+        $todayLocalStart = CarbonImmutable::now('Africa/Dar_es_Salaam')->startOfDay()->setTimezone('UTC');
+        $todayLocalEnd = $todayLocalStart->addDay();
+        $salesToday = $this->salesTotal($todayLocalStart, $todayLocalEnd);
+        $expensesToday = $this->expensesTotal($todayLocalStart, $todayLocalEnd);
+        $todayFeed = $this->todayFeed($todayLocalStart, $todayLocalEnd);
+
         return view('home', compact(
             'period',
             'periods',
@@ -110,6 +118,9 @@ class HomeController extends Controller
             'expensesByCategory',
             'cashAvailable',
             'range',
+            'salesToday',
+            'expensesToday',
+            'todayFeed',
         ));
     }
 
@@ -124,54 +135,78 @@ class HomeController extends Controller
         $todayEnd = $todayStart->addDay();
         $weekStart = $todayStart->subDays(6);
 
-        $mySalesToday = (float) Sale::where('created_by', $userId)
+        $todaySales = Sale::where('created_by', $userId)
             ->where('created_at', '>=', $todayStart)
             ->where('created_at', '<', $todayEnd)
-            ->sum(DB::raw('quantity * selling_price'));
+            ->get();
+        $mySalesToday = (float) $todaySales->sum(fn (Sale $sale): float => (float) $sale->quantity * (float) $sale->selling_price);
+        $mySalesTodayCount = $todaySales->count();
 
-        $myExpensesToday = (float) Expense::where('updated_by', $userId)
+        $todayExpenses = Expense::where('updated_by', $userId)
             ->where('created_at', '>=', $todayStart)
             ->where('created_at', '<', $todayEnd)
-            ->sum('amount');
+            ->get();
+        $myExpensesToday = (float) $todayExpenses->sum('amount');
+        $myExpensesTodayCount = $todayExpenses->count();
 
-        $recentSales = Sale::with('product')
+        $salesRaw = Sale::with(['product', 'paymentMethod'])
             ->where('created_by', $userId)
             ->where('created_at', '>=', $weekStart)
             ->where('created_at', '<', $todayEnd)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->get()
-            ->map(fn (Sale $sale): array => [
-                'date' => CarbonImmutable::parse($sale->created_at)->setTimezone('Africa/Dar_es_Salaam'),
-                'product' => $sale->product->name ?? '—',
-                'amount' => (float) $sale->quantity * (float) $sale->selling_price,
-            ]);
+            ->get();
 
-        $recentExpenses = Expense::with('category')
+        $expensesRaw = Expense::with('category')
             ->where('updated_by', $userId)
             ->where('created_at', '>=', $weekStart)
             ->where('created_at', '<', $todayEnd)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->get()
-            ->map(fn (Expense $expense): array => [
-                'date' => CarbonImmutable::parse($expense->created_at)->setTimezone('Africa/Dar_es_Salaam'),
-                'category' => $expense->category->name ?? '—',
-                'description' => $expense->expense_description ?: '—',
-                'amount' => (float) $expense->amount,
-            ]);
+            ->get();
+
+        $recentSales = $salesRaw->map(fn (Sale $sale): array => [
+            'date' => CarbonImmutable::parse($sale->created_at)->setTimezone('Africa/Dar_es_Salaam'),
+            'product' => $sale->product->name ?? '—',
+            'amount' => (float) $sale->quantity * (float) $sale->selling_price,
+        ]);
+
+        $recentExpenses = $expensesRaw->map(fn (Expense $expense): array => [
+            'date' => CarbonImmutable::parse($expense->created_at)->setTimezone('Africa/Dar_es_Salaam'),
+            'category' => $expense->category->name ?? '—',
+            'description' => $expense->expense_description ?: '—',
+            'amount' => (float) $expense->amount,
+        ]);
 
         // Totals come from the same rows that are listed, so they always match
         $recentSalesTotal = $recentSales->sum('amount');
         $recentExpensesTotal = $recentExpenses->sum('amount');
 
+        // Phone home: the same last-7-days rows, mixed into one newest-first feed.
+        $recentEntries = $salesRaw->map(fn (Sale $sale): array => [
+            'kind' => 'sale',
+            'date' => CarbonImmutable::parse($sale->created_at)->setTimezone('Africa/Dar_es_Salaam'),
+            'title' => $sale->product->name ?? '—',
+            'sub' => formatAmount($sale->quantity).' pcs · '.($sale->paymentMethod->name ?? '—'),
+            'amount' => (float) $sale->quantity * (float) $sale->selling_price,
+        ])->concat($expensesRaw->map(fn (Expense $expense): array => [
+            'kind' => 'expense',
+            'date' => CarbonImmutable::parse($expense->created_at)->setTimezone('Africa/Dar_es_Salaam'),
+            'title' => $expense->expense_description ?: ($expense->category->name ?? '—'),
+            'sub' => $expense->category->name ?? '—',
+            'amount' => (float) $expense->amount,
+        ]))->sortByDesc(fn (array $row) => $row['date'])->take(7)->values();
+
         return view('dashboards.staff', compact(
             'mySalesToday',
+            'mySalesTodayCount',
             'myExpensesToday',
+            'myExpensesTodayCount',
             'recentSales',
             'recentExpenses',
             'recentSalesTotal',
             'recentExpensesTotal',
+            'recentEntries',
         ));
     }
 
@@ -259,6 +294,57 @@ class HomeController extends Controller
             ->where('created_at', '>=', $start)
             ->where('created_at', '<', $end)
             ->sum('amount');
+    }
+
+    /**
+     * Phone home "Today" card: everyone's sales and expenses for today, newest first, max 6.
+     *
+     * @return Collection<int, array{kind: string, title: string, sub: string, amount: float, time: CarbonImmutable}>
+     */
+    private function todayFeed(CarbonImmutable $start, CarbonImmutable $end): Collection
+    {
+        $sales = Sale::with(['product:id,name', 'customer:id,name'])
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(6)
+            ->get()
+            ->map(function (Sale $sale): array {
+                $time = CarbonImmutable::parse($sale->created_at)->setTimezone('Africa/Dar_es_Salaam');
+
+                return [
+                    'kind' => 'sale',
+                    'title' => $sale->product->name ?? '(deleted product)',
+                    'sub' => 'Sale · '.$time->format('H:i').' · '.($sale->customer->name ?? 'Walk-in'),
+                    'amount' => (float) $sale->quantity * (float) $sale->selling_price,
+                    'time' => $time,
+                ];
+            });
+
+        $expenses = Expense::with('category')
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(6)
+            ->get()
+            ->map(function (Expense $expense): array {
+                $time = CarbonImmutable::parse($expense->created_at)->setTimezone('Africa/Dar_es_Salaam');
+
+                return [
+                    'kind' => 'expense',
+                    'title' => $expense->expense_description ?: ($expense->category->name ?? 'Expense'),
+                    'sub' => 'Expense · '.$time->format('H:i').' · '.($expense->category->name ?? '—'),
+                    'amount' => (float) $expense->amount,
+                    'time' => $time,
+                ];
+            });
+
+        return $sales->concat($expenses)
+            ->sortByDesc(fn (array $row) => $row['time'])
+            ->take(6)
+            ->values();
     }
 
     /**

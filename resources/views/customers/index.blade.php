@@ -58,7 +58,7 @@
       
           
         <div class="table-responsive">
-            <table id="fixed-header" class="display table nowrap table-striped table-hover" style="width:100%">
+            <table id="fixed-header" class="display table table-cards nowrap table-striped table-hover" style="width:100%">
             <thead>
                 <tr>
                 <th>Name</th>
@@ -73,22 +73,22 @@
             <tbody>
                 @foreach($customers as $c)
                     <tr>
-                    <td>{{$c->name}} </td>
-                    <td>{{$c->mobile}}</td>
-                    <td>{{$c->location}}</td>
-                    <td>
+                    <td data-label="Name">{{$c->name}} </td>
+                    <td data-label="Mobile">{{$c->mobile}}</td>
+                    <td data-label="Location">{{$c->location}}</td>
+                    <td data-label="Status">
                         @if ($c->status == 'Active')
                             <h6 class="m-0 text-success">{{$c->status}} </h6>
                         @endif
                         @if ($c->status == 'Inactive')
                             <h6 class="m-0 text-danger">{{$c->status}} </h6>
                         @endif
-                     
+
                     </td>
 
                     @can('Manage Customers')
-                        <td style='white-space: nowrap'>
-                    
+                        <td data-label="Actions" style='white-space: nowrap'>
+
                             <a href="#">
                                 <button class="btn btn-info btn-sm" data-name="{{$c->name}}"
                                     data-id="{{$c->id}}" data-mobile="{{$c->mobile}}"
@@ -98,7 +98,7 @@
 
                         </td>
                     @endcan
-                        
+
                     </tr>
                 @endforeach
 
